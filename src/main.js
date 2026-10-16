@@ -15,10 +15,13 @@ import { BUILD } from "./build.js";
 const landing = document.getElementById("screen-landing");
 const game = document.getElementById("screen-game");
 
-// Review demo only: a quiet link to the coach review page, outside the player flow.
+// Review demo only: quiet links to the coach review page and the prototype playground,
+// outside the player flow.
 if (BUILD.review) {
-  const link = Object.assign(document.createElement("a"), { className: "footnote__review", href: "review.html", textContent: "Coach review: draft tactical scenarios" });
-  landing.querySelector(".footnote")?.append(link);
+  for (const [href, text] of [["review.html", "Coach review: draft tactical scenarios"], ["playground.html", "Prototype playground: new challenge ideas"]]) {
+    const link = Object.assign(document.createElement("a"), { className: "footnote__review", href, textContent: text });
+    landing.querySelector(".footnote")?.append(link);
+  }
 }
 
 let current = { name: "landing" };

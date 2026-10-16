@@ -1,0 +1,270 @@
+/* Landing screen layout. Mobile-first: base rules are the phone layout,
+   the @media block at the bottom rearranges it for wide screens. */
+
+.page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 max(var(--s4), env(safe-area-inset-right)) max(var(--s5), env(safe-area-inset-bottom)) max(var(--s4), env(safe-area-inset-left));
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding-top: env(safe-area-inset-top);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+  text-decoration: none;
+}
+.brand__word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+}
+.brand__tag {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--red);
+  padding: 3px 8px 2px;
+  border-radius: 3px;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  display: grid;
+  gap: var(--s5);
+}
+
+
+.hero__copy { display: grid; gap: var(--s4); }
+
+.headline {
+  display: grid;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(52px, 15vw, 80px);
+  line-height: 0.88;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  margin-top: var(--s1);
+}
+.headline__accent { color: var(--red); }
+
+.lede {
+  max-width: 36ch;
+  color: var(--muted);
+  font-size: 16.5px;
+}
+
+.cta { display: grid; gap: var(--s3); margin-top: var(--s2); }
+.cta .btn { width: 100%; }
+.cta__meta {
+  font-size: 13px;
+  color: var(--dim);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Stage: the pitch "broadcast camera" card ---------- */
+
+.stage-card {
+  position: relative;
+  /* Phones/tablets: as tall as ~86% of the width, but never more than ~40% of the
+     screen height, so the Start button stays near the first screen on short phones. */
+  height: clamp(240px, min(calc((100vw - 32px) * 0.86), 40svh), 600px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--rule);
+  background:
+    radial-gradient(70% 45% at 50% 8%, rgba(238, 241, 236, 0.09), rgba(238, 241, 236, 0) 70%),
+    radial-gradient(90% 70% at 60% 45%, rgba(209, 13, 13, 0.06), rgba(209, 13, 13, 0) 60%),
+    linear-gradient(180deg, #0e1916 0%, var(--ink-1) 100%);
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+}
+/* Fade the far end and the bottom into the card, like a camera vignette */
+.stage-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, var(--ink-1) 0%, rgba(11, 16, 18, 0) 22%, rgba(11, 16, 18, 0) 72%, var(--ink-1) 100%),
+    radial-gradient(130% 90% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%);
+  z-index: 1;
+}
+
+.stage-card__camera {
+  position: absolute;
+  inset: 0;
+  perspective: 700px;
+  perspective-origin: 50% 0%;
+}
+
+/* The tilt is what turns a flat diagram into a "camera" view.
+   Remove the transform to see the plain top-down pitch. */
+.pitch {
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  width: 96%;
+  transform: translateX(-50%) rotateX(48deg);
+  transform-origin: 50% 0%;
+  overflow: visible;
+}
+
+.stage-card__hud {
+  position: absolute;
+  z-index: 2;
+  top: var(--s3);
+  left: var(--s3);
+  right: var(--s3);
+  display: flex;
+  justify-content: space-between;
+}
+.hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: rgba(6, 9, 10, 0.72);
+  border: 1px solid var(--rule-soft);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.hud-chip--ghost { color: var(--muted); }
+.hud-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 0 var(--red-glow);
+  animation: hud-pulse 1.8s ease-out infinite;
+}
+@keyframes hud-pulse { 0% { box-shadow: 0 0 0 0 var(--red-glow); } 70%, 100% { box-shadow: 0 0 0 7px rgba(209, 13, 13, 0); } }
+
+.stage-card__legend {
+  position: absolute;
+  z-index: 2;
+  left: var(--s3);
+  bottom: var(--s3);
+  display: flex;
+  gap: var(--s4);
+  list-style: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stage-card__legend li { display: inline-flex; align-items: center; gap: 6px; }
+.key { width: 9px; height: 9px; border-radius: 50%; }
+.key--home { background: var(--chalk); }
+.key--opp { background: var(--opp-fill); box-shadow: inset 0 0 0 1.5px var(--opp-stroke); }
+.key--read { box-shadow: inset 0 0 0 2px var(--red); }
+
+/* ---------- Pitch SVG internals (class names set in src/pitch.js) ---------- */
+
+.pitch .stripe-a { fill: var(--pitch-a); }
+.pitch .stripe-b { fill: var(--pitch-b); }
+.pitch .markings { fill: none; stroke: rgba(238, 241, 236, 0.22); stroke-width: 0.22; }
+.pitch .spot { fill: rgba(238, 241, 236, 0.3); }
+
+.pitch .scan-cone { fill: url(#scan-grad); }
+
+.pitch .lane { fill: none; stroke-width: 0.32; stroke-linecap: round; }
+.pitch .lane--open { stroke: var(--chalk); stroke-dasharray: 1.1 0.9; animation: lane-march 1.4s linear infinite; }
+@keyframes lane-march { to { stroke-dashoffset: -4; } }
+
+.pitch .shadow { fill: rgba(0, 0, 0, 0.55); }
+.pitch .home .body { fill: var(--chalk); }
+.pitch .home .rim { fill: none; stroke: rgba(6, 9, 10, 0.55); stroke-width: 0.25; }
+.pitch .opp .body { fill: var(--opp-fill); }
+.pitch .opp .rim { fill: none; stroke: var(--opp-stroke); stroke-width: 0.32; }
+.pitch .ball { fill: #fff; }
+.pitch .carrier-ring { fill: none; stroke: var(--chalk); stroke-width: 0.2; opacity: 0.55; }
+
+.pitch .read-ring { fill: none; stroke: var(--red); stroke-width: 0.36; }
+.pitch .read-pulse {
+  fill: none; stroke: var(--red); stroke-width: 0.3;
+  transform-box: fill-box; transform-origin: center;
+  animation: read-pulse 2.2s var(--ease-out) infinite;
+}
+@keyframes read-pulse { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+
+/* ---------- Entrance motion ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 0.7s var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * 80ms + 120ms);
+}
+.stage-card { animation: settle 1s var(--ease-out) both; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+@keyframes settle { from { opacity: 0; transform: translateY(16px) scale(0.985); } to { opacity: 1; transform: none; } }
+
+/* ---------- Footnote ---------- */
+
+.footnote {
+  margin-top: var(--s7);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--rule-soft);
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+.footnote span { color: var(--muted); font-weight: 600; margin-right: var(--s1); }
+.footnote__review { display: block; margin-top: var(--s2); color: var(--muted); text-underline-offset: 3px; }
+.footnote__review:hover { color: var(--chalk); }
+
+/* ---------- Wide screens: copy left, pitch right ---------- */
+
+@media (min-width: 960px) {
+  .topbar { height: 88px; }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    align-items: center;
+    gap: var(--s8);
+    min-height: calc(100svh - 88px - 120px);
+  }
+  .hero__copy { order: -1; gap: var(--s5); }
+  .headline { font-size: clamp(72px, 6.6vw, 104px); }
+  .lede { font-size: 18px; }
+  .cta { justify-items: start; }
+  .cta .btn { width: auto; min-width: 260px; }
+  .cta__meta { text-align: left; }
+
+  .stage-card { height: auto; aspect-ratio: 1 / 0.92; }
+  .pitch { width: 82%; }
+  .stage-card__hud { top: var(--s5); left: var(--s5); right: var(--s5); }
+  .stage-card__legend { left: var(--s5); bottom: var(--s5); }
+}
+
+/* ---------- Short phones (e.g. 360x640): tighten so Start stays near the first screen ---------- */
+
+@media (max-height: 700px) and (max-width: 959px) {
+  .topbar { height: 56px; }
+  .hero { gap: var(--s4); }
+  .hero__copy { gap: var(--s3); }
+  .headline { font-size: clamp(44px, 13vw, 64px); }
+  .lede { font-size: 15px; }
+}

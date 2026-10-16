@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Design tokens: the ONLY place raw colors, fonts and sizes are defined.
+   Everything else references these variables, so a brand change is one edit.
+   ========================================================================== */
+
+@font-face { font-family: "Barlow Condensed"; font-weight: 500; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 600; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("../assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url("../assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-display: swap; src: url("../assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+
+:root {
+  /* Surfaces: near-black with a green bias, like a floodlit pitch at night */
+  --ink-0: #06090a;
+  --ink-1: #0b1012;
+  --panel: #0f1619;
+  --pitch-a: #0d1b16;
+  --pitch-b: #0a1612;
+
+  /* Text */
+  --chalk: #eef1ec;          /* primary text, our players, pitch lines */
+  --muted: #93a19c;
+  --dim: #5f6e69;
+
+  /* Lines and borders (chalk at low opacity, never grey hex) */
+  --rule: rgba(238, 241, 236, 0.14);
+  --rule-soft: rgba(238, 241, 236, 0.07);
+
+  /* Brand: IntelliGym red, taken from the site's theme (--awb-color7) and logo.
+     Rule: red means "yours / act here". It is never used for errors. */
+  --red: #d10d0d;
+  --red-hi: #ec2a22;
+  --red-glow: rgba(209, 13, 13, 0.45);
+
+  /* Opponents: dark slate so our (chalk) players always read first */
+  --opp-fill: #26323b;
+  --opp-stroke: #7d8f9c;
+
+  /* Type */
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Spacing: 4px base, use these steps only */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

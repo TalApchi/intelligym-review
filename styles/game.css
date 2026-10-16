@@ -1,0 +1,386 @@
+/* Challenge flow screens: intro, play, feedback, results.
+   Mobile-first like landing.css; the wide-screen block is at the bottom. */
+
+.screen--game { padding-bottom: var(--s6); }
+.game { display: grid; gap: var(--s4); }
+.game > section { animation: rise 0.45s var(--ease-out) both; }
+
+/* ---------- Progress row: "1 of 3 · Spot the change" ---------- */
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 28px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.progress__dots { display: inline-flex; gap: 6px; }
+.progress__dot { width: 18px; height: 3px; border-radius: 2px; background: var(--rule); }
+.progress__dot.is-done { background: var(--muted); }
+.progress__dot.is-now { background: var(--red); }
+
+/* ---------- The board card (same surface as the landing stage card) ---------- */
+
+.board-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--rule);
+  background: linear-gradient(180deg, #0e1916 0%, var(--ink-1) 100%);
+  overflow: hidden;
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+}
+
+.board {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 72 / 57.5;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.board .stripe-a { fill: var(--pitch-a); }
+.board .stripe-b { fill: var(--pitch-b); }
+.board .markings { fill: none; stroke: rgba(238, 241, 236, 0.22); stroke-width: 0.22; }
+.board .spot { fill: rgba(238, 241, 236, 0.3); }
+
+/* Players */
+.board-players { transition: opacity 0.18s; }
+.play[data-phase="hide"] .board-players { opacity: 0; }
+.bp { outline: none; }
+.bp-shadow { fill: rgba(0, 0, 0, 0.45); }
+.bp.home .bp-body { fill: var(--chalk); }
+.bp.home .bp-rim { fill: none; stroke: rgba(6, 9, 10, 0.55); stroke-width: 0.25; }
+.bp.away .bp-body { fill: var(--opp-fill); }
+.bp.away .bp-rim { fill: none; stroke: var(--opp-stroke); stroke-width: 0.32; }
+
+/* Answering: the board is tappable, hover and keyboard focus preview the pick */
+.board.is-tappable { cursor: pointer; }
+.bp-pick { fill: none; stroke: var(--red); stroke-width: 0.45; opacity: 0; }
+.board.is-tappable .bp:focus-visible .bp-pick { opacity: 1; }
+@media (hover: hover) { .board.is-tappable .bp:hover .bp-pick { opacity: 0.55; } }
+
+/* Replay: the visitor's pick in red (red = "yours"), the mover in chalk with ghost + arrow */
+.bp.is-pick .bp-pick { opacity: 1; }
+.bp-answer { fill: none; stroke: var(--chalk); stroke-width: 0.3; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.bp.is-answer .bp-answer { opacity: 1; animation: answer-pulse 1.6s var(--ease-out) 2; }
+.bp.is-answer.is-pick .bp-answer { transform: scale(1.35); animation: none; }
+@keyframes answer-pulse { 0% { transform: scale(1.6); opacity: 0; } 60%, 100% { transform: scale(1); opacity: 1; } }
+
+/* Tracking runners: red pulse on the players to follow, then marks on the replay */
+.bp-target { fill: none; stroke: var(--red); stroke-width: 0.45; opacity: 0; transition: opacity 0.4s; transform-box: fill-box; transform-origin: center; }
+.bp.is-target .bp-target { opacity: 1; animation: target-pulse 1.1s ease-in-out infinite; }
+@keyframes target-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+.bp-glyph { fill: none; stroke: var(--ink-0); stroke-width: 0.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.bp.is-found .bp-check { opacity: 1; }
+.bp.is-wrong .bp-cross { opacity: 1; }
+.bp.is-wrong { opacity: 0.45; }
+.bp.is-missed .bp-answer { opacity: 1; stroke-dasharray: 0.7 0.55; }
+.bp.is-dim { opacity: 0.5; }
+
+.board-ghost { fill: rgba(238, 241, 236, 0.06); stroke: var(--chalk); stroke-width: 0.3; stroke-dasharray: 0.8 0.6; opacity: 0.85; }
+.board-move { stroke: var(--chalk); stroke-width: 0.34; stroke-linecap: round; stroke-dasharray: 1.1 0.9; animation: lane-march 1.4s linear infinite; }
+.board-arrowhead { fill: var(--chalk); }
+
+/* Tactical choice: the carrier (you) in red, the chosen plan as a red dashed arrow, the ball */
+.bp.is-carrier .bp-pick { opacity: 1; }
+.board-plan { stroke: var(--red-hi); stroke-width: 0.4; stroke-linecap: round; stroke-dasharray: 1.1 0.9; animation: lane-march 1.4s linear infinite; }
+.board-plan-end { fill: none; stroke: var(--red-hi); stroke-width: 0.3; }
+.board-arrowhead--red { fill: var(--red-hi); }
+/* Cues: movement already happening in a frozen picture. Our runs in chalk, their pressure in slate. */
+.board-cue { stroke-width: 0.32; stroke-linecap: round; stroke-dasharray: 0.7 0.7; fill: none; }
+.board-cue--run { stroke: rgba(238, 241, 236, 0.8); }
+.board-cue--press { stroke: var(--opp-stroke); }
+.board-arrowhead--run { fill: rgba(238, 241, 236, 0.8); }
+.board-arrowhead--press { fill: var(--opp-stroke); }
+.board-ball__ball { fill: #fff; stroke: var(--ink-0); stroke-width: 0.3; }
+.board-ball__shadow { fill: #000; }
+
+/* ---------- Play screen ---------- */
+
+.play { display: grid; gap: var(--s4); }
+.play__panel { display: grid; gap: var(--s3); align-content: start; min-height: 196px; }
+
+.play__meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.play__phase { color: var(--chalk); }
+.play[data-phase="answer"] .play__phase { color: var(--red-hi); }
+
+.play__prompt {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 8.6vw, 42px);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.timer { height: 6px; border-radius: 3px; background: var(--rule-soft); overflow: hidden; }
+.timer__fill { height: 100%; background: var(--chalk); transform-origin: left center; transform: scaleX(1); }
+.play[data-phase="answer"] .timer__fill { background: var(--red); }
+.play[data-phase="reveal"] .timer { display: none; }
+
+.play[data-phase="pick"] .timer { display: none; }
+.play__picker { display: grid; gap: var(--s3); }
+.play__count { color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+.play__confirm { width: 100%; }
+
+.play__result { display: grid; gap: var(--s2); }
+.play__line { font-size: 16px; line-height: 1.45; }
+.play__time { font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.play__key { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); font-size: 13px; color: var(--muted); }
+.play__next { width: 100%; margin-top: var(--s2); }
+
+/* ---------- Intro screen ---------- */
+
+.intro { display: grid; gap: var(--s5); }
+.intro__demo { width: min(100%, calc(32svh * 120 / 84)); justify-self: center; }
+.intro__copy { display: grid; gap: var(--s3); }
+.intro__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(42px, 12.5vw, 68px);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+.intro__text { font-size: 18px; max-width: 32ch; }
+.intro__facts { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s2); }
+.intro__facts li {
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.intro .btn { width: 100%; margin-top: var(--s2); }
+.intro--pending { min-height: 56svh; place-items: center; }
+.intro--pending .btn { width: auto; }
+
+/* Mini demo: the picture blinks, one player moves, and gets tapped. Loops. */
+.demo { display: block; width: 100%; height: auto; }
+.demo__grass { fill: var(--pitch-a); }
+.demo__lines { fill: none; stroke: rgba(238, 241, 236, 0.2); stroke-width: 0.8; }
+.demo__home { fill: var(--chalk); }
+.demo__opp { fill: var(--opp-fill); stroke: var(--opp-stroke); stroke-width: 1.1; }
+.demo__players { animation: demo-blink 4.8s infinite; }
+.demo__mover { animation: demo-move 4.8s infinite; }
+.demo__tap { fill: none; stroke: var(--red); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; animation: demo-tap 4.8s infinite; }
+@keyframes demo-blink { 0%, 40% { opacity: 1; } 44%, 54% { opacity: 0; } 58%, 100% { opacity: 1; } }
+@keyframes demo-move { 0%, 49% { transform: translate(0, 0); } 50%, 100% { transform: translate(-14px, -10px); } }
+@keyframes demo-tap { 0%, 70% { opacity: 0; transform: scale(1.5); } 76%, 94% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+
+/* Tracking demo: three dots pulse red, everyone runs, the three get picked */
+.demo__run { animation: demo-run 5s ease-in-out infinite; }
+.demo__run--1 { --dx: 44px; --dy: 10px; }
+.demo__run--2 { --dx: -36px; --dy: -18px; }
+.demo__run--3 { --dx: -42px; --dy: 34px; }
+.demo__run--4 { --dx: 48px; --dy: -12px; }
+.demo__run--5 { --dx: -42px; --dy: -40px; }
+.demo__run--6 { --dx: 40px; --dy: 18px; }
+.demo__mark { fill: none; stroke: var(--red); stroke-width: 1.5; animation: demo-mark 5s infinite; }
+@keyframes demo-run { 0%, 36% { transform: translate(0, 0); } 82%, 100% { transform: translate(var(--dx), var(--dy)); } }
+@keyframes demo-mark { 0%, 28% { opacity: 1; } 36%, 86% { opacity: 0; } 90%, 100% { opacity: 1; } }
+
+/* Tactical choice demo: a still picture */
+.demo__option { fill: none; stroke: rgba(238, 241, 236, 0.45); stroke-width: 1.2; stroke-dasharray: 3 2.4; }
+.demo__option--pick { stroke: var(--red-hi); stroke-width: 1.5; }
+.demo__mark--still { animation: none; opacity: 1; }
+
+/* ---------- Tactical choice: draft badge, options, verdict ---------- */
+
+.draft-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-0);
+  background: #e8b53c;
+  padding: 3px 8px 2px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.play__meta .draft-badge { align-self: flex-start; }
+.draft-badge--small { font-size: 10px; padding: 2px 6px 1px; margin-left: 4px; vertical-align: 1px; }
+.intro__draft { font-size: 13px; color: var(--muted); max-width: 40ch; }
+.intro__draft .draft-badge { margin-right: 6px; }
+
+.choices { display: grid; gap: var(--s2); }
+.choice {
+  min-height: 48px;
+  padding: 10px var(--s4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rule);
+  background: var(--panel);
+  color: var(--chalk);
+  font: 500 16px/1.25 var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.choice:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
+.choice[aria-checked="true"] { border-color: var(--red); background: rgba(209, 13, 13, 0.12); }
+@media (hover: hover) { .choice:hover { border-color: var(--muted); } .choice[aria-checked="true"]:hover { border-color: var(--red-hi); } }
+.play__go { width: 100%; }
+
+.verdict { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; }
+.verdict__pts { color: var(--muted); font-variant-numeric: tabular-nums; }
+.play[data-phase="outcome"] .timer, .play[data-phase="choose"] .timer { display: none; }
+.play__best { font-size: 15px; color: var(--muted); }
+.play__why { font-size: 14px; line-height: 1.45; color: var(--muted); border-left: 2px solid var(--rule); padding-left: var(--s3); }
+.play__hint { font-size: 13px; color: var(--muted); margin-top: calc(var(--s2) * -1); }
+.play__provisional { font-size: 12px; color: #e8b53c; }
+
+/* ---------- Feedback (challenge summary) ---------- */
+
+.summary, .results { display: grid; gap: var(--s4); width: 100%; max-width: 640px; }
+.summary__score { display: flex; align-items: baseline; gap: var(--s3); font-family: var(--font-display); font-weight: 800; text-transform: uppercase; }
+.summary__points { font-size: clamp(96px, 28vw, 150px); line-height: 0.82; letter-spacing: -0.02em; }
+.summary__of { font-size: 22px; letter-spacing: 0.06em; color: var(--muted); }
+.summary__sub { color: var(--muted); }
+
+.summary__rows, .results__rows { list-style: none; border-top: 1px solid var(--rule-soft); }
+.summary__row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  gap: 2px var(--s3);
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.summary__mark { grid-column: 1; grid-row: 1 / 3; font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1.2; color: var(--dim); }
+.summary__row.is-right .summary__mark { color: var(--red-hi); }
+.summary__round { grid-column: 2; grid-row: 1; font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.summary__time { grid-column: 3; grid-row: 1; font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; text-align: right; }
+.summary__line { grid-column: 2 / 4; grid-row: 2; font-size: 15px; line-height: 1.45; }
+.summary .btn, .results .btn { width: 100%; }
+
+/* ---------- Results ---------- */
+
+.results__tier {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(68px, 19vw, 124px);
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+.results__total { color: var(--muted); }
+.results__total strong { color: var(--chalk); font-weight: 600; }
+.results__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s4) 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.results__name { display: grid; font-family: var(--font-display); font-weight: 700; font-size: 21px; letter-spacing: 0.04em; text-transform: uppercase; }
+.results__name small { font-family: var(--font-body); font-weight: 400; font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--muted); }
+.results__pts { font-family: var(--font-display); font-weight: 800; font-size: 34px; font-variant-numeric: tabular-nums; }
+.results__pts small { font-size: 16px; color: var(--muted); margin-left: 2px; }
+.results__row.is-pending .results__name { color: var(--dim); }
+.results__flag {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #e8b53c;
+  border: 1px solid rgba(232, 181, 60, 0.5);
+  padding: 3px 8px 2px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.results__note { font-size: 13px; color: var(--dim); }
+
+/* ---------- Temporary placeholders (yellow flag = not built yet) ---------- */
+
+.temp-card {
+  max-width: 440px;
+  padding: var(--s6);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  display: grid;
+  gap: var(--s4);
+  justify-items: start;
+}
+.temp-card--inline { max-width: none; padding: var(--s4); gap: var(--s2); }
+.temp-card__flag {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-0);
+  background: #e8b53c;
+  padding: 3px 8px 2px;
+  border-radius: 3px;
+}
+.temp-card__title { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1; text-transform: uppercase; }
+.temp-card__body { color: var(--muted); }
+
+/* ---------- Short phones: keep board + controls on one screen ---------- */
+
+@media (max-height: 700px) and (max-width: 959px) {
+  .game { gap: var(--s3); }
+  .play { gap: var(--s3); }
+  .play__panel { gap: var(--s2); min-height: 0; }
+  .play__prompt { font-size: clamp(26px, 7.6vw, 34px); }
+  .play__line { font-size: 15px; }
+  .play__next { margin-top: 0; }
+  .play__picker { gap: var(--s2); }
+  .choices { gap: 6px; }
+  .choice { min-height: 44px; padding: 8px var(--s3); font-size: 15px; }
+  .intro { gap: var(--s4); }
+  .intro__copy { gap: var(--s2); }
+  .intro__text { font-size: 16px; }
+}
+
+/* ---------- Wide screens: board centred, side panel ---------- */
+
+@media (min-width: 960px) {
+  .screen--game { padding-top: var(--s2); }
+
+  .play {
+    grid-template-columns: auto minmax(300px, 360px);
+    justify-content: center;
+    align-items: start;
+    gap: var(--s6);
+  }
+  .play__board {
+    /* As wide as the page allows, but short enough that the whole board fits on screen */
+    width: min(calc(min(100vw, 1240px) - 32px - 360px - 48px), calc((100svh - 200px) * 72 / 57.5));
+  }
+  .play__panel { padding-top: var(--s4); min-height: 0; }
+  .play__next, .play__confirm, .play__go { width: auto; justify-self: start; min-width: 220px; }
+
+  .intro {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s8);
+    min-height: calc(100svh - 88px - 140px);
+  }
+  .intro__demo { width: 100%; max-width: calc((100svh - 260px) * 120 / 84); }
+  .intro__copy { gap: var(--s4); }
+  .intro .btn { width: auto; min-width: 240px; justify-self: start; }
+
+  .summary, .results { margin: var(--s4) auto 0; }
+  .summary .btn, .results .btn { width: auto; min-width: 240px; justify-self: start; }
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Scenario Review | Soccer IntelliGym Challenge</title>
+  <meta name="description" content="Coach review of the draft Tactical choice scenarios.">
+  <meta name="theme-color" content="#06090a">
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/game.css">
+  <link rel="stylesheet" href="styles/review.css">
+</head>
+<body>
+  <div class="page review">
+    <header class="review__top">
+      <a class="review__back" href="index.html">← Back to the demo</a>
+      <span class="draft-badge">Awaiting approval</span>
+    </header>
+
+    <section class="review__intro">
+      <h1>Tactical choice: draft scenarios for review</h1>
+      <p>Each play shows <strong>3 of these <span data-count></span> situations</strong>, picked at random. Nothing here is approved yet: the positions, the options, which option is ranked best, the sentence a player reads afterwards and the reasoning were all written by the build team as drafts.</p>
+      <details class="review__more" open>
+        <summary>How to review</summary>
+        <ol>
+          <li>Tap an option to see the pass or move play out on the picture.</li>
+          <li>For each situation choose <strong>Approve</strong>, <strong>Needs change</strong> or <strong>Remove</strong>, and add a comment if anything is off (a position, a ranking, a sentence).</li>
+          <li>Press <strong>Copy my review</strong> at the bottom and paste it into an email or message to Tal.</li>
+        </ol>
+        <p>Your choices are kept in this browser only, so you can stop and come back on the same device.</p>
+      </details>
+      <details class="review__more">
+        <summary>Scoring and what has been checked</summary>
+        <p><strong>Draft scoring:</strong> best option 100 points, reasonable 50, weak 0; the challenge score is the average of the 3 situations. This scheme is also awaiting approval.</p>
+        <p><strong>What the automated checks cover:</strong> players don't overlap, every pass ends at a player (or in the goal for a shot), every arrow belongs to a real player, each situation has 3 or 4 options and exactly one best, and the distances quoted in sentences match the picture. They say nothing about whether the football is right. That is your call.</p>
+      </details>
+      <ul class="review__legend" aria-label="Legend">
+        <li><span class="lg lg--you"></span>You, on the ball</li>
+        <li><span class="lg lg--home"></span>Teammate</li>
+        <li><span class="lg lg--away"></span>Opponent</li>
+        <li><span class="lg lg--run"></span>Run already happening</li>
+        <li><span class="lg lg--press"></span>Pressure coming</li>
+        <li><span class="lg lg--plan"></span>The option you tapped</li>
+      </ul>
+    </section>
+
+    <div class="review__list"></div>
+
+    <section class="review__out">
+      <p class="review__progress" aria-live="polite"></p>
+      <button class="btn btn--primary review__copy" type="button">Copy my review</button>
+      <p class="review__copied" aria-live="polite"></p>
+      <textarea class="review__text" rows="8" readonly aria-label="Your review as text"></textarea>
+    </section>
+  </div>
+  <script type="module" src="src/review.js"></script>
+</body>
+</html>

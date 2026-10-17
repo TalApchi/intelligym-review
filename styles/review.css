@@ -83,3 +83,8 @@
   .rv__head { grid-column: 1 / -1; }
   .rv__board { position: sticky; top: var(--s4); }
 }
+
+/* Section headings: Tactical choice, then the playground's Scan before receiving */
+.review__h2 { margin: var(--s5) 0 var(--s4); font: 800 clamp(24px, 4.5vw, 32px)/1.05 var(--font-display); text-transform: uppercase; letter-spacing: 0.01em; }
+.review__intro--scan { padding-top: var(--s5); }
+.review__intro--scan .review__h2 { margin-top: 0; }

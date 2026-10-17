@@ -1,18 +1,16 @@
-// Prototype playground (playground.html): four experiments for Tal to compare side by
-// side, two for "Scan before receiving" and two for "Passing window". Separate from the
-// main experience: no scoring, no results, nothing here is reachable from the game flow.
+// Prototype playground (playground.html): experiments for Tal to compare, one for "Scan
+// before receiving" and one for "Passing window". Separate from the main experience:
+// no scoring, no results, nothing here is reachable from the game flow.
 //
 // Each prototype module exports { id, group, version, name, instruction, tests, mount }.
 // mount(api) starts it and returns a cleanup function. The shell below owns the menu, the
 // board, the text lines and the Replay / Try again / New situation buttons.
 
 import { buildBoard, drawBall } from "../board.js";
-import vanish from "./vanish.js";
-import tunnel from "./tunnel.js";
-import clock from "./clock.js";
-import gate from "./gate.js";
+import scan from "./vanish.js";
+import through from "./through-play.js";
 
-const PROTOTYPES = [vanish, tunnel, clock, gate];
+const PROTOTYPES = [scan, through];
 
 const menu = document.querySelector(".pg__menu");
 const stage = document.querySelector(".pg__stage");
@@ -42,6 +40,7 @@ function show(id) {
       <p class="pg__status" aria-live="polite"></p>
       <button class="btn btn--primary pg__act" type="button" hidden></button>
       <p class="pg__explain" aria-live="polite" hidden></p>
+      <div class="pg__extra"></div>
       <div class="pg__actions" hidden>
         <button class="btn btn--ghost pg__replay" type="button">Replay</button>
         <button class="btn btn--ghost pg__retry" type="button">Try again</button>
@@ -49,7 +48,8 @@ function show(id) {
       </div>
       <p class="pg__tests"><strong>What this version tests:</strong> ${proto.tests}</p>
     </div>`;
-  cleanup = proto.mount(makeApi(stage));
+  const api = makeApi(stage);
+  cleanup = proto.mount(api);
 }
 
 // The toolkit each prototype gets. Animations run through api.run(), which stops cleanly
@@ -61,7 +61,9 @@ function makeApi(root) {
   let gen = 0;
   let raf = 0;
   const handlers = { replay: null, retry: null, next: null };
-  const ui = { timer: $(".pg__timer"), bar: $(".pg__timer span"), status: $(".pg__status"), act: $(".pg__act"), explain: $(".pg__explain"), actions: $(".pg__actions") };
+  const ui = { timer: $(".pg__timer"), bar: $(".pg__timer span"), status: $(".pg__status"), act: $(".pg__act"), explain: $(".pg__explain"), extra: $(".pg__extra"), actions: $(".pg__actions") };
+  const buttons = { replay: $(".pg__replay"), retry: $(".pg__retry"), next: $(".pg__next") };
+  const defaultLabels = Object.fromEntries(Object.entries(buttons).map(([k, b]) => [k, b.textContent]));
   $(".pg__replay").addEventListener("click", () => handlers.replay?.());
   $(".pg__retry").addEventListener("click", () => handlers.retry?.());
   $(".pg__next").addEventListener("click", () => handlers.next?.());
@@ -82,6 +84,7 @@ function makeApi(root) {
       ui.actions.hidden = true;
       ui.act.hidden = true;
       ui.timer.hidden = true;
+      ui.extra.replaceChildren();
       return gen;
     },
     live: (g) => g === gen,
@@ -107,6 +110,8 @@ function makeApi(root) {
       if (share !== null) ui.bar.style.transform = `scaleX(${Math.max(0, 1 - share)})`;
     },
     explain(text) { ui.explain.textContent = text; ui.explain.hidden = false; },
+    // A spot under the explanation for extra controls (cleared by begin()).
+    slot() { return ui.extra; },
     // The one action button (e.g. "Pass"), or none.
     action(label, onClick) {
       if (!label) { ui.act.hidden = true; ui.act.onclick = null; return; }
@@ -124,9 +129,14 @@ function makeApi(root) {
         go();
       });
     },
-    // Replay / Try again / New situation, shown together once a try is over.
-    done({ replay, retry, next }) {
+    // Replay / Try again / New situation, shown together once a try is over. `labels` can
+    // rename them for this try (e.g. { next: "Practice" }); a missing handler hides its button.
+    done({ replay, retry, next, labels = {} }) {
       Object.assign(handlers, { replay, retry, next });
+      for (const [k, b] of Object.entries(buttons)) {
+        b.textContent = labels[k] || defaultLabels[k];
+        b.hidden = !handlers[k];
+      }
       ui.actions.hidden = false;
       ui.actions.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
     },

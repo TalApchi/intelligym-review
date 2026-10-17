@@ -5,10 +5,10 @@
 
 import { DECIDE } from "../config.js";
 import { SCENARIOS } from "./scenarios.js";
-import { usableScenarios, pickScenarios, outcomeAt, previewTarget, bestOption, scoreDecide } from "./logic.js";
+import { usableScenarios, pickScenarios, outcomeAt, previewTarget, bestOptions, scoreDecide } from "./logic.js";
 import { buildBoard, drawPlayers, markPlayer, placePlayers, showArrow, clearMarks, showCues, clearCues, drawBall, placeBall } from "../board.js";
 
-const VERDICT = { best: "Best option", reasonable: "Reasonable option", poor: "Weak option" };
+const VERDICT = { best: "Suggested option", reasonable: "Reasonable option", poor: "Riskier option" };
 
 // This browser's history lives in localStorage, so scenarios don't repeat until the pool
 // is used up. Storage can be missing or blocked (private windows): then every play is random.
@@ -161,15 +161,15 @@ export function playDecide(root, { onDone }) {
       // Verdict (provisional)
       ranks.push(option.rank);
       const pts = DECIDE.points[option.rank];
-      const best = bestOption(scenario);
+      const best = bestOptions(scenario);
       ui.play.dataset.phase = "reveal";
       ui.prompt.textContent = option.result;
-      ui.verdictName.textContent = `${VERDICT[option.rank]}${scenario.approved ? "" : " (provisional)"}`;
+      ui.verdictName.textContent = `${VERDICT[option.rank]}${scenario.approved ? "" : " (draft)"}`;
       ui.verdictPts.textContent = `${pts} pts`;
       ui.line.textContent = option.note;
-      ui.best.textContent = option.rank === "best" ? "" : `${scenario.approved ? "Best" : "Draft best"}: ${best.label.toLowerCase()}.`;
+      ui.best.textContent = option.rank === "best" ? "" : `${scenario.approved ? "Suggested option" : "Suggested option (draft)"}: ${best.map((o) => o.label.toLowerCase()).join(", or ")}.`;
       ui.best.hidden = option.rank === "best";
-      ui.why.textContent = `${scenario.approved ? "Why" : "Why (draft)"}: ${scenario.reasoning}`;
+      ui.why.textContent = `${scenario.approved ? "Why" : "Why (draft)"}: ${scenario.reasoning}${scenario.open ? ` ${scenario.open}` : ""}`;
       ui.next.textContent = last ? "See your points" : "Next situation";
       ui.result.hidden = false;
       ui.next.focus({ preventScroll: true });
@@ -185,8 +185,8 @@ export function playDecide(root, { onDone }) {
     const bests = ranks.filter((r) => r === "best").length;
     onDone({
       points: scoreDecide(ranks, DECIDE),
-      tally: `${bests} of ${ranks.length} best options`,
-      sub: `You picked the draft best option in ${bests} of ${ranks.length} situations. These rankings are provisional until Omri approves them.`,
+      tally: `${bests} of ${ranks.length} suggested options`,
+      sub: `You picked a suggested option in ${bests} of ${ranks.length} situations. The suggestions are drafts until Omri approves them.`,
       rows,
       provisional: scenarios.some((s) => !s.approved),
     });

@@ -162,7 +162,7 @@ function hasCrowding(m) {
 }
 
 // Where the ball starts when you pass at time t: at your feet.
-export const ballStart = (m, t) => { const y = m.youAt(t); return { x: y.x + 1.2, y: y.y - 1.2 }; };
+export const ballStart = (m, t) => (m.ballStartAt ? m.ballStartAt(t) : (({ x, y }) => ({ x: x + 1.2, y: y - 1.2 }))(m.youAt(t)));
 
 // The pass you'd play at release time tr: aimed where the runner will be when the ball
 // gets there (constant ball speed), then checked against every defender on the way.
@@ -176,11 +176,15 @@ export function passAt(m, tr) {
   for (let t = tr; t <= ta + 1e-9; t += STEP) {
     const b = ballAtT(t);
     for (const d of m.defenders) {
-      if (dist(b, d.at(t)) < (d.reach ?? REACH)) return { kind: "intercepted", by: d, t, at: b, from, to, tr, ta, ballAtT };
+      if (dist(b, d.at(t)) < (d.reachAt?.(t) ?? d.reach ?? REACH)) return { kind: "intercepted", by: d, t, at: b, from, to, tr, ta, ballAtT };
     }
   }
   const near = m.defenders.reduce((best, d) => { const q = dist(d.at(ta), to); return q < best.d ? { d: q, def: d } : best; }, { d: Infinity, def: null });
   if (near.d < COVERED) return { kind: "covered", by: near.def, t: ta, at: to, from, to, tr, ta, ballAtT, clear: near.d };
+  // version 2 moves (sim.js): a ball played before the run started, or that meets the runner
+  // still in front of their marker, went to feet, not in behind
+  const front = m.inFront?.(to, ta, tr);
+  if (front) return { kind: "short", by: front, t: ta, at: to, from, to, tr, ta, ballAtT, clear: near.d };
   return { kind: "through", t: ta, at: to, from, to, tr, ta, ballAtT, clear: near.d, nearest: near.def };
 }
 

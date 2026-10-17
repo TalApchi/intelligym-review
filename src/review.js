@@ -13,7 +13,7 @@ import { SCAN_SITUATIONS } from "./scan/situations.js";
 import { scanRank, scanFeedback } from "./scan/logic.js";
 
 const KEY = "ig.review.v1";
-const RANK = { best: "Draft best", reasonable: "Reasonable", poor: "Weak" };
+const RANK = { best: "Suggested (draft)", reasonable: "Reasonable (draft)", poor: "Riskier (draft)" };
 const DECISIONS = [["approve", "Approve"], ["change", "Needs change"], ["remove", "Remove"]];
 
 function load() {
@@ -74,7 +74,7 @@ function card(s, i) {
       <p class="rv__who">You are the <strong>${esc(s.home.find((p) => p.id === s.carrier).role)}</strong> (red ring).</p>
       <ol class="rv__options"></ol>
       <button class="rv__reset" type="button">Show the starting picture</button>
-      <div class="rv__why"><h3>Why the draft ranks it this way</h3><p>${esc(s.reasoning)}</p></div>
+      <div class="rv__why"><h3>Why the draft ranks it this way</h3><p>${esc(s.reasoning)}</p>${s.open ? `<p>${esc(s.open)}</p>` : ""}</div>
       ${decisionBox(s.id, "e.g. their left back would be tighter; rank the switch as best")}
     </div>`;
 

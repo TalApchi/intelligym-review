@@ -12,7 +12,7 @@ import { pickScenarios } from "../decide/logic.js";
 import { BALL_SPEED, REACH } from "../through/logic.js";
 import { buildBoard, drawPlayers, markPlayer, placePlayers, placeBall, setTappable, clearMarks, showArrow, drawBall, playerAt } from "../board.js";
 
-const VERDICT = { best: "Best option", reasonable: "Reasonable option", poor: "Weak option" };
+const VERDICT = { best: "Suggested option", reasonable: "Reasonable option", poor: "Riskier option" };
 const ease = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
 const lerp = (a, b, u) => ({ x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u });
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -207,10 +207,10 @@ export function playScan(root, { onDone }) {
       const draft = !s.approved;
       ui.play.dataset.phase = "reveal";
       ui.prompt.textContent = id === s.passer.id ? `You played it ${name(s, id)}.` : `You passed to ${name(s, id)}.`;
-      ui.verdictName.textContent = `${VERDICT[rank]}${draft ? " (provisional)" : ""}`;
+      ui.verdictName.textContent = `${VERDICT[rank]}${draft ? " (draft)" : ""}`;
       ui.verdictPts.textContent = `${p} pts`;
       ui.line.textContent = scanFeedback(s, id);
-      ui.best.textContent = rank === "best" ? "" : `${draft ? "Draft best" : "Best"}: ${name(s, s.best)} (circled).`;
+      ui.best.textContent = rank === "best" ? "" : `${draft ? "Suggested option (draft)" : "Suggested option"}: ${name(s, s.best)} (circled).`;
       ui.best.hidden = rank === "best";
       ui.why.textContent = `${draft ? "Why (draft)" : "Why"}: ${s.reasoning}`;
       ui.provisional.hidden = !draft;
@@ -245,8 +245,8 @@ export function playScan(root, { onDone }) {
     const bests = rows.filter((r) => r.ok).length;
     onDone({
       points: scoreScan(pts),
-      tally: `${bests} of ${pts.length} best passes`,
-      sub: `You found the draft best pass in ${bests} of ${pts.length} situations, with less time to look each time. These rankings are provisional until Omri approves them.`,
+      tally: `${bests} of ${pts.length} suggested passes`,
+      sub: `You found the suggested pass in ${bests} of ${pts.length} situations, with less time to look each time. The suggestions are drafts until Omri approves them.`,
       rows,
       provisional: situations.some((s) => !s.approved),
     });

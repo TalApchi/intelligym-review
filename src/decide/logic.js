@@ -47,7 +47,9 @@ export function checkScenario(s) {
   if (ids.size !== players.length) problems.push("duplicate player id");
   if (!s.home.some((p) => p.id === s.carrier)) problems.push("carrier is not one of our players");
   if (s.options.length < 3 || s.options.length > 4) problems.push(`${s.options.length} options (need 3–4)`);
-  if (s.options.filter((o) => o.rank === "best").length !== 1) problems.push("needs exactly one best option");
+  const bests = s.options.filter((o) => o.rank === "best").length;
+  if (bests < 1) problems.push("needs a suggested (best) option");
+  if (bests > 1 && !s.open) problems.push("more than one suggested option needs an `open` note saying why");
   if (!s.reasoning) problems.push("missing reasoning");
   for (const c of s.cues || []) if (!ids.has(c.id)) problems.push(`cue for unknown player ${c.id}`);
   for (const o of s.options) {
@@ -106,6 +108,11 @@ export function previewTarget(option) {
 // The best option of a scenario (its PROVISIONAL best until approved).
 export function bestOption(scenario) {
   return scenario.options.find((o) => o.rank === "best");
+}
+
+// Every suggested option: more than one when the picture doesn't settle it (scenario.open).
+export function bestOptions(scenario) {
+  return scenario.options.filter((o) => o.rank === "best");
 }
 
 // Challenge points, 0 to 100: the average of each situation's points.

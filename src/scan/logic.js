@@ -61,18 +61,17 @@ export function scanNote(s, id) {
 }
 const cap = (t) => t[0].toUpperCase() + t.slice(1);
 
-// Draft rank of a target. Playing back to the passer is always possible and usually safe,
-// so unless a situation makes it the best, it counts as reasonable.
+// Draft rank of a target, as each situation sets it: `best`, the others in `ok`, the rest
+// riskier. Playing back to the passer ("p") is ranked like any other pass, from that
+// situation's picture; there is no general rule about passing back.
 export function scanRank(s, id) {
   if (id === s.best) return "best";
-  if (s.ok.includes(id) || id === s.passer.id) return "reasonable";
+  if (s.ok.includes(id)) return "reasonable";
   return "poor";
 }
 
-// The sentence shown after a pass: generated from the picture, except back to the passer.
+// The sentence shown after a pass: from the picture (or Omri's note), for every target alike.
 export function scanFeedback(s, id) {
-  if (s.notes?.[id]) return s.notes[id];
-  if (id === s.passer.id && id !== s.best) return "Safe: it goes back to where the ball came from, but the chance to play forward is gone.";
   return scanNote(s, id);
 }
 

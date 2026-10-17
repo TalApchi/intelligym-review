@@ -17,10 +17,15 @@
 //   home/away  players: [id, role, x, y]
 //   cues       arrows drawn on the frozen picture: runs already under way, or pressure coming
 //   reasoning  why the draft ranks the options the way it does (PROVISIONAL)
+//   open       when the picture doesn't settle it: why more than one option is suggested
+//              (each of them has rank "best")
 //   tags       what the situation is about, for the review page
 // Option fields:
 //   label      what the button says
-//   rank       "best" | "reasonable" | "poor"   (PROVISIONAL)
+//   rank       "best" | "reasonable" | "poor"   (PROVISIONAL; shown to players as suggested /
+//              reasonable / riskier option (draft). Ranks are judged from the picture: pressure,
+//              the lane, the receiver's space and what the pass keeps or opens, never from
+//              whether the ball goes forward or back)
 //   note       one sentence shown after the choice (PROVISIONAL)
 //   result     two or three words shown as the outcome, e.g. "Cut out"
 //   ball       the ball's path after the choice; the first point is the carrier
@@ -60,7 +65,7 @@ export const SCENARIOS = [
         note: "In this picture the right winger has the most space: the nearest opponent is about 17 m away.",
         ball: [[34, 37], [61, 21]], moves: { "h-rw": [61, 21] } },
       { id: "pass-lm", label: "Pass to the left midfielder", rank: "reasonable", result: "Under pressure",
-        note: "Safe for a moment, but it goes to the side where they have the most players, and their right midfielder is already closing.",
+        note: "The lane is open, but the left midfielder receives on the crowded side, with their right midfielder about 8 m away and closing.",
         ball: [[34, 37], [19, 33]], moves: { "a-rm": [19.5, 29] } },
       { id: "pass-st", label: "Pass into the striker", rank: "poor", result: "Cut out",
         note: "Both centre-backs are about 6 m from the striker, so the pass has to beat two defenders.",
@@ -138,7 +143,7 @@ export const SCENARIOS = [
         note: "Both centre-backs are around the striker and facing the ball, so an early cross is easy for them to defend.",
         ball: [[58, 24], [34, 12]], lofted: true, moves: { "a-rcb": [32, 11], "a-lcb": [36, 11] } },
       { id: "recycle", label: "Pass back to the right midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Keeps the ball, but the overlap goes to waste and they get time to reorganise.",
+        note: "It keeps the ball moving, but the lane is tight: their left midfielder is about 2 m from it. Meanwhile the overlap has two against one out wide.",
         ball: [[58, 24], [46, 32]], moves: { "a-lm": [48, 29.5] } },
     ],
   }),
@@ -198,7 +203,8 @@ export const SCENARIOS = [
     home: [["h-cm", "central midfielder", 34, 34], ["h-st", "striker", 38, 20], ["h-lw", "left winger", 10, 19], ["h-rw", "right winger", 60, 22], ["h-rb", "right back", 58, 40], ["h-lm", "left midfielder", 20, 38]],
     away: [["a-rm", "right midfielder", 22, 28], ["a-cm", "central midfielder", 31, 27], ["a-lm", "left midfielder", 45, 28], ["a-rcb", "right centre-back", 30, 12], ["a-lcb", "left centre-back", 42, 12], ["a-rb", "right back", 14, 13], ["a-lb", "left back", 55, 14]],
     cues: [["h-lw", 17, 8]],
-    reasoning: "A pass that goes through a whole line of opponents takes them out of the game. The striker has found the gap and the lane is open, so this is the moment to play forward through it.",
+    reasoning: "A pass that goes through a whole line of opponents takes them out of the game. The striker has found the gap and the lane is open, so playing forward through it is one strong option.",
+    open: "Open call (draft): the pass to the striker breaks their midfield line; the pass to the right back is the most secure, with the most space. Which is better depends on the moment in the game, so both count as suggested until Omri decides.",
     options: [
       { id: "pass-st", label: "Pass between the lines to the striker", rank: "best", result: "Striker turns",
         note: "The striker is in the gap between their midfield and defensive lines, and the lane between two midfielders is open.",
@@ -206,8 +212,8 @@ export const SCENARIOS = [
       { id: "over-lw", label: "Ball over the top for the left winger's run", rank: "reasonable", result: "Race with their right back",
         note: "The run is good, but it's a long ball in the air and their right back is close enough to contest it.",
         ball: [[34, 34], [17, 8]], lofted: true, moves: { "h-lw": [17, 8], "a-rb": [16, 10.5] } },
-      { id: "pass-rb", label: "Pass wide to the right back", rank: "reasonable", result: "Kept the ball",
-        note: "Safe and unpressured, but it goes around their lines instead of through them.",
+      { id: "pass-rb", label: "Pass wide to the right back", rank: "best", result: "Kept the ball",
+        note: "The right back is completely free (about 18 m from the nearest opponent) and the lane is clear: the most secure pass here, and it can switch the play. It goes around their midfield line rather than through it.",
         ball: [[34, 34], [58, 40]] },
       { id: "dribble", label: "Dribble at their midfield line", rank: "poor", result: "Closed down",
         note: "You'd be carrying it into two midfielders who can step in together; the pass is quicker than you are.",
@@ -303,7 +309,7 @@ export const SCENARIOS = [
         note: "A fair option, but they're set and facing you, and their other centre-back can cover.",
         ball: [[24, 24], [24.5, 21]], moves: { "h-lm": [24.5, 21], "a-rcb": [24.5, 19] } },
       { id: "wide", label: "Pass out to the left winger", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but it moves away from goal and gives the defence time.",
+        note: "The left winger has about 8 m of space, so you keep the ball; it moves play wide, and their right back has time to get across.",
         ball: [[24, 24], [10, 22]], moves: { "a-rb": [12, 19] } },
       { id: "shoot", label: "Shoot from distance", rank: "poor", result: "Blocked",
         note: "Their centre-back is right in front of you, so the shot is likely to hit them.",
@@ -330,7 +336,7 @@ export const SCENARIOS = [
         note: "Keeps the ball for now, but the defender gets time and the arriving run is wasted.",
         ball: [[34, 16], [34.5, 16.5]], moves: { "h-st": [34.5, 16.5], "a-rcb": [34.3, 13.5] } },
       { id: "wide", label: "Pass wide to the right winger", rank: "reasonable", result: "Kept the ball",
-        note: "Open, but the better chance is the midfielder arriving and facing goal.",
+        note: "The lane is open and the winger has about 7 m, but their left back is moving across; the midfielder arriving is closer and facing goal.",
         ball: [[34, 16], [57, 18]], moves: { "a-lb": [56, 15] } },
     ],
   }),
@@ -354,7 +360,7 @@ export const SCENARIOS = [
         note: "Possible, but their left back is set to block and the angle is tight.",
         ball: [[60, 14], [54, 13]], moves: { "h-rw": [54, 13], "a-lb": [55, 11] } },
       { id: "back", label: "Pass back to the attacking midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Keeps possession, but gives up a good crossing chance.",
+        note: "The attacking midfielder has about 6 m and the lane is open, so you keep the ball; the crossing moment, with the far post free, passes.",
         ball: [[60, 14], [36, 22]], moves: { "a-dm": [36, 19] } },
     ],
   }),
@@ -375,7 +381,7 @@ export const SCENARIOS = [
         note: "Reachable, but the striker would receive between two centre-backs, facing away from goal.",
         ball: [[30, 36], [34, 16]], moves: { "a-rcb": [31, 13.5], "a-lcb": [37, 13.5] } },
       { id: "short", label: "Short pass to the left midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but it ignores the run that's already happening.",
+        note: "The left midfielder has about 10 m of space and the lane is clear, so it keeps the ball; the winger's run is already under way and won't be on for long.",
         ball: [[30, 36], [20, 40]], moves: { "a-rm": [21, 35] } },
       { id: "dribble", label: "Dribble forward", rank: "poor", result: "Closed down",
         note: "Their central midfielder is right in your path.",
@@ -402,7 +408,7 @@ export const SCENARIOS = [
         note: "The striker is tightly marked and the pass has to get past their centre-back.",
         ball: [[28, 13], [38.5, 7.5]], moves: { "a-lcb": [38.5, 7.5] } },
       { id: "back", label: "Pass back to the right midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but you're giving up a clear chance.",
+        note: "The right midfielder is free, about 12 m from the nearest opponent, so you'd keep the ball; the clear sight of goal is the chance that won't come back once the centre-back arrives.",
         ball: [[28, 13], [44, 22]] },
     ],
   }),
@@ -446,7 +452,7 @@ export const SCENARIOS = [
         note: "The striker is between two centre-backs with their back to goal.",
         ball: [[34, 36], [33, 14]], moves: { "a-rcb": [31, 12.5], "a-lcb": [35.5, 12.5] } },
       { id: "wide", label: "Pass wide to the right midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but it hands the space in the middle back to the opponents.",
+        note: "The right midfielder is open, with their left midfielder about 6 m away; nobody is pressing you, though, so carrying into the space in front would draw a defender out.",
         ball: [[34, 36], [50, 40]], moves: { "a-lm": [51, 37] } },
       { id: "long", label: "Long ball to the left winger", rank: "reasonable", result: "Contested",
         note: "Possible, but their right back is close to the winger and the ball spends a long time in the air.",
@@ -470,7 +476,7 @@ export const SCENARIOS = [
         note: "Their central midfielder is standing in that passing lane.",
         ball: [[34, 42], [34.8, 36.2]], moves: { "a-cm": [34.8, 36.2] } },
       { id: "safe", label: "Pass to the right midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but the moment for the run behind passes.",
+        note: "The right midfielder is unmarked (about 14 m from anyone) and the lane is clear, so it keeps the ball; the striker's run, level with their line, is a moment that won't last.",
         ball: [[34, 42], [46, 44]] },
       { id: "winger", label: "Through ball for the right winger", rank: "reasonable", result: "Race down the line",
         note: "Also possible, but the winger has further to run and their left back is level.",
@@ -486,18 +492,19 @@ export const SCENARIOS = [
     away: [["a-lm", "left midfielder", 50, 40], ["a-cm", "central midfielder", 28, 28], ["a-lb", "left back", 56, 16], ["a-lcb", "left centre-back", 40, 10], ["a-rcb", "right centre-back", 30, 11]],
     cues: [["a-lm", 48, 37]],
     reasoning: "Where the pressure comes from decides which way to turn. Here it comes from behind your outside shoulder, and the space is inside.",
+    open: "Open call (draft): turning inside and the square pass to the central midfielder both get away from the pressure into open space. The turn gains ground; the pass is the more secure. Both count as suggested until Omri decides.",
     options: [
       { id: "inside", label: "Turn inside into the space", rank: "best", result: "Facing forward",
         note: "The pressure comes from behind your outside shoulder, so turning inside takes you away from it and into open space.",
         ball: [[46, 34], [41, 29]], moves: { "h-rm": [41, 29], "a-lm": [47, 35] } },
       { id: "back", label: "Pass back to the right back", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but you had space to turn.",
+        note: "The right back has room, but the lane is tight: their left midfielder is about 3 m from it as they press. Turning inside escapes the same pressure without that risk.",
         ball: [[46, 34], [60, 44]], moves: { "a-lm": [52, 41] } },
       { id: "outside", label: "Turn outside, down the line", rank: "poor", result: "Closed down",
         note: "Turning outside goes towards the player pressing you and the touchline.",
         ball: [[46, 34], [50, 32]], moves: { "h-rm": [50, 32], "a-lm": [50.5, 35] } },
-      { id: "square", label: "First-time pass to the central midfielder", rank: "reasonable", result: "Kept the ball",
-        note: "Fine, but the central midfielder is further from goal than the space you could turn into.",
+      { id: "square", label: "First-time pass to the central midfielder", rank: "best", result: "Kept the ball",
+        note: "Wide open: about 13 m of lane and 13 m of space around the central midfielder, and it takes the ball away from the pressure as surely as the turn does. The turn gains more ground; this pass is the more secure.",
         ball: [[46, 34], [34, 40]] },
     ],
   }),
@@ -521,7 +528,7 @@ export const SCENARIOS = [
         note: "Their left midfielder is in that passing lane.",
         ball: [[48, 36], [44.2, 30.2]], moves: { "a-lm": [44.2, 30.2] } },
       { id: "back", label: "Pass to the right back", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but slower; the winger's run is the chance.",
+        note: "The right back is completely free (about 23 m from the nearest opponent) and nothing is in the lane, so it keeps the ball with no risk; the winger's run into the empty channel is on now, and that space won't stay empty.",
         ball: [[48, 36], [62, 44]] },
     ],
   }),
@@ -566,7 +573,7 @@ export const SCENARIOS = [
         note: "Their centre-back is following the striker closely; the run is there to make space, not to receive.",
         ball: [[22, 32], [38, 8.5]], moves: { "h-st": [40, 7], "a-rcb": [38, 8.5] } },
       { id: "wide", label: "Pass to the left winger", rank: "reasonable", result: "Kept the ball",
-        note: "Safe, but it doesn't use the movement in the middle.",
+        note: "The left winger has about 7 m and you keep the ball, but their right back is close enough to stop the winger turning; the decoy run has opened the middle.",
         ball: [[22, 32], [10, 20]], moves: { "a-rb": [12, 17] } },
       { id: "shoot", label: "Shoot from distance", rank: "poor", result: "Blocked",
         note: "It's a long way out and their holding midfielder is in the line of the shot.",

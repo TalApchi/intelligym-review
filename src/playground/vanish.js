@@ -29,7 +29,7 @@ function nextSituation() {
   return SCAN_SITUATIONS.find((s) => s.id === ids[0]);
 }
 
-const RANK_LABEL = { best: "Draft best", reasonable: "Reasonable", poor: "Weak option" };
+const RANK_LABEL = { best: "Suggested option", reasonable: "Reasonable option", poor: "Riskier option" };
 const targetsOf = (s) => [s.passer, ...s.home];
 const name = (s, id) => (id === s.passer.id ? `back to the ${s.passer.role}` : `the ${targetsOf(s).find((m) => m.id === id).role}`);
 
@@ -108,8 +108,8 @@ export default {
       const rank = scanRank(s, id);
       if (rank !== "best") markPlayer(board, s.best, "is-answer");
       markPlayer(board, id, rank === "best" ? "is-found" : rank === "poor" ? "is-wrong" : "is-pick");
-      api.status(`${RANK_LABEL[rank]} (provisional)`);
-      const best = rank === "best" ? "" : ` Draft best: ${name(s, s.best)}, circled.`;
+      api.status(`${RANK_LABEL[rank]} (draft)`);
+      const best = rank === "best" ? "" : ` Suggested option (draft): ${name(s, s.best)}, circled.`;
       api.explain(`${scanFeedback(s, id)}${best} Why (draft): ${s.reasoning}`);
       api.done({
         replay: () => replayIt(s, id),

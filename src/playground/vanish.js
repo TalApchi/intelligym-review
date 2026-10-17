@@ -1,11 +1,13 @@
 // Scan before receiving: "Opponents vanish".
 // Scan the picture; then the opponents disappear while your teammates stay on screen.
 // Tap the teammate you'd pass to. Every possible answer stays visible, but which one is
-// best depends on where the opponents were. Situations come from scan-situations.js
+// best depends on where the opponents were. Situations come from scan/situations.js
 // (PROVISIONAL, pending Omri) and don't repeat in this browser until all have been played.
+// The scored version is challenge 4 (scan/play.js).
 
-import { SCAN_SITUATIONS } from "./scan-situations.js";
-import { scanState, scanRank, scanFeedback, toSegment, BALL_SPEED, REACH } from "./logic.js";
+import { SCAN_SITUATIONS } from "../scan/situations.js";
+import { scanState, scanRank, scanFeedback, toSegment } from "../scan/logic.js";
+import { BALL_SPEED, REACH } from "../through/logic.js";
 import { pickScenarios } from "../decide/logic.js";
 import { drawPlayers, markPlayer, placePlayers, placeBall, setTappable, clearMarks, showArrow } from "../board.js";
 import { ease, lerp, dist, onTap } from "./common.js";

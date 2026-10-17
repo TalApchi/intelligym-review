@@ -1,21 +1,10 @@
-// Prototype playground: the rules, with no DOM. Pure functions, tested in
-// site/tests/playground.test.mjs. These are EXPERIMENTS for Tal to compare, not approved
-// designs: nothing here is scored, and none of it is part of the main experience.
-// The through-ball prototype's move lives in through.js.
+// "Scan before receiving": the rules, with no DOM. Pure functions, tested in
+// site/tests/scan.test.mjs. Which pass is best in each situation is a DRAFT (situations.js,
+// approved: false) until Omri reviews it; the thresholds below are for consistency checks
+// and the generated sentences, not football rules.
 //
 // Coordinates are metres on the attacking half, as everywhere else: y = 0 is the
 // opponents' goal line at the top of the screen, y = 52.5 is halfway.
-
-import { seededRng } from "../spot/logic.js";
-
-export { seededRng };
-
-export const BALL_SPEED = 14;   // m/s, the same for every pass in every prototype
-
-// A defender touches the ball when the ball's centre comes within REACH of theirs. On the board
-// a player disc has a 1.8 m radius and the ball 0.9 m, so REACH = 2.9 means "the shapes touch,
-// give or take a toe".
-export const REACH = 2.9;
 
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const lerp = (a, b, u) => ({ x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u });
@@ -26,35 +15,6 @@ export function toSegment(p, a, b) {
   const u = Math.min(1, Math.max(0, ((p.x - a.x) * dx + (p.y - a.y) * dy) / len2));
   return { d: dist(p, lerp(a, b, u)), u };
 }
-
-// ---------- Passing ----------
-
-// Where a pass released at `release` (s) is at time t: a constant-speed straight line.
-export function ballAt(from, to, release, t) {
-  const T = dist(from, to) / BALL_SPEED;
-  const u = Math.min(1, Math.max(0, (t - release) / T));
-  return lerp(from, to, u);
-}
-
-// Plays a pass against moving defenders. `defenders` is [{ id, at(t) -> {x, y} }].
-// Returns whether it got through, where and when a defender touched it, and the closest
-// any defender came (used to explain the outcome in metres).
-export function simulatePass(from, to, release, defenders, step = 1 / 240) {
-  const T = dist(from, to) / BALL_SPEED;
-  let closest = { d: Infinity, id: null, t: release, ball: from, defender: null };
-  for (let t = release; t <= release + T + 1e-9; t += step) {
-    const ball = ballAt(from, to, release, t);
-    for (const def of defenders) {
-      const q = def.at(t);
-      const d = dist(ball, q);
-      if (d < closest.d) closest = { d, id: def.id, t, ball, defender: q };
-      if (d < REACH) return { through: false, t, at: ball, by: def.id, closest, flight: T };
-    }
-  }
-  return { through: true, t: release + T, at: to, by: null, closest, flight: T };
-}
-
-// ---------- Scan before receiving: authored situations (scan-situations.js) ----------
 
 const ROLE = (o) => `their ${o.role}`;
 
@@ -115,3 +75,12 @@ export function scanFeedback(s, id) {
   if (id === s.passer.id && id !== s.best) return "Safe: it goes back to where the ball came from, but the chance to play forward is gone.";
   return scanNote(s, id);
 }
+
+// The teammates a player can pass to: the passer (back where it came from) and the rest.
+export const targetsOf = (s) => [s.passer, ...s.home];
+
+// Points for one pass (PROVISIONAL, like Tactical choice): draft best, reasonable, weak.
+export const scorePass = (s, id, points) => points[scanRank(s, id)];
+
+// The challenge score: the average of the situations' points, rounded.
+export const scoreScan = (pts) => (pts.length ? Math.round(pts.reduce((a, b) => a + b, 0) / pts.length) : 0);

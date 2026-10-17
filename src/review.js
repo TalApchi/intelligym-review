@@ -9,8 +9,8 @@ import { SCENARIOS } from "./decide/scenarios.js";
 import { outcomeAt, previewTarget } from "./decide/logic.js";
 import { buildBoard, drawPlayers, markPlayer, placePlayers, showArrow, clearMarks, showCues, clearCues, drawBall, placeBall } from "./board.js";
 import { el } from "./pitch.js";
-import { SCAN_SITUATIONS } from "./playground/scan-situations.js";
-import { scanRank, scanFeedback } from "./playground/logic.js";
+import { SCAN_SITUATIONS } from "./scan/situations.js";
+import { scanRank, scanFeedback } from "./scan/logic.js";
 
 const KEY = "ig.review.v1";
 const RANK = { best: "Draft best", reasonable: "Reasonable", poor: "Weak" };

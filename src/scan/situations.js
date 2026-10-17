@@ -1,4 +1,4 @@
-// "Scan before receiving" situations for the playground prototype "Opponents vanish".
+// "Scan before receiving" situations (challenge 4, "Opponents vanish", and the playground).
 //
 // ⚠ PROVISIONAL. Written by the build team, not by a coach. Which teammate is the draft best
 // pass, which are reasonable, and the reasoning all need Omri's review (review.html shows

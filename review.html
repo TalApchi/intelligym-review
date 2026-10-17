@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Scenario Review | Soccer IntelliGym Challenge</title>
-  <meta name="description" content="Coach review of the draft Tactical choice scenarios and Scan before receiving situations.">
+  <meta name="description" content="Coach review of the draft Tactical choice scenarios and Opponents vanish situations.">
   <meta name="theme-color" content="#06090a">
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
@@ -21,7 +21,7 @@
 
     <section class="review__intro">
       <h1>Draft situations for review</h1>
-      <p>Two sets: the <strong><span data-count></span> Tactical choice scenarios</strong> in the game, then the <strong><span data-scan-count></span> Scan before receiving situations</strong> from the prototype playground.</p>
+      <p>Two sets: the <strong><span data-count></span> Tactical choice scenarios</strong> in the game, then the <strong><span data-scan-count></span> Opponents vanish situations</strong> (challenge 4, "Scan before receiving").</p>
       <p>Tactical choice: each play shows <strong>3 of these <span data-count></span> situations</strong>, picked at random. Nothing here is approved yet: the positions, the options, which option is ranked best, the sentence a player reads afterwards and the reasoning were all written by the build team as drafts.</p>
       <details class="review__more" open>
         <summary>How to review</summary>
@@ -51,8 +51,8 @@
     <div class="review__list"></div>
 
     <section class="review__intro review__intro--scan">
-      <h2 class="review__h2">Scan before receiving (prototype)</h2>
-      <p>A playground experiment, not yet in the game. The player looks at the picture for 2 seconds; then the opponents disappear, the ball arrives, and they tap the teammate they'd pass to. Each play shows one situation, and none repeats until all <span data-scan-count></span> have been played. Which pass is the draft best, which are reasonable, and the reasoning are drafts. The sentence under each pass is generated from the distances in the picture.</p>
+      <h2 class="review__h2">Opponents vanish (challenge 4)</h2>
+      <p>The ball is played to the player, who looks at the picture while it travels (2.4, then 2.0, then 1.6 seconds); then the opponents disappear, the ball arrives, and they tap the teammate they'd pass to. Each play shows 3 situations, and none repeats until all <span data-scan-count></span> have been played. Draft scoring: best 100 points, reasonable 50, weak 0. Which pass is the draft best, which are reasonable, and the reasoning are drafts. The sentence under each pass is generated from the distances in the picture.</p>
     </section>
     <div class="review__list review__scan"></div>
 

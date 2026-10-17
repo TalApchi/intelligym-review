@@ -4,7 +4,7 @@
 import { BUILD } from "./build.js";
 
 // The order of challenges. nextScreen() walks through this list.
-export const PLAN = { challenges: ["spot", "track", "decide"] };
+export const PLAN = { challenges: ["spot", "track", "decide", "scan", "through"] };
 
 export const CHALLENGES = {
   spot: {
@@ -20,6 +20,16 @@ export const CHALLENGES = {
   decide: {
     title: "Tactical choice",
     instruction: "You have the ball. Make the call.",
+    built: true,
+  },
+  scan: {
+    title: "Opponents vanish",
+    instruction: "The ball is coming to you. Look at the whole picture while you can: the opponents will disappear before it arrives. Then tap the teammate you'd pass to.",
+    built: true,
+  },
+  through: {
+    title: "Through ball",
+    instruction: "You have the ball and a teammate is making a run in behind. Press Pass when you want to release it: the ball is played into the space ahead of the runner. Too early and a defender is in the way; too late and the cover gets there.",
     built: true,
   },
 };
@@ -67,6 +77,27 @@ export const DECIDE = {
   historyKey: "ig.decide.history", // localStorage: which scenarios this browser has seen
   points: { best: 100, reasonable: 50, poor: 0 }, // ⚙︎ PROVISIONAL until Omri approves the ranking scheme
   outcomeMs: 1600,       // ⚙︎ how long the outcome animation plays
+};
+
+export const SCAN = {
+  // Look time per situation, shorter each time (progression). Its length sets how many situations.
+  lookMs: [2400, 2000, 1600], // ⚙︎
+  // Draft (unapproved) situations: only in the review demo and the local preview, as for Tactical choice.
+  allowDrafts: BUILD.allowDrafts,
+  historyKey: "ig.scan.history", // localStorage: which situations this browser has seen (shared with the playground)
+  points: { best: 100, reasonable: 50, poor: 0 }, // ⚙︎ PROVISIONAL, like Tactical choice
+  hitRadius: 3.6,        // ⚙︎ metres; teammates are at least 4 m apart
+};
+
+export const THROUGH = {
+  // Scored rounds after the demonstration and the practice try. Each later round has a
+  // narrower window (through/logic.js WINDOWS).
+  rounds: 3,             // ⚙︎
+  demoSeed: 7,           // the demonstration and the practice try are the same for everyone
+  practiceSeed: 1,
+  points: { through: 100, close: 50, miss: 0 }, // ⚙︎ PROVISIONAL
+  close: 0.25,           // ⚙︎ s: a pass this close to the window counts as "just early / just late"
+  replaySpeed: 0.5,      // ⚙︎ slow-motion replay
 };
 
 // Results tiers: game settings, not ability levels. `min` is the share of available points.

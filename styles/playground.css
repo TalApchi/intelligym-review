@@ -45,25 +45,6 @@
 .pg .bp { transition: opacity 0.4s; }
 .bp.is-gone { opacity: 0; }
 .pg-label { font: 600 2.2px var(--font-body); fill: var(--chalk); text-anchor: middle; paint-order: stroke; stroke: var(--ink-0); stroke-width: 0.5px; pointer-events: none; }
-/* The through-ball runner: a steady chalk ring and a label, so nothing hints at when to pass */
-.pg .bp.is-target .bp-target { stroke: var(--chalk); stroke-width: 0.4; animation: none; }
-
-/* Through ball: when a pass would have worked, and when you passed */
-.pg-tl { display: grid; gap: 6px; }
-.pg-tl__bar { position: relative; height: 22px; border-radius: 4px; background: var(--rule-soft); overflow: hidden; cursor: pointer; touch-action: manipulation; }
-.pg-tl__bar:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
-.pg-tl__seg { position: absolute; top: 0; bottom: 0; }
-.pg-tl__seg.is-off { background: rgba(125, 143, 156, 0.35); }
-.pg-tl__seg.is-on { background: rgba(84, 190, 120, 0.75); }
-.pg-tl__you, .pg-tl__head { position: absolute; top: -2px; bottom: -2px; width: 3px; margin-left: -1.5px; }
-.pg-tl__you { background: var(--red-hi); }
-.pg-tl__probe { position: absolute; top: 0; bottom: 0; width: 0; margin-left: -1px; border-left: 2px dashed var(--chalk); }
-.pg-tl__head { background: var(--chalk); opacity: 0.9; }
-.pg-tl__legend { position: relative; height: 16px; font: 600 12px/16px var(--font-body); color: var(--muted); }
-.pg-tl__legend span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-.pg-tl__legend .is-on { color: var(--chalk); }
-.pg-tl__hint { margin: 0; font-size: 14px; line-height: 1.4; color: var(--muted); }
-
 @media (min-width: 960px) {
   .pg__stage { grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); column-gap: var(--s6); align-items: start; }
   .pg__head { grid-column: 1 / -1; }

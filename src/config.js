@@ -29,7 +29,7 @@ export const CHALLENGES = {
   },
   through: {
     title: "Through ball",
-    instruction: "You have the ball and a teammate is making a run in behind. Press Pass when you want to release it: the ball is played into the space ahead of the runner. Too early and a defender is in the way; too late and the cover gets there.",
+    instruction: "You have the ball and a teammate is making a run in behind. Press Pass when you want to release it: the ball is played into the space ahead of the runner. Too early and the runner is still in front of their marker, or someone is in the lane; too late and a covering defender or the keeper gets there. Each round is a different situation.",
     built: true,
   },
 };
@@ -90,11 +90,12 @@ export const SCAN = {
 };
 
 export const THROUGH = {
-  // Scored rounds after the demonstration and the practice try. Each later round has a
-  // narrower window (through/logic.js WINDOWS).
+  // Scored rounds after the demonstration and the practice try: different situations
+  // (through/situations.js), widest window first, none repeated in a play.
   rounds: 3,             // ⚙︎
-  demoSeed: 7,           // the demonstration and the practice try are the same for everyone
-  practiceSeed: 1,
+  demoSeed: 3,           // the demonstration and the practice try are the same for everyone
+  practiceSeed: 5,
+  historyKey: "ig.through.history", // situations seen recently in this browser
   points: { through: 100, close: 50, miss: 0 }, // ⚙︎ PROVISIONAL
   close: 0.25,           // ⚙︎ s: a pass this close to the window counts as "just early / just late"
   replaySpeed: 0.5,      // ⚙︎ slow-motion replay

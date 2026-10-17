@@ -118,7 +118,7 @@ const FACTS = {
   track: [`${TRACK.rounds} rounds`, `${TRACK.targets} to follow`, `${TRACK.moveMs / 1000} s of running`, "Round 2 is faster"],
   decide: [`${DECIDE.situations} situations`, "No clock", "Draft scenarios"],
   scan: [`${SCAN.lookMs.length} situations`, `${SCAN.lookMs.map((ms) => ms / 1000).join(" / ")} s to look`, "Draft situations"],
-  through: ["A demonstration first", "1 practice try, unscored", `${THROUGH.rounds} scored rounds`, "The window gets tighter"],
+  through: ["A demonstration first", "1 practice try, unscored", `${THROUGH.rounds} scored rounds`, "A different situation each round"],
 };
 
 // Tactical choice can only run with scenarios it is allowed to show.

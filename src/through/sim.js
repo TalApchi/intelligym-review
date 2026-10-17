@@ -230,6 +230,12 @@ export function playable(sit, seed) {
   return null;
 }
 
+// The demonstration or practice situation (`use`), the same fair variant for everyone.
+export function fixedMove(all, use, seed) {
+  const s = all.find((x) => x.use === use);
+  return playable(s, seed) ?? simulate(s, seed);
+}
+
 // Situations for the scored rounds: everything not kept for the demonstration or practice.
 export const roundSituations = (all) => all.filter((s) => !s.use);
 

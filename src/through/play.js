@@ -1,18 +1,29 @@
 // "Through ball" (challenge 5): runs the challenge on screen.
 // A short demonstration (an automatic pass), one practice try (unscored, fewer defenders),
-// then THROUGH.rounds scored rounds, each with a narrower window. In every try you press
+// then THROUGH.rounds scored rounds: different authored situations (through/situations.js,
+// played out by through/sim.js), widest window first, not repeated in a play and avoiding
+// the ones seen last time in this browser. In every try you press
 // Pass (or the space bar) when you choose; the ball is played into the space ahead of the
 // runner at one constant speed. After each try: what happened and why, a timeline of when
 // the pass was on, and a slow-motion replay (tap the timeline for "what if you'd passed here").
 
 import { THROUGH } from "../config.js";
-import { makeMove, explainPass, scorePass, scoreThrough, MISSED, BALL_SPEED, PLAYER_SPEED } from "./logic.js";
+import { scorePass, scoreThrough, MISSED, BALL_SPEED, PLAYER_SPEED } from "./logic.js";
+import { THROUGH_SITUATIONS } from "./situations.js";
+import { fixedMove, pickRounds, explainSim } from "./sim.js";
 import { setupMove, playMove, markResult } from "./view.js";
 import { timeline } from "./timeline.js";
 import { buildBoard, drawBall } from "../board.js";
 
-const LABEL = { through: "Through", intercepted: "Cut out", covered: "Space closed", missed: "Missed" };
-const sentence = (m, res) => (res === "missed" ? MISSED : explainPass(m, res));
+const LABEL = { through: "Through", intercepted: "Cut out", covered: "Space closed", short: "To feet, not in behind", missed: "Missed" };
+const sentence = (m, res) => (res === "missed" ? MISSED : explainSim(m, res));
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(THROUGH.historyKey)) || {}; } catch { return {}; }
+}
+function saveHistory(history) {
+  try { localStorage.setItem(THROUGH.historyKey, JSON.stringify(history)); } catch { /* not saved; fine */ }
+}
 
 // The verdict for a scored try: Through, Just early / Just late (close), Too early / Too late.
 function verdictOf(m, res, score) {
@@ -129,11 +140,11 @@ export function playThrough(root, { onDone }) {
 
   // ---- 1. Demonstration ----
   async function demo() {
-    const m = makeMove(THROUGH.demoSeed, { practice: true });
+    const m = fixedMove(THROUGH_SITUATIONS, "demo", THROUGH.demoSeed);
     const view = fresh(m);
     ui.round.textContent = "Demonstration";
     ui.phase.textContent = "Watch";
-    ui.prompt.textContent = "Watch the ringed runner.";
+    ui.prompt.textContent = `${m.title}: watch the ringed runner.`;
     ui.play.dataset.phase = "demo";
     const release = m.window.start + m.window.length / 2;
     const res = await play(view, {
@@ -148,7 +159,7 @@ export function playThrough(root, { onDone }) {
     panel({
       headline: "The ball goes into space",
       verdict: "Demonstration",
-      line: `Every player moves at the same steady speed (${PLAYER_SPEED} m/s), and the ball always travels at ${BALL_SPEED} m/s, aimed where the runner will be when it arrives. The dashed circle is where the runner was when the ball was played. Pass too early and a defender is in the way; too late and the cover gets there.`,
+      line: `${m.about} Every player has the same top speed (${PLAYER_SPEED} m/s), and the ball always travels at ${BALL_SPEED} m/s, aimed where the runner will be when it arrives. The dashed circle is where the runner was when the ball was played. Each defender has a job: marking, covering, pressing you or holding a position. Too early and the runner is still in front of their marker, or someone is in the lane; too late and a covering defender or the keeper gets there.`,
       replay: demo,
       next: ["Practice try (unscored)", practice],
     });
@@ -156,11 +167,11 @@ export function playThrough(root, { onDone }) {
 
   // ---- 2. Practice (unscored) ----
   async function practice() {
-    const m = makeMove(THROUGH.practiceSeed, { practice: true });
+    const m = fixedMove(THROUGH_SITUATIONS, "practice", THROUGH.practiceSeed);
     const view = fresh(m);
     ui.round.textContent = "Practice";
     ui.phase.textContent = "Unscored";
-    ui.prompt.textContent = "Press Pass when you want to release it.";
+    ui.prompt.textContent = `${m.title}: press Pass when you want to release it.`;
     ui.play.dataset.phase = "live";
     const res = await play(view, { live: true });
     if (!res) return;
@@ -181,13 +192,19 @@ export function playThrough(root, { onDone }) {
   // ---- 3. Scored rounds ----
   const pts = [];
   const rows = [];
+  let moves = null; // the play's situations, picked when round 1 starts
   async function round(i) {
+    if (!moves) {
+      const out = pickRounds(THROUGH_SITUATIONS, loadHistory(), THROUGH.rounds);
+      saveHistory(out.history);
+      moves = out.moves;
+    }
     const last = i === THROUGH.rounds - 1;
-    const m = makeMove(1 + Math.floor(Math.random() * 1e6), { level: Math.min(i, 2) });
+    const m = moves[i];
     const view = fresh(m);
     ui.round.textContent = `Round ${i + 1} of ${THROUGH.rounds}`;
-    ui.phase.textContent = i === 0 ? "Scored" : "Tighter window";
-    ui.prompt.textContent = "Press Pass when you want to release it.";
+    ui.phase.textContent = "Scored";
+    ui.prompt.textContent = `${m.title}: press Pass when you want to release it.`;
     ui.play.dataset.phase = "live";
     const res = await play(view, { live: true });
     if (!res) return;
@@ -195,7 +212,7 @@ export function playThrough(root, { onDone }) {
     const score = scorePass(m, res, THROUGH);
     const verdict = verdictOf(m, res, score);
     pts.push(score.pts);
-    rows.push({ ok: score.kind === "through", label: `Round ${i + 1}`, line: `${verdict}. ${sentence(m, res).replace(/^(Through|Too early|Too late|Missed)\. /, "")}`, aside: `${score.pts} pts` });
+    rows.push({ ok: score.kind === "through", label: `Round ${i + 1} · ${m.title}`, line: `${verdict}. ${sentence(m, res).replace(/^(Through|Too early|Too late|Missed)\. /, "")}`, aside: `${score.pts} pts` });
     const show = (tl, extra) => panel({
       headline: verdict,
       verdict: `Round ${i + 1}`,

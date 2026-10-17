@@ -6,7 +6,7 @@
 // avoiding the ones just seen.
 
 import { THROUGH_SITUATIONS } from "../through/situations.js";
-import { playable, simulate, pickRounds, explainSim } from "../through/sim.js";
+import { fixedMove, pickRounds, explainSim } from "../through/sim.js";
 import { MISSED, BALL_SPEED, PLAYER_SPEED } from "../through/logic.js";
 import { setupMove, playMove, markResult } from "../through/view.js";
 import { timeline } from "../through/timeline.js";
@@ -17,9 +17,8 @@ const HISTORY_KEY = "ig.through.history";
 const STATUS = { through: "Through", intercepted: "Cut out", covered: "Space closed", short: "To feet, not in behind", missed: "Missed" };
 const statusOf = (res) => STATUS[res === "missed" ? "missed" : res.kind];
 const sentence = (m, res) => (res === "missed" ? MISSED : explainSim(m, res));
-const byUse = (use) => THROUGH_SITUATIONS.find((s) => s.use === use);
 // The demonstration and practice look the same every time (fixed seed, a fair variant).
-const fixed = (use, seed) => { const s = byUse(use); return playable(s, seed) ?? simulate(s, seed); };
+const fixed = (use, seed) => fixedMove(THROUGH_SITUATIONS, use, seed);
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || {}; } catch { return {}; }

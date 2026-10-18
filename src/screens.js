@@ -6,7 +6,7 @@ import { CHALLENGES, SPOT, TRACK, DECIDE, SCAN, THROUGH, TIERS } from "./config.
 import { tierFor } from "./tiers.js";
 import { playSpot } from "./spot/play.js";
 import { playTrack } from "./track/play.js";
-import { playDecide } from "./decide/play.js";
+import { playDecide, MOVE_KEY } from "./decide/play.js";
 import { SCENARIOS } from "./decide/scenarios.js";
 import { usableScenarios } from "./decide/logic.js";
 import { playScan, usableSituations } from "./scan/play.js";
@@ -45,7 +45,7 @@ const SPOT_DEMO = `
     </g>
   </svg>`;
 
-// A looping mini demo: three dots pulse red, then everyone moves and swaps places.
+// A looping mini demo: two dots pulse red, then everyone moves and swaps places.
 const TRACK_DEMO = `
   <svg class="demo demo--track" viewBox="0 0 120 84" aria-hidden="true">
     <rect class="demo__grass" x="0" y="0" width="120" height="84" rx="6"/>
@@ -54,26 +54,37 @@ const TRACK_DEMO = `
     <g class="demo__run demo__run--2"><circle class="demo__home" cx="60" cy="54" r="4.2"/></g>
     <g class="demo__run demo__run--3"><circle class="demo__home" cx="92" cy="28" r="4.2"/><circle class="demo__mark" cx="92" cy="28" r="7.5"/></g>
     <g class="demo__run demo__run--4"><circle class="demo__home" cx="40" cy="62" r="4.2"/></g>
-    <g class="demo__run demo__run--5"><circle class="demo__home" cx="78" cy="66" r="4.2"/><circle class="demo__mark" cx="78" cy="66" r="7.5"/></g>
+    <g class="demo__run demo__run--5"><circle class="demo__home" cx="78" cy="66" r="4.2"/></g>
     <g class="demo__run demo__run--6"><circle class="demo__home" cx="56" cy="22" r="4.2"/></g>
   </svg>`;
 
-// A still picture: you on the ball (red ring) with three dashed options, one of them chosen.
+// A looping two-step explanation of the arrows. Step 1: solid trails with a travelling pulse are
+// movement already happening (a teammate's run, an opponent pressing). Step 2: after you pick,
+// a red dashed arrow previews your choice. The choice shown is not the runner, so the run never
+// reads as the answer.
 const DECIDE_DEMO = `
   <svg class="demo demo--decide" viewBox="0 0 120 84" aria-hidden="true">
     <rect class="demo__grass" x="0" y="0" width="120" height="84" rx="6"/>
     <path class="demo__lines" d="M6 6 H114 V78 H6 Z M38 6 V24 H82 V6 M6 78 H114"/>
-    <circle class="demo__opp" cx="50" cy="28" r="4.2"/>
-    <circle class="demo__opp" cx="70" cy="26" r="4.2"/>
-    <circle class="demo__opp" cx="34" cy="44" r="4.2"/>
-    <circle class="demo__home" cx="60" cy="18" r="4.2"/>
-    <circle class="demo__home" cx="98" cy="36" r="4.2"/>
-    <circle class="demo__home" cx="22" cy="30" r="4.2"/>
-    <path class="demo__option" d="M56 56 L60 25"/>
-    <path class="demo__option" d="M54 58 L28 34"/>
-    <path class="demo__option demo__option--pick" d="M62 56 L92 39"/>
+    <g class="demo__moving">
+      <line class="demo__trail demo__trail--run" x1="96" y1="35" x2="104" y2="17"/>
+      <line class="demo__flow demo__flow--run" x1="96" y1="35" x2="104" y2="17" pathLength="10"/>
+      <path class="demo__head demo__head--run" d="M101.2 17.8 L104.6 15.6 L105 19.6 Z"/>
+      <line class="demo__trail demo__trail--press" x1="37" y1="41" x2="49" y2="51"/>
+      <line class="demo__flow demo__flow--press" x1="37" y1="41" x2="49" y2="51" pathLength="10"/>
+      <path class="demo__head demo__head--press" d="M47 53.2 L50.6 52.4 L49.2 49 Z"/>
+    </g>
+    <circle class="demo__opp" cx="66" cy="28" r="4.2"/>
+    <circle class="demo__opp" cx="34" cy="38" r="4.2"/>
+    <circle class="demo__home" cx="58" cy="18" r="4.2"/>
+    <circle class="demo__home" cx="94" cy="39" r="4.2"/>
+    <circle class="demo__home" cx="24" cy="24" r="4.2"/>
+    <path class="demo__choice" d="M58 53 L58 26"/>
+    <circle class="demo__choice-end" cx="58" cy="18" r="7"/>
     <circle class="demo__home" cx="58" cy="60" r="4.2"/>
     <circle class="demo__mark demo__mark--still" cx="58" cy="60" r="7.5"/>
+    <text class="demo__caption demo__caption--1" x="60" y="76">Solid: already moving</text>
+    <text class="demo__caption demo__caption--2" x="60" y="76">Red dashed: your choice</text>
   </svg>`;
 
 // A looping mini demo: the opponents fade away, the teammates stay, one of them gets tapped.
@@ -157,7 +168,8 @@ function intro(screen, ctx) {
           <h2 class="intro__title">${c.title}</h2>
           <p class="intro__text">${c.instruction}</p>
           <ul class="intro__facts">${facts.map((f) => `<li>${f}</li>`).join("")}</ul>
-          ${id === "decide" || id === "scan" ? `<p class="intro__draft"><span class="draft-badge">Provisional</span> The situations, rankings and explanations are drafts until Omri approves them.</p>` : ""}
+          ${id === "decide" ? MOVE_KEY : ""}
+          ${id === "decide" || id === "scan" ? `<p class="intro__draft"><span class="draft-badge">Provisional</span> The situations, ${id === "decide" ? "scores" : "rankings"} and explanations are drafts until Omri approves them.</p>` : ""}
           <button class="btn btn--primary" type="button" data-event="ready">Ready ${arrow}</button>
         </div>
       </section>`,
@@ -225,7 +237,7 @@ function results(_screen, ctx) {
         <p class="results__note">Points describe how you did in these challenges, nothing more. Tier names are game settings, not a rating of ability.${provisionalNote(played)}</p>
         <div class="temp-card temp-card--inline">
           <p class="temp-card__flag">Temporary</p>
-          <p class="temp-card__body">The product section goes here. Its wording needs Omri's approval first.</p>
+          <p class="temp-card__body">A featured training product (IntelliGym) may appear here later, marked clearly as a partner offer. Its wording and claims need approval first.</p>
         </div>
         <a class="btn btn--ghost" href="#">Start over</a>
       </section>`,

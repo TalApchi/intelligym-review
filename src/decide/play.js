@@ -8,7 +8,6 @@ import { SCENARIOS } from "./scenarios.js";
 import { usableScenarios, pickScenarios, outcomeAt, previewTarget, bestOptions, scoreDecide } from "./logic.js";
 import { buildBoard, drawPlayers, markPlayer, placePlayers, showArrow, clearMarks, showCues, clearCues, drawBall, placeBall } from "../board.js";
 
-const VERDICT = { best: "Suggested option", reasonable: "Reasonable option", poor: "Riskier option" };
 
 // This browser's history lives in localStorage, so scenarios don't repeat until the pool
 // is used up. Storage can be missing or blocked (private windows): then every play is random.
@@ -27,6 +26,13 @@ function chooseScenarios() {
   return ids.map((id) => pool.find((s) => s.id === id));
 }
 
+// The two arrow kinds in Tactical choice, as a small key (intro and play screen).
+export const MOVE_KEY = `
+  <ul class="move-key" aria-label="What the arrows mean">
+    <li class="move-key__now"><svg viewBox="0 0 30 10" aria-hidden="true"><line class="move-key__trail" x1="2" y1="5" x2="23" y2="5"/><path class="move-key__trail-head" d="M22 1.5 L28 5 L22 8.5 Z"/></svg>Already moving: runs and pressure</li>
+    <li class="move-key__plan"><svg viewBox="0 0 30 10" aria-hidden="true"><line class="move-key__dash" x1="2" y1="5" x2="23" y2="5"/><path class="move-key__dash-head" d="M22 1.5 L28 5 L22 8.5 Z"/></svg>Red dashed: your choice, once you pick</li>
+  </ul>`;
+
 /**
  * Mounts the challenge into `root` and starts situation 1.
  * Calls onDone(result) after the last situation, in the shape screens.js shows.
@@ -44,7 +50,7 @@ export function playDecide(root, { onDone }) {
           <span class="draft-badge" hidden>Draft scenario</span>
         </div>
         <h2 class="play__prompt" aria-live="polite"></h2>
-        <p class="play__hint" hidden>Dashed arrows show runs and pressure that are already happening.</p>
+        <div class="play__hint">${MOVE_KEY}</div>
         <div class="choices" role="radiogroup" aria-label="Your options"></div>
         <button class="btn btn--primary play__go" type="button" hidden>Play it</button>
         <div class="play__result" hidden>
@@ -52,7 +58,7 @@ export function playDecide(root, { onDone }) {
           <p class="play__line"></p>
           <p class="play__best"></p>
           <p class="play__why"></p>
-          <p class="play__provisional">Provisional: this ranking and explanation are drafts until Omri approves them.</p>
+          <p class="play__provisional">Provisional: this score and explanation are drafts until Omri approves them.</p>
           <button class="btn btn--primary play__next" type="button"></button>
         </div>
       </section>
@@ -67,7 +73,7 @@ export function playDecide(root, { onDone }) {
   };
   const board = buildBoard($(".board"));
   drawBall(board);
-  const ranks = [];
+  const scores = [];
   const rows = [];
 
   let alive = true;
@@ -141,7 +147,8 @@ export function playDecide(root, { onDone }) {
         return { from, to: c.to, team: scenario.home.includes(from) ? "home" : "away" };
       });
       showCues(board, cues);
-      ui.hint.hidden = cues.length === 0;
+      ui.hint.hidden = false;
+      ui.hint.querySelector(".move-key__now").hidden = cues.length === 0;
       placeBall(board, { x: carrier.x + 1.6, y: carrier.y - 1.6, lift: 0 }); // at the carrier's feet
 
       const option = await choose(scenario);
@@ -159,34 +166,35 @@ export function playDecide(root, { onDone }) {
       if (!alive) return;
 
       // Verdict (provisional)
-      ranks.push(option.rank);
-      const pts = DECIDE.points[option.rank];
+      scores.push(option.score);
+      const pts = option.score;
+      const top = pts === 100;
       const best = bestOptions(scenario);
       ui.play.dataset.phase = "reveal";
       ui.prompt.textContent = option.result;
-      ui.verdictName.textContent = `${VERDICT[option.rank]}${scenario.approved ? "" : " (draft)"}`;
+      ui.verdictName.textContent = `${DECIDE.labels[pts]}${scenario.approved ? "" : " (draft)"}`;
       ui.verdictPts.textContent = `${pts} pts`;
       ui.line.textContent = option.note;
-      ui.best.textContent = option.rank === "best" ? "" : `${scenario.approved ? "Suggested option" : "Suggested option (draft)"}: ${best.map((o) => o.label.toLowerCase()).join(", or ")}.`;
-      ui.best.hidden = option.rank === "best";
+      ui.best.textContent = top ? "" : `${scenario.approved ? "Top option" : "Top option (draft)"}: ${best.map((o) => o.label.toLowerCase()).join(", or ")}.`;
+      ui.best.hidden = top;
       ui.why.textContent = `${scenario.approved ? "Why" : "Why (draft)"}: ${scenario.reasoning}${scenario.open ? ` ${scenario.open}` : ""}`;
       ui.next.textContent = last ? "See your points" : "Next situation";
       ui.result.hidden = false;
       ui.next.focus({ preventScroll: true });
       ui.next.scrollIntoView?.({ block: "nearest", behavior: "smooth" }); // short phones
       rows.push({
-        ok: option.rank === "best",
+        ok: top,
         label: `${scenario.title}${scenario.approved ? "" : " · draft"}`,
         line: `${option.label}: ${option.note}`,
         aside: `${pts} pts`,
       });
       await waitForNext();
     }
-    const bests = ranks.filter((r) => r === "best").length;
+    const tops = scores.filter((s) => s === 100).length;
     onDone({
-      points: scoreDecide(ranks, DECIDE),
-      tally: `${bests} of ${ranks.length} suggested options`,
-      sub: `You picked a suggested option in ${bests} of ${ranks.length} situations. The suggestions are drafts until Omri approves them.`,
+      points: scoreDecide(scores),
+      tally: `${tops} of ${scores.length} top options`,
+      sub: `You picked a top option in ${tops} of ${scores.length} situations. Other choices score 75, 50 or 25, depending on the picture. The scores are drafts until Omri approves them.`,
       rows,
       provisional: scenarios.some((s) => !s.approved),
     });

@@ -1,5 +1,5 @@
 // Coach review page (review.html): every draft "Tactical choice" scenario drawn as a
-// picture, with its options, draft ranking, sentences and reasoning, and every draft
+// picture, with its options, draft scores (100 / 75 / 50 / 25), sentences and reasoning, and every draft
 // "Scan before receiving" situation from the playground, so Omri can review without
 // reading source files. Decisions and comments stay in this browser
 // (localStorage) and come out as text with "Copy my review". Not part of the player flow.
@@ -74,8 +74,8 @@ function card(s, i) {
       <p class="rv__who">You are the <strong>${esc(s.home.find((p) => p.id === s.carrier).role)}</strong> (red ring).</p>
       <ol class="rv__options"></ol>
       <button class="rv__reset" type="button">Show the starting picture</button>
-      <div class="rv__why"><h3>Why the draft ranks it this way</h3><p>${esc(s.reasoning)}</p>${s.open ? `<p>${esc(s.open)}</p>` : ""}</div>
-      ${decisionBox(s.id, "e.g. their left back would be tighter; rank the switch as best")}
+      <div class="rv__why"><h3>Why the draft scores it this way</h3><p>${esc(s.reasoning)}</p>${s.open ? `<p>${esc(s.open)}</p>` : ""}${s.question ? `<p><strong>Question for you:</strong> ${esc(s.question)}</p>` : ""}</div>
+      ${decisionBox(s.id, "e.g. their left back would be tighter; the switch should score 100")}
     </div>`;
 
   const board = buildBoard(node.querySelector(".board"));
@@ -128,8 +128,8 @@ function card(s, i) {
   for (const o of s.options) {
     const li = document.createElement("li");
     li.innerHTML = `
-      <button class="rv__opt rv__opt--${o.rank}" type="button" aria-pressed="false">
-        <span class="rv__rank">${RANK[o.rank]}</span>
+      <button class="rv__opt${o.score === 100 ? " rv__opt--best" : ""}" type="button" aria-pressed="false">
+        <span class="rv__rank">${o.score} · ${DECIDE.labels[o.score]} (draft)</span>
         <span class="rv__label">${esc(o.label)}</span>
         <span class="rv__result">Shown outcome: ${esc(o.result)}</span>
       </button>
@@ -205,7 +205,7 @@ function scanCard(s, i) {
 
 function reviewText() {
   const label = Object.fromEntries(DECISIONS);
-  const lines = [`IntelliGym draft content review (${new Date().toISOString().slice(0, 10)})`, "", "Tactical choice scenarios"];
+  const lines = [`SoccerIQ draft content review (${new Date().toISOString().slice(0, 10)})`, "", "Tactical choice scenarios"];
   const item = (i, title, key) => {
     const r = saved[key] || {};
     lines.push(`${i + 1}. ${title} [${key}]: ${r.decision ? label[r.decision] : "not reviewed yet"}`);

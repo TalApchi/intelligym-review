@@ -142,6 +142,9 @@ export function placeBall(board, q) {
 }
 
 // Movement already under way in a frozen picture: our runs (chalk) and their pressure (slate).
+// Drawn as a solid trail with a pulse travelling along it, so it reads as "moving now" and
+// never like the visitor's own plan (a red dashed arrow, showArrow). Both teams' movement
+// looks the same apart from colour, so a trail is information, not a hint.
 // `cues` is [{ from: {x, y}, to: {x, y}, team: "home" | "away" }]. Stays while the visitor
 // previews options (those use the marks layer); clearCues() removes it.
 export function showCues(board, cues) {
@@ -151,10 +154,9 @@ export function showCues(board, cues) {
     const dx = c.to.x - c.from.x, dy = c.to.y - c.from.y, len = Math.hypot(dx, dy) || 1;
     const ux = dx / len, uy = dy / len;
     const gap = Math.min(BOARD_R + 0.5, len / 2);
-    el("line", {
-      x1: c.from.x + ux * gap, y1: c.from.y + uy * gap, x2: c.to.x - ux * 0.3, y2: c.to.y - uy * 0.3,
-      class: `board-cue board-cue--${kind}`, "marker-end": `url(#board-arrow-${kind})`,
-    }, board.cues);
+    const ends = { x1: c.from.x + ux * gap, y1: c.from.y + uy * gap, x2: c.to.x - ux * 0.3, y2: c.to.y - uy * 0.3 };
+    el("line", { ...ends, class: `board-cue board-cue--${kind}`, "marker-end": `url(#board-arrow-${kind})` }, board.cues);
+    el("line", { ...ends, pathLength: 10, class: `board-cue-flow board-cue-flow--${kind}` }, board.cues);
   }
 }
 

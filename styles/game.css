@@ -91,11 +91,17 @@
 .board-plan { stroke: var(--red-hi); stroke-width: 0.4; stroke-linecap: round; stroke-dasharray: 1.1 0.9; animation: lane-march 1.4s linear infinite; }
 .board-plan-end { fill: none; stroke: var(--red-hi); stroke-width: 0.3; }
 .board-arrowhead--red { fill: var(--red-hi); }
-/* Cues: movement already happening in a frozen picture. Our runs in chalk, their pressure in slate. */
-.board-cue { stroke-width: 0.32; stroke-linecap: round; stroke-dasharray: 0.7 0.7; fill: none; }
-.board-cue--run { stroke: rgba(238, 241, 236, 0.8); }
+/* Cues: movement already happening in a frozen picture. Our runs in chalk, their pressure in slate.
+   Solid trails with a travelling pulse: never dashed, never red, so they can't be mistaken for
+   the visitor's plan (.board-plan, red dashed). */
+.board-cue { stroke-width: 0.6; stroke-linecap: round; fill: none; opacity: 0.55; }
+.board-cue--run { stroke: var(--chalk); }
 .board-cue--press { stroke: var(--opp-stroke); }
-.board-arrowhead--run { fill: rgba(238, 241, 236, 0.8); }
+.board-cue-flow { stroke-width: 0.85; stroke-linecap: round; fill: none; stroke-dasharray: 1.6 12; stroke-dashoffset: 1.6; animation: cue-flow 1.6s linear infinite; }
+.board-cue-flow--run { stroke: var(--chalk); }
+.board-cue-flow--press { stroke: #b6c4cf; }
+@keyframes cue-flow { from { stroke-dashoffset: 1.6; } to { stroke-dashoffset: -10; } }
+.board-arrowhead--run { fill: var(--chalk); }
 .board-arrowhead--press { fill: var(--opp-stroke); }
 .board-ball__ball { fill: #fff; stroke: var(--ink-0); stroke-width: 0.3; }
 .board-ball__shadow { fill: #000; }
@@ -184,7 +190,7 @@
 @keyframes demo-move { 0%, 49% { transform: translate(0, 0); } 50%, 100% { transform: translate(-14px, -10px); } }
 @keyframes demo-tap { 0%, 70% { opacity: 0; transform: scale(1.5); } 76%, 94% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
 
-/* Tracking demo: three dots pulse red, everyone runs, the three get picked */
+/* Tracking demo: two dots pulse red, everyone runs */
 .demo__run { animation: demo-run 5s ease-in-out infinite; }
 .demo__run--1 { --dx: 44px; --dy: 10px; }
 .demo__run--2 { --dx: -36px; --dy: -18px; }
@@ -196,10 +202,35 @@
 @keyframes demo-run { 0%, 36% { transform: translate(0, 0); } 82%, 100% { transform: translate(var(--dx), var(--dy)); } }
 @keyframes demo-mark { 0%, 28% { opacity: 1; } 36%, 86% { opacity: 0; } 90%, 100% { opacity: 1; } }
 
-/* Tactical choice demo: a still picture */
-.demo__option { fill: none; stroke: rgba(238, 241, 236, 0.45); stroke-width: 1.2; stroke-dasharray: 3 2.4; }
-.demo__option--pick { stroke: var(--red-hi); stroke-width: 1.5; }
+/* Tactical choice demo: step 1 shows movement already happening (solid trails with a pulse),
+   step 2 the red dashed preview of your choice. 7 s loop. */
 .demo__mark--still { animation: none; opacity: 1; }
+.demo__trail { stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+.demo__trail--run, .demo__flow--run { stroke: var(--chalk); }
+.demo__trail--press { stroke: var(--opp-stroke); }
+.demo__flow { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 1.6 12; stroke-dashoffset: 1.6; animation: cue-flow 1.4s linear infinite; }
+.demo__flow--press { stroke: #b6c4cf; }
+.demo__head--run { fill: var(--chalk); opacity: 0.8; }
+.demo__head--press { fill: var(--opp-stroke); }
+.demo__moving { animation: demo-moving 7s infinite; }
+.demo__choice { fill: none; stroke: var(--red-hi); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 3 2.4; opacity: 0; animation: demo-choice 7s infinite; }
+.demo__choice-end { fill: none; stroke: var(--red-hi); stroke-width: 1.1; opacity: 0; animation: demo-choice 7s infinite; }
+.demo__caption { font: 600 6.4px var(--font-body); fill: var(--chalk); text-anchor: middle; opacity: 0; }
+.demo__caption--1 { animation: demo-caption-1 7s infinite; }
+.demo__caption--2 { fill: var(--red-hi); animation: demo-choice 7s infinite; }
+@keyframes demo-moving { 0%, 92% { opacity: 1; } 96% { opacity: 0.2; } 100% { opacity: 1; } }
+@keyframes demo-caption-1 { 0%, 3% { opacity: 0; } 8%, 44% { opacity: 1; } 49%, 100% { opacity: 0; } }
+@keyframes demo-choice { 0%, 50% { opacity: 0; } 55%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+
+/* The arrow key under the Tactical choice intro and next to the options */
+.move-key { list-style: none; display: grid; gap: 6px; font-size: 13px; line-height: 1.3; color: var(--muted); }
+.move-key li { display: flex; align-items: center; gap: var(--s2); }
+.move-key li[hidden] { display: none; }
+.move-key svg { flex: none; width: 30px; height: 10px; }
+.move-key__trail { stroke: var(--chalk); stroke-width: 2; stroke-linecap: round; opacity: 0.7; }
+.move-key__trail-head { fill: var(--chalk); opacity: 0.7; }
+.move-key__dash { stroke: var(--red-hi); stroke-width: 2; stroke-dasharray: 4 3; }
+.move-key__dash-head { fill: var(--red-hi); }
 
 /* ---------- Tactical choice: draft badge, options, verdict ---------- */
 
@@ -245,7 +276,8 @@
 .play[data-phase="outcome"] .timer, .play[data-phase="choose"] .timer { display: none; }
 .play__best { font-size: 15px; color: var(--muted); }
 .play__why { font-size: 14px; line-height: 1.45; color: var(--muted); border-left: 2px solid var(--rule); padding-left: var(--s3); }
-.play__hint { font-size: 13px; color: var(--muted); margin-top: calc(var(--s2) * -1); }
+.play__hint { margin-top: calc(var(--s1) * -1); }
+.play__hint[hidden] { display: none; }
 .play__provisional { font-size: 12px; color: #e8b53c; }
 
 /* ---------- Feedback (challenge summary) ---------- */

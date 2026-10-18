@@ -14,7 +14,7 @@ export const CHALLENGES = {
   },
   track: {
     title: "Tracking runners",
-    instruction: "Three teammates will make runs. Keep your eyes on them.",
+    instruction: "Two teammates will make runs. Keep your eyes on them.",
     built: true,
   },
   decide: {
@@ -38,7 +38,7 @@ export const SPOT = {
   rounds: 2,             // ⚙︎ rounds per play
   homeCount: 6,          // ⚙︎ our players on the board
   awayCount: 5,          // ⚙︎ opponents on the board
-  studyMs: 3000,         // ⚙︎ how long the picture is shown
+  studyMs: 3500,         // ⚙︎ how long the picture is shown (was 3000; +0.5 s for a gentler start)
   hideMs: 800,           // ⚙︎ blank pitch between the two pictures
   answerMs: 10000,       // ⚙︎ time to tap the player who moved
   moveMin: 6,            // ⚙︎ shortest move, metres
@@ -56,7 +56,7 @@ export const SPOT = {
 export const TRACK = {
   rounds: 2,             // ⚙︎ rounds per play
   players: 11,           // ⚙︎ identical teammates on the board (no opponents)
-  targets: 3,            // ⚙︎ how many to follow
+  targets: 2,            // ⚙︎ how many to follow (was 3; speeds unchanged so the effect of the count shows on its own)
   markMs: 2500,          // ⚙︎ the red pulse on the targets
   fadeMs: 400,           // ⚙︎ the pulse fading out before everyone moves
   moveMs: 8000,          // ⚙︎ how long everyone moves
@@ -75,7 +75,10 @@ export const DECIDE = {
   // Production (src/build.js as committed) uses only scenarios Omri has approved.
   allowDrafts: BUILD.allowDrafts,
   historyKey: "ig.decide.history", // localStorage: which scenarios this browser has seen
-  points: { best: 100, reasonable: 50, poor: 0 }, // ⚙︎ PROVISIONAL until Omri approves the ranking scheme
+  // Each option scores one of these (scenarios.js), ties allowed. The challenge is the average
+  // over the situations, so it stays out of 100. Scheme approved by Omri; each scenario's scores are still drafts.
+  scale: [100, 75, 50, 25], // ⚙︎
+  labels: { 100: "Top option", 75: "Good option", 50: "Fair option", 25: "Riskier option" },
   outcomeMs: 1600,       // ⚙︎ how long the outcome animation plays
 };
 

@@ -28,7 +28,7 @@
   --rule: rgba(238, 241, 236, 0.14);
   --rule-soft: rgba(238, 241, 236, 0.07);
 
-  /* Brand: IntelliGym red, taken from the site's theme (--awb-color7) and logo.
+  /* Brand red (SoccerIQ). Kept from the first build, originally taken from intelligym.com's theme.
      Rule: red means "yours / act here". It is never used for errors. */
   --red: #d10d0d;
   --red-hi: #ec2a22;

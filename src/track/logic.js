@@ -120,8 +120,9 @@ const word = (n) => WORDS[n] ?? String(n);
 // The one feedback sentence after a round. Only says "crossed paths" when it happened.
 export function feedbackLine(grade, fast) {
   const total = grade.found.length + grade.missed.length;
-  if (grade.missed.length === 0) return fast ? `You held all ${word(total)}, even at speed.` : `You held all ${word(total)}.`;
-  const lost = grade.missed.length === 1 ? "Lost one" : `Lost ${word(grade.missed.length)}`;
+  const held = total === 2 ? "both" : `all ${word(total)}`;
+  if (grade.missed.length === 0) return fast ? `You held ${held}, even at speed.` : `You held ${held}.`;
+  const lost = grade.missed.length === 1 ? "Lost one" : grade.missed.length === 2 && total === 2 ? "Lost both" : `Lost ${word(grade.missed.length)}`;
   if (grade.lostInCrossing === grade.missed.length) {
     return `${lost} where ${grade.missed.length === 1 ? "they" : "they each"} crossed paths with a teammate.`;
   }

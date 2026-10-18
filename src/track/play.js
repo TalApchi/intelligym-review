@@ -1,15 +1,16 @@
 // "Tracking runners": runs the rounds on screen.
-// Each round: three teammates pulse red -> the pulse fades -> everyone runs -> freeze ->
-// tap the three you followed -> Confirm -> replay. Rules are in logic.js; this file does timing and DOM.
+// Each round: the targets (TRACK.targets, two) pulse red -> the pulse fades -> everyone runs -> freeze ->
+// tap the ones you followed -> Confirm -> replay. Rules are in logic.js; this file does timing and DOM.
 
 import { TRACK } from "../config.js";
 import { makeRound, positionsAt, gradeRound, feedbackLine, scoreTrack } from "./logic.js";
 import { buildBoard, drawPlayers, setTappable, playerAt, markPlayer, placePlayers } from "../board.js";
 
+const COUNT = ["none", "one", "two", "three", "four"][TRACK.targets] ?? String(TRACK.targets);
 const PHASE = {
-  mark: { label: "Look", prompt: "These three. Lock on." },
+  mark: { label: "Look", prompt: `These ${COUNT}. Lock on.` },
   move: { label: "Follow", prompt: "Keep your eyes on them" },
-  pick: { label: "Your move", prompt: "Tap the three you followed" },
+  pick: { label: "Your move", prompt: `Tap the ${COUNT} you followed` },
 };
 
 /**
@@ -98,7 +99,7 @@ export function playTrack(root, { onDone }) {
   }
 
   // Tap to pick, tap again to drop. Confirm shows once exactly `targets` are picked.
-  function pickThree(round) {
+  function pickTargets(round) {
     return new Promise((resolve) => {
       const picks = [];
       const final = round.players.map((p) => ({ id: p.id, ...positionsAt(round, 1)[p.id] }));
@@ -111,7 +112,7 @@ export function playTrack(root, { onDone }) {
         const i = picks.indexOf(id);
         if (i >= 0) picks.splice(i, 1);
         else if (picks.length < TRACK.targets) picks.push(id);
-        else return; // already three: drop one first
+        else return; // already at the limit: drop one first
         markPlayer(board, id, "is-pick", i < 0);
         update();
       };
@@ -152,7 +153,7 @@ export function playTrack(root, { onDone }) {
       ui.picker.hidden = true;
       ui.play.classList.remove("is-revealed");
 
-      // 1. Mark the three targets
+      // 1. Mark the targets
       drawPlayers(board, round.players.map((p) => ({ ...p, ...positionsAt(round, 0)[p.id] })));
       setPhase("mark");
       for (const id of round.targets) markPlayer(board, id, "is-target");
@@ -165,12 +166,12 @@ export function playTrack(root, { onDone }) {
       setPhase("move");
       await runAll(round);
 
-      // 3. Freeze and pick three
+      // 3. Freeze and pick the targets
       setPhase("pick");
       setTappable(board, true);
       ui.picker.hidden = false;
       const shownAt = performance.now();
-      const picks = await pickThree(round);
+      const picks = await pickTargets(round);
       const timeMs = performance.now() - shownAt;
       setTappable(board, false);
       ui.picker.hidden = true;

@@ -1,8 +1,8 @@
 // "Tactical choice": the rules, with no DOM. Pure functions, tested in
 // site/tests/decide.test.mjs. The scenarios themselves (and their PROVISIONAL
-// rankings) live in scenarios.js.
+// scores) live in scenarios.js.
 
-const RANKS = ["best", "reasonable", "poor"];
+export const SCALE = [100, 75, 50, 25];
 
 // The scenarios the game may use. Drafts only when allowed (never in a production build).
 export function usableScenarios(scenarios, cfg) {
@@ -47,13 +47,13 @@ export function checkScenario(s) {
   if (ids.size !== players.length) problems.push("duplicate player id");
   if (!s.home.some((p) => p.id === s.carrier)) problems.push("carrier is not one of our players");
   if (s.options.length < 3 || s.options.length > 4) problems.push(`${s.options.length} options (need 3–4)`);
-  const bests = s.options.filter((o) => o.rank === "best").length;
-  if (bests < 1) problems.push("needs a suggested (best) option");
-  if (bests > 1 && !s.open) problems.push("more than one suggested option needs an `open` note saying why");
+  const tops = s.options.filter((o) => o.score === 100).length;
+  if (tops < 1) problems.push("needs a top option (score 100)");
+  if (tops > 1 && !s.open) problems.push("more than one top option needs an `open` note saying why");
   if (!s.reasoning) problems.push("missing reasoning");
   for (const c of s.cues || []) if (!ids.has(c.id)) problems.push(`cue for unknown player ${c.id}`);
   for (const o of s.options) {
-    if (!RANKS.includes(o.rank)) problems.push(`${o.id}: unknown rank ${o.rank}`);
+    if (!SCALE.includes(o.score)) problems.push(`${o.id}: score ${o.score} is not one of ${SCALE.join(" / ")}`);
     if (!o.note || !o.label || !o.result) problems.push(`${o.id}: missing label, note or result`);
     if (!o.ball || o.ball.length < 2) problems.push(`${o.id}: ball path needs 2+ points`);
     for (const id of Object.keys(o.moves || {})) if (!ids.has(id)) problems.push(`${o.id}: moves unknown player ${id}`);
@@ -105,19 +105,16 @@ export function previewTarget(option) {
   return option.ball[option.ball.length - 1];
 }
 
-// The best option of a scenario (its PROVISIONAL best until approved).
-export function bestOption(scenario) {
-  return scenario.options.find((o) => o.rank === "best");
-}
-
-// Every suggested option: more than one when the picture doesn't settle it (scenario.open).
+// Every top option (score 100): more than one when the picture doesn't settle it (scenario.open).
 export function bestOptions(scenario) {
-  return scenario.options.filter((o) => o.rank === "best");
+  return scenario.options.filter((o) => o.score === 100);
 }
 
-// Challenge points, 0 to 100: the average of each situation's points.
-export function scoreDecide(ranks, cfg) {
-  if (ranks.length === 0) return 0;
-  const sum = ranks.reduce((n, r) => n + cfg.points[r], 0);
-  return Math.round(sum / ranks.length);
+// Challenge points, 0 to 100: the average of each situation's score. A situation with
+// no answer would be passed as null and count 0; it is not one of the option scores.
+// (Tactical choice has no clock today, so every situation has an answer.)
+export function scoreDecide(scores) {
+  if (scores.length === 0) return 0;
+  const sum = scores.reduce((n, s) => n + (s ?? 0), 0);
+  return Math.round(sum / scores.length);
 }

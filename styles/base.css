@@ -12,8 +12,8 @@ body {
   /* Two soft floodlight glows plus film grain. Grain stops big dark areas looking flat. */
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(120% 70% at 85% -10%, #12291f 0%, rgba(18, 41, 31, 0) 60%),
-    radial-gradient(80% 50% at 0% 110%, #0f1c17 0%, rgba(15, 28, 23, 0) 70%);
+    radial-gradient(120% 70% at 85% -10%, #10283a 0%, rgba(16, 40, 58, 0) 60%),
+    radial-gradient(80% 50% at 0% 110%, #0c2226 0%, rgba(12, 34, 38, 0) 70%);
   background-attachment: fixed;
   color: var(--chalk);
   font-family: var(--font-body);
@@ -37,8 +37,8 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
   gap: var(--s2);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.24em;
+  font-size: 12px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -46,7 +46,7 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
   content: "";
   width: 18px;
   height: 2px;
-  background: var(--red);
+  background: var(--accent);
 }
 
 /* ---------- Buttons ---------- */
@@ -62,9 +62,9 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 19px;
-  letter-spacing: 0.14em;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
@@ -77,14 +77,14 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
 .btn:active { transform: translateY(0) scale(0.98); }
 
 .btn--primary {
-  background: var(--red);
-  color: #fff;
-  box-shadow: 0 10px 30px -10px var(--red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 10px 30px -10px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .btn__arrow { width: 20px; height: 20px; transition: transform 0.2s var(--ease-out); }
 
 @media (hover: hover) {
-  .btn--primary:hover { --lift: -2px; background: var(--red-hi); box-shadow: 0 16px 36px -12px var(--red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+  .btn--primary:hover { --lift: -2px; background: var(--accent-hi); box-shadow: 0 16px 36px -12px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
   .btn--primary:hover .btn__arrow { transform: translateX(3px); }
   .btn--ghost:hover { border-color: var(--muted); }
 }

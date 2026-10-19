@@ -21,12 +21,12 @@
 .review__legend { list-style: none; padding: 0; margin: var(--s5) 0 0; display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); font-size: 13px; color: var(--muted); }
 .review__legend li { display: flex; align-items: center; gap: var(--s2); }
 .lg { display: inline-block; width: 14px; height: 14px; border-radius: 50%; }
-.lg--you { background: var(--chalk); box-shadow: 0 0 0 2px var(--ink-0), 0 0 0 4px var(--red-hi); }
+.lg--you { background: var(--chalk); box-shadow: 0 0 0 2px var(--ink-0), 0 0 0 4px var(--accent-hi); }
 .lg--home { background: var(--chalk); }
 .lg--away { background: var(--opp-fill); border: 2px solid var(--opp-stroke); }
 .lg--run, .lg--press, .lg--plan { width: 24px; height: 0; border-radius: 0; border-top: 2px dashed rgba(238, 241, 236, 0.8); }
 .lg--press { border-top-color: var(--opp-stroke); }
-.lg--plan { border-top-color: var(--red-hi); }
+.lg--plan { border-top-color: var(--accent-hi); }
 
 .review__list { display: grid; gap: var(--s6); }
 
@@ -48,7 +48,7 @@
   border: 1px solid var(--rule); background: var(--panel); color: var(--chalk); font: 500 16px/1.3 var(--font-body);
 }
 .rv__opt:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
-.rv__opt[aria-pressed="true"] { border-color: var(--red); background: rgba(209, 13, 13, 0.12); }
+.rv__opt[aria-pressed="true"] { border-color: var(--accent); background: rgba(20, 196, 176, 0.12); }
 .rv__rank { font: 700 12px/1.2 var(--font-display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
 .rv__opt--best .rv__rank { color: #e8b53c; }
 .rv__result { font-size: 13px; color: var(--muted); }
@@ -64,7 +64,7 @@
 .rv__radios { display: flex; flex-wrap: wrap; gap: var(--s2); }
 .rv__radio { display: flex; align-items: center; gap: var(--s2); min-height: 44px; padding: 0 var(--s3); border: 1px solid var(--rule); border-radius: var(--radius-sm); cursor: pointer; }
 .rv__radio:has(input:checked) { border-color: var(--chalk); background: rgba(238, 241, 236, 0.08); }
-.rv__radio input { accent-color: var(--red); width: 18px; height: 18px; margin: 0; }
+.rv__radio input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; }
 .rv__comment { display: grid; gap: var(--s2); margin-top: var(--s3); font-size: 14px; }
 .rv__comment span { color: var(--muted); }
 .rv__comment textarea, .review__text {

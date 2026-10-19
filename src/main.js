@@ -9,7 +9,9 @@ import * as scene from "./scene.js";
 import { buildPitch, startAmbientMotion } from "./pitch.js";
 import { nextScreen } from "./flow.js";
 import { PLAN } from "./config.js";
-import { renderScreen } from "./screens.js";
+import { renderScreen, summarize } from "./screens.js";
+import { CHALLENGES } from "./config.js";
+import { saveLastResult } from "./site/store.js";
 import { BUILD } from "./build.js";
 
 const landing = document.getElementById("screen-landing");
@@ -35,7 +37,23 @@ function step(event, payload) {
   if (event === "done") results[current.index] = payload;
   if (event === "start") results = [];
   current = next;
+  if (current.name === "results") saveResult();
   return true;
+}
+
+// Keeps the finished run in this browser for the "Your results" page (store.js).
+function saveResult() {
+  const { played, total, available, tier } = summarize(PLAN, results);
+  saveLastResult({
+    total, available, tier,
+    rows: played.map(({ id, result }) => ({
+      id,
+      title: CHALLENGES[id].title,
+      points: result && !result.skipped ? result.points : null,
+      tally: result && !result.skipped ? result.tally : "",
+      provisional: Boolean(result?.provisional),
+    })),
+  });
 }
 
 function dispatch(event, payload) {

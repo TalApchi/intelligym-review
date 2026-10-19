@@ -3,44 +3,49 @@
    Everything else references these variables, so a brand change is one edit.
    ========================================================================== */
 
-@font-face { font-family: "Barlow Condensed"; font-weight: 500; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-500-normal.woff2") format("woff2"); }
-@font-face { font-family: "Barlow Condensed"; font-weight: 600; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-600-normal.woff2") format("woff2"); }
-@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-700-normal.woff2") format("woff2"); }
-@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-display: swap; src: url("../assets/fonts/barlow-condensed-latin-800-normal.woff2") format("woff2"); }
-@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("../assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url("../assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
-@font-face { font-family: "Inter"; font-weight: 600; font-display: swap; src: url("../assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 400; font-display: swap; src: url("../assets/fonts/unbounded-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 600; font-display: swap; src: url("../assets/fonts/unbounded-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 800; font-display: swap; src: url("../assets/fonts/unbounded-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Manrope"; font-weight: 400; font-display: swap; src: url("../assets/fonts/manrope-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Manrope"; font-weight: 500; font-display: swap; src: url("../assets/fonts/manrope-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Manrope"; font-weight: 700; font-display: swap; src: url("../assets/fonts/manrope-latin-700-normal.woff2") format("woff2"); }
 
 :root {
-  /* Surfaces: near-black with a green bias, like a floodlit pitch at night */
-  --ink-0: #06090a;
-  --ink-1: #0b1012;
-  --panel: #0f1619;
+  /* Soccer IQ identity (logo D "Rolling ball", approved 2026-10-19): ink and teal.
+     Surfaces: deep ink, a little blue */
+  --ink-0: #0b1018;
+  --ink-1: #111827;
+  --panel: #162033;
+  --panel-2: #1c2940;
   --pitch-a: #0d1b16;
   --pitch-b: #0a1612;
 
   /* Text */
-  --chalk: #eef1ec;          /* primary text, our players, pitch lines */
-  --muted: #93a19c;
-  --dim: #5f6e69;
+  --chalk: #f8fafc;          /* primary text, our players, pitch lines */
+  --muted: #a3b1c4;
+  --dim: #6b7a90;
 
   /* Lines and borders (chalk at low opacity, never grey hex) */
-  --rule: rgba(238, 241, 236, 0.14);
-  --rule-soft: rgba(238, 241, 236, 0.07);
+  --rule: rgba(248, 250, 252, 0.14);
+  --rule-soft: rgba(248, 250, 252, 0.07);
 
-  /* Brand red (SoccerIQ). Kept from the first build, originally taken from intelligym.com's theme.
-     Rule: red means "yours / act here". It is never used for errors. */
-  --red: #d10d0d;
-  --red-hi: #ec2a22;
-  --red-glow: rgba(209, 13, 13, 0.45);
+  /* Accent: Soccer IQ teal. Rule: the accent means "yours / act here". It is never used for errors. */
+  --accent: #14c4b0;
+  --accent-hi: #2dd4bf;
+  --accent-ink: #04201c;     /* text on an accent background */
+  --accent-glow: rgba(20, 196, 176, 0.4);
+
+  /* Review-only notes (review build) */
+  --review: #fbbf24;
+  --review-bg: rgba(251, 191, 36, 0.1);
 
   /* Opponents: dark slate so our (chalk) players always read first */
   --opp-fill: #26323b;
   --opp-stroke: #7d8f9c;
 
   /* Type */
-  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Unbounded", "Arial Black", sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Spacing: 4px base, use these steps only */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;

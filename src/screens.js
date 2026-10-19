@@ -211,12 +211,18 @@ function feedback(screen, ctx) {
   };
 }
 
-function results(_screen, ctx) {
-  const played = ctx.plan.challenges.map((id, i) => ({ id, result: ctx.results[i] }));
+// The run's totals, shared by the results screen and the saved "Your results" page.
+export function summarize(plan, resultsByIndex) {
+  const played = plan.challenges.map((id, i) => ({ id, result: resultsByIndex[i] }));
   const scored = played.filter((p) => p.result && !p.result.skipped);
   const total = scored.reduce((sum, p) => sum + p.result.points, 0);
   const available = scored.length * 100;
   const tier = available ? tierFor(total / available, TIERS) : TIERS[0].name;
+  return { played, total, available, tier };
+}
+
+function results(_screen, ctx) {
+  const { played, total, available, tier } = summarize(ctx.plan, ctx.results);
 
   const rows = played.map(({ id, result }) => {
     const title = CHALLENGES[id].title;
@@ -235,11 +241,12 @@ function results(_screen, ctx) {
         <p class="results__total"><strong>${total}</strong> challenge points out of ${available} available</p>
         <ul class="results__rows">${rows}</ul>
         <p class="results__note">Points describe how you did in these challenges, nothing more. Tier names are game settings, not a rating of ability.${provisionalNote(played)}</p>
-        <div class="temp-card temp-card--inline">
-          <p class="temp-card__flag">Temporary</p>
-          <p class="temp-card__body">A featured training product (IntelliGym) may appear here later, marked clearly as a partner offer. Its wording and claims need approval first.</p>
+        <div class="results__next">
+          <a class="btn btn--primary" href="results.html">Your results page ${arrow}</a>
+          <a class="btn btn--ghost" href="learn.html">How to improve</a>
+          <a class="btn btn--ghost" href="tools.html">Training tools</a>
+          <a class="btn btn--text" href="#">Play again</a>
         </div>
-        <a class="btn btn--ghost" href="#">Start over</a>
       </section>`,
   };
 }

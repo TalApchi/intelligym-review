@@ -20,7 +20,7 @@
   display: grid; gap: 2px; padding: 10px var(--s3); min-height: 56px; border-radius: var(--radius-sm);
   border: 1px solid var(--rule); background: var(--panel); color: var(--chalk); text-decoration: none;
 }
-.pg__tab[aria-current="true"] { border-color: var(--red); background: rgba(209, 13, 13, 0.12); }
+.pg__tab[aria-current="true"] { border-color: var(--accent); background: rgba(20, 196, 176, 0.12); }
 .pg__tab:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
 .pg__tab-group { font: 700 11px/1.2 var(--font-display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
 .pg__tab-name { font: 600 15px/1.25 var(--font-body); }

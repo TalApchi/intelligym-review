@@ -4,80 +4,19 @@
   <meta name="robots" content="noindex, nofollow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SoccerIQ | Read the Game</title>
-  <meta name="description" content="SoccerIQ: short soccer challenges about reading the game.">
-  <link rel="icon" href="assets/brand/socceriq-icon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#06090a">
-  <link rel="preload" href="assets/fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <title>Soccer IQ | Read the game</title>
+  <meta name="description" content="Soccer IQ: five short football challenges about reading the game, tips to train game intelligence and an honest guide to training tools.">
+  <link rel="icon" href="assets/brand/soccer-iq-icon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0b1018">
+  <link rel="preload" href="assets/fonts/unbounded-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/landing.css">
-  <link rel="stylesheet" href="styles/game.css">
+  <link rel="stylesheet" href="styles/site.css">
 </head>
-<body>
-  <div class="page">
-
-    <header class="topbar">
-      <!-- SoccerIQ logo: PROPOSED identity, pending Tal and Omri's approval (assets/brand/). -->
-      <a class="brand" href="#" aria-label="SoccerIQ home">
-        <img class="brand__logo" src="assets/brand/socceriq-horizontal.svg" alt="SoccerIQ" width="168" height="40">
-      </a>
-    </header>
-
-    <!-- SCREEN: landing -->
-    <main class="screen screen--landing" id="screen-landing" data-screen="landing">
-      <section class="hero">
-
-        <div class="hero__stage" aria-hidden="true">
-          <div class="stage-card">
-            <div class="stage-card__hud">
-              <span class="hud-chip"><span class="hud-dot"></span>Live read</span>
-              <span class="hud-chip hud-chip--ghost">Your ball</span>
-            </div>
-            <div class="stage-card__camera">
-              <!-- The pitch SVG is built by src/pitch.js from data in src/scene.js -->
-              <svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg>
-            </div>
-            <ul class="stage-card__legend">
-              <li><span class="key key--home"></span>Your team</li>
-              <li><span class="key key--opp"></span>Opponent</li>
-              <li><span class="key key--read"></span>The read</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="hero__copy">
-          <p class="kicker reveal" style="--i:0">A SoccerIQ challenge</p>
-          <h1 class="headline reveal" style="--i:1">
-            <span>See the play</span>
-            <span>before it</span>
-            <span class="headline__accent">happens.</span>
-          </h1>
-          <p class="lede reveal" style="--i:2">
-            A few short challenges built around one skill: reading the game.
-            Scan the pitch, keep track of the play, and find out how quickly you pick up what matters.
-          </p>
-          <div class="cta reveal" style="--i:3">
-            <a class="btn btn--primary" href="#challenge" id="start-btn">
-              Test Yourself
-              <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            <p class="cta__meta">Takes a few minutes <span aria-hidden="true">·</span> Phone or desktop</p>
-          </div>
-        </div>
-
-      </section>
-
-      <footer class="footnote">
-        <span>SoccerIQ</span> Points describe how you did in these games. They are not an IQ test.
-      </footer>
-    </main>
-
-    <!-- SCREENS: challenge flow (intro, play, feedback, results), drawn by src/screens.js -->
-    <main class="screen screen--game" id="screen-game" data-screen="game" hidden></main>
-
-  </div>
-
-  <script type="module" src="src/main.js"></script>
+<body data-page="home">
+  <main id="main" class="site-main" tabindex="-1"></main>
+  <noscript><p class="noscript">Soccer IQ needs JavaScript to show this page.</p></noscript>
+  <script type="module" src="src/site/boot.js"></script>
 </body>
 </html>

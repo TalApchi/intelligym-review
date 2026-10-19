@@ -21,8 +21,8 @@ function drawDefs(svg) {
   const defs = el("defs", {}, svg);
 
   const grad = el("linearGradient", { id: "scan-grad", x1: "0", y1: "0", x2: "1", y2: "0" }, defs);
-  el("stop", { offset: "0", "stop-color": "#d10d0d", "stop-opacity": "0.34" }, grad);
-  el("stop", { offset: "1", "stop-color": "#d10d0d", "stop-opacity": "0" }, grad);
+  el("stop", { offset: "0", "stop-color": "#14c4b0", "stop-opacity": "0.34" }, grad);
+  el("stop", { offset: "1", "stop-color": "#14c4b0", "stop-opacity": "0" }, grad);
 
   const blur = el("filter", { id: "soft", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
   el("feGaussianBlur", { stdDeviation: "0.45" }, blur);

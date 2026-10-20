@@ -3,7 +3,7 @@
 //
 // A developing move on a populated half pitch. One teammate, the runner, makes a run in
 // behind while the defence reacts: their midfielder screens the lane early on and then
-// steps out, the runner's marker tracks the run from inside, a covering centre-back slides
+// steps out, the runner's marker tracks the run from inside, a covering center back slides
 // across and the keeper comes out once the runner gets close. You choose WHEN to pass.
 //
 // Movement is deliberately uniform: every player who moves does so at the same speed
@@ -21,7 +21,7 @@ import { positionAt } from "../track/logic.js";
 export const BALL_SPEED = 14;    // m/s, every pass
 export const PLAYER_SPEED = 6;   // m/s, every moving player, runner included
 export const RAMP = 0.45;        // s to reach full speed from standing, and to stop again
-// A defender touches the ball when the ball's centre comes within REACH of theirs. On the board
+// A defender touches the ball when the ball's center comes within REACH of theirs. On the board
 // a player disc has a 1.8 m radius and the ball 0.9 m, so 2.9 m means "the shapes touch".
 export const REACH = 2.9;
 export const KEEPER_REACH = 3.4; // hands: a little further than a defender's foot
@@ -106,7 +106,7 @@ export function makeMove(seed, { practice = false, level = 0 } = {}) {
     const markerEnd = { x: end.x - side * between(rng, 3.8, 5), y: end.y + between(rng, 1.5, 3) };
     const markerAt = go([markerStart, { x: mid.x - side * inside, y: mid.y }, markerEnd], tGo + between(rng, 0.25, 0.55));
 
-    // The covering centre-back slides across into the space the runner is heading for.
+    // The covering center back slides across into the space the runner is heading for.
     const cover0 = P(between(rng, -1, 2), between(rng, 17, 19));
     const coverTo = { x: lerp(end, { x: 34, y: end.y }, 0.35).x, y: end.y + between(rng, 2, 3.5) };
     const coverAt = go([cover0, coverTo], tGo + between(rng, COVER[0], COVER[1]));
@@ -119,7 +119,7 @@ export function makeMove(seed, { practice = false, level = 0 } = {}) {
 
     // The rest of the back line and midfield shift with the play.
     const other = [
-      { id: "a-cb2", role: "centre-back", at: go([P(-8, 18), P(-5, 13)], tGo + 0.3) },
+      { id: "a-cb2", role: "center back", at: go([P(-8, 18), P(-5, 13)], tGo + 0.3) },
       { id: "a-fb2", role: "full back", at: go([P(-19, 21), P(-15, 16)], tGo + 0.2) },
       { id: "a-cm2", role: "central midfielder", at: go([P(-11, 32), P(-7, 33.5)], 0.4) },
       { id: "a-wm", role: "wide midfielder", at: go([P(18, 35), P(14, 31)], 0.2) },
@@ -127,7 +127,7 @@ export function makeMove(seed, { practice = false, level = 0 } = {}) {
     const defenders = [
       { id: "a-screen", role: "central midfielder", at: screenAt },
       { id: "a-marker", role: "full back", at: markerAt },
-      { id: "a-cover", role: "centre-back", at: coverAt },
+      { id: "a-cover", role: "center back", at: coverAt },
       { id: "a-gk", role: "goalkeeper", at: keeperAt, reach: KEEPER_REACH },
       ...other,
     ];

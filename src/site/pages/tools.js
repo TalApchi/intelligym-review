@@ -1,53 +1,86 @@
-// Training tools page: profiles, then the comparison table (#compare).
+// Training tools page: one profile per provider (same structure for all, alphabetical),
+// then the comparison table (#compare). A provider's coupon button comes from offers.js.
 
-import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES } from "../../../content/tools.js";
-import { SITE } from "../../../content/site.js";
-import { esc, ext, source, reviewNote, badge, shown, section, fmtDate, REVIEW } from "../ui.js";
+import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsInOrder } from "../../../content/tools.js";
+import { OFFERS, offerIsLive } from "../../../content/offers.js";
+import { esc, ext, reviewNote, shown, section, pageHead, finalCta, REVIEW } from "../ui.js";
 
-const cellSource = (src) => (src?.url ? `<a class="cell__src" href="${esc(src.url)}" target="_blank" rel="noopener" title="${esc(src.label)}">source<span class="sr-only">: ${esc(src.label)} (opens in a new tab)</span></a>` : "");
+export const title = "Soccer training tools compared: BlazePod, Be Your Best, IntelliGym, NeuroTracker, Rezzil | Soccer IQ";
+export const description = "A side-by-side comparison of soccer game-intelligence training tools: what each one is, the equipment you need, price, trial and refund terms, and the evidence each provider cites.";
+
+const PROFILE_FACTS = ["format", "soccer", "hardware", "pricing"];
+
+// The big coupon button. Live (a link) once the offer has a URL; until then a disabled button
+// in the review build, and nothing at all in the public build.
+export function couponButton(offer) {
+  const live = offerIsLive(offer);
+  if (!live && !REVIEW) return "";
+  const details = [
+    offer.discount && ["Discount", offer.discount],
+    offer.code && ["Code", offer.code],
+    offer.eligibility && ["Who can use it", offer.eligibility],
+    offer.region && ["Region", offer.region],
+    offer.expires && ["Ends", offer.expires],
+  ].filter(Boolean);
+  const label = `<span class="coupon__ball" aria-hidden="true"></span>${esc(offer.button)}`;
+  return `
+    <div class="coupon">
+      ${live
+        ? `<a class="btn btn--cta btn--coupon" href="${esc(offer.url)}" target="_blank" rel="noopener">${label}<span class="sr-only"> (opens IntelliGym's site in a new tab)</span></a>`
+        : `<button class="btn btn--cta btn--coupon" type="button" disabled aria-disabled="true">${label}</button>`}
+      ${live && details.length ? `<dl class="coupon__details">${details.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+    </div>`;
+}
+
+function termsToConfirm(t) {
+  if (!REVIEW || !t.termsToConfirm?.length) return "";
+  return `
+    <details class="terms-confirm">
+      <summary><span class="review-note__tag">Review</span> Terms to confirm (${t.termsToConfirm.length}): official pages disagree</summary>
+      ${t.termsToConfirm.map((x) => `
+        <div class="ttc">
+          <h4>${esc(x.topic)}</h4>
+          <ul>${x.versions.map((v) => `<li><strong>${esc(v.text)}</strong> <span class="small">· ${esc(v.note)} · ${ext(v.source.url, "page")}</span></li>`).join("")}</ul>
+        </div>`).join("")}
+    </details>`;
+}
 
 function profile(t) {
-  const links = t.links.map((l) => (l.href
-    ? `<a class="btn btn--primary btn--sm" href="${esc(l.href)}">${esc(l.label)}</a>`
-    : ext(l.url, l.label, "btn btn--ghost btn--sm"))).join("");
-  const facts = ["format", "football", "hardware", "pricing"].map((k) => {
+  const facts = PROFILE_FACTS.map((k) => {
     const row = COMPARE_ROWS.find((r) => r.key === k);
     return `<div><dt>${esc(row.label)}</dt><dd>${esc(t.compare[k].text)}</dd></div>`;
   }).join("");
+  const offers = OFFERS.filter((o) => o.provider === t.id && o.visible !== false).map(couponButton).join("");
   return `
-    <article class="tool${t.featured ? " tool--featured" : ""}" id="${t.id}">
+    <article class="tool" id="${t.id}" aria-labelledby="${t.id}-name">
       <header class="tool__head">
-        ${t.featured ? `<p class="tool__flag">Featured partner</p>` : ""}
-        <h3 class="tool__name">${esc(t.name)}</h3>
+        <h3 class="h-sub tool__name" id="${t.id}-name">${esc(t.name)}</h3>
         <p class="tool__company">${esc(t.company)}</p>
       </header>
       <p>${esc(t.summary)}</p>
       <dl class="facts">${facts}</dl>
-      <p class="tool__rel">${esc(t.relationship)}</p>
-      <div class="cta-row">${links}</div>
-      <details class="sources">
-        <summary>Sources, checked ${fmtDate(t.checked)}</summary>
-        <ul>${t.sources.map((src) => `<li>${ext(src.url, src.label)}</li>`).join("")}</ul>
-      </details>
-      ${badge(t.status)}
+      <p class="tool__more"><a href="#compare">Sessions, evidence, trial and refund terms in the comparison</a></p>
+      ${offers}
+      <div class="cta-row">${t.links.map((l) => ext(l.url, l.label, "btn btn--ghost btn--sm")).join("")}</div>
+      ${termsToConfirm(t)}
       ${reviewNote(t.reviewNote)}
     </article>`;
 }
 
 function table(tools) {
-  const head = tools.map((t) => `<th scope="col">${t.featured ? `<a href="intelligym.html">${esc(t.name)}</a>` : esc(t.name)}</th>`).join("");
+  const head = tools.map((t) => `<th scope="col"><a href="#${t.id}">${esc(t.name)}</a></th>`).join("");
   const rows = COMPARE_ROWS.map((r) => `
     <tr>
       <th scope="row">${esc(r.label)}</th>
       ${tools.map((t) => {
         const c = t.compare[r.key] || { text: "Not published" };
-        return `<td>${esc(c.text)} ${cellSource(c.source)}${reviewNote(c.reviewNote)}</td>`;
+        return `<td>${esc(c.text)}${reviewNote(c.reviewNote)}</td>`;
       }).join("")}
     </tr>`).join("");
   return `
     <div class="table-wrap" role="region" aria-labelledby="compare-title" tabindex="0">
       <table class="compare">
-        <caption class="sr-only">Training tools compared on ${COMPARE_ROWS.length} points</caption>
+        <caption class="sr-only">${tools.length} soccer training tools compared on ${COMPARE_ROWS.length} points</caption>
         <thead><tr><td></td>${head}</tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -55,34 +88,29 @@ function table(tools) {
     <p class="table-hint">On a phone, swipe the table sideways to see every tool.</p>`;
 }
 
-export function render(main) {
-  const tools = TOOLS.filter(shown);
-  main.innerHTML = `
-    <header class="page-head">
-      <p class="kicker">Training tools</p>
-      <h1 class="display display--lg">Tools that train game intelligence</h1>
-      <p class="lede">Some tools train reading the game away from the pitch. Here is what each one is, what you need, what it costs and what evidence it cites, from the companies' own pages.</p>
-      <div class="cta-row">
-        <a class="btn btn--ghost" href="#compare">Jump to the comparison</a>
-      </div>
-      <p class="disclosure">${esc(SITE.disclosure.short)} <a href="about.html#relationship">How we work with IntelliGym</a></p>
-      ${reviewNote(SITE.disclosure.reviewNote)}
-    </header>
+export function view() {
+  const tools = toolsInOrder(TOOLS.filter(shown));
+  return `
+    ${pageHead("Training tools", "Soccer training tools compared", "Tools that train reading the game away from regular practice: what each one is, what you need, what it costs and what evidence it cites, from each provider's own pages.",
+      `<div class="cta-row"><a class="btn btn--ghost" href="#compare">Jump to the comparison</a></div>`)}
 
     ${section("profiles", "The tools", `<div class="tools">${tools.map(profile).join("")}</div>`)}
 
-    <section class="sec" id="compare">
+    <section class="sec" id="compare" aria-labelledby="compare-title">
       <h2 class="sec__title" id="compare-title">${esc(COMPARE.title)}</h2>
-      <p class="sec__lede">${esc(COMPARE.intro)} Checked ${fmtDate(COMPARE.checked)}.</p>
+      <p class="sec__lede">${esc(COMPARE.intro)}</p>
       ${table(tools)}
-      <p class="small">Evidence notes describe what each company cites. None of it is about the Soccer IQ challenges. <a href="knowledge.html#claims">How to read a training claim</a></p>
+      <p class="small">Evidence notes describe what each provider cites. None of it is about the Soccer IQ challenges. <a href="knowledge.html#claims">How to read a training claim</a>. Soccer IQ is run by IntelliGym Labs (<a href="about.html">About</a>).</p>
     </section>
 
     ${REVIEW ? section("", "", TOOLS_REVIEW_NOTES.map(reviewNote).join("")) : ""}
 
-    <section class="final-cta">
-      <h2 class="display display--md">See where you stand first</h2>
-      <p>Five free challenges in your browser. No account.</p>
-      <a class="btn btn--primary" href="play.html">Start the challenges</a>
-    </section>`;
+    ${finalCta("See where you stand first", "Five free challenges in your browser. No account.", { label: "Test yourself", href: "play.html" })}`;
 }
+
+export const structuredData = () => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Soccer training tools compared",
+  itemListElement: toolsInOrder(TOOLS.filter(shown)).map((t, i) => ({ "@type": "ListItem", position: i + 1, name: t.name, url: t.website })),
+});

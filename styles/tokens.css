@@ -3,16 +3,15 @@
    Everything else references these variables, so a brand change is one edit.
    ========================================================================== */
 
-@font-face { font-family: "Unbounded"; font-weight: 400; font-display: swap; src: url("../assets/fonts/unbounded-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "Unbounded"; font-weight: 600; font-display: swap; src: url("../assets/fonts/unbounded-latin-600-normal.woff2") format("woff2"); }
-@font-face { font-family: "Unbounded"; font-weight: 800; font-display: swap; src: url("../assets/fonts/unbounded-latin-800-normal.woff2") format("woff2"); }
 @font-face { font-family: "Manrope"; font-weight: 400; font-display: swap; src: url("../assets/fonts/manrope-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Manrope"; font-weight: 500; font-display: swap; src: url("../assets/fonts/manrope-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Manrope"; font-weight: 600; font-display: swap; src: url("../assets/fonts/manrope-latin-600-normal.woff2") format("woff2"); }
 @font-face { font-family: "Manrope"; font-weight: 700; font-display: swap; src: url("../assets/fonts/manrope-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Manrope"; font-weight: 800; font-display: swap; src: url("../assets/fonts/manrope-latin-800-normal.woff2") format("woff2"); }
 
 :root {
-  /* Soccer IQ identity (logo D "Rolling ball", approved 2026-10-19): ink and teal.
-     Surfaces: deep ink, a little blue */
+  /* Soccer IQ identity: ink and teal, from Omri's logo (brand/omri/), with yellow for key
+     actions. Surfaces: deep ink, a little blue */
   --ink-0: #0b1018;
   --ink-1: #111827;
   --panel: #162033;
@@ -35,17 +34,47 @@
   --accent-ink: #04201c;     /* text on an accent background */
   --accent-glow: rgba(20, 196, 176, 0.4);
 
-  /* Review-only notes (review build) */
-  --review: #fbbf24;
-  --review-bg: rgba(251, 191, 36, 0.1);
+  /* Emphasis: yellow for the most important actions (Test yourself, the coupon button).
+     Never used for warnings or review notes. Red (--alert) only sparingly. */
+  --cta: #fcd34d;
+  --cta-hi: #fde68a;
+  --cta-ink: #1c1400;        /* text on yellow */
+  --cta-glow: rgba(252, 211, 77, 0.35);
+  --alert: #f87171;
+
+  /* Review-only notes (review build): violet, so they never look like a yellow call to action */
+  --review: #c4b5fd;
+  --review-ink: #1e1238;
+  --review-bg: rgba(196, 181, 253, 0.1);
 
   /* Opponents: dark slate so our (chalk) players always read first */
   --opp-fill: #26323b;
   --opp-stroke: #7d8f9c;
 
   /* Type */
-  --font-display: "Unbounded", "Arial Black", sans-serif;
+  /* One family. Hierarchy comes from size and weight only. --font-display is kept as an
+     alias so older rules still resolve to the same family. */
   --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-body);
+
+  /* Type scale (responsive). Use these, not ad-hoc sizes.
+     hero    the home and Test yourself headline
+     page    one per page: the h1
+     section h2
+     sub     h3, card titles
+     body    paragraphs
+     small   secondary text, captions
+     label   uppercase labels, kickers, table headers (with --ls-label) */
+  --fs-hero: clamp(36px, 7vw, 60px);
+  --fs-page: clamp(30px, 5vw, 44px);
+  --fs-section: clamp(23px, 3.4vw, 30px);
+  --fs-sub: 18px;
+  --fs-body: 17px;
+  --fs-small: 14.5px;
+  --fs-label: 12.5px;
+  --ls-label: 0.08em;
+  --fs-button: 16px;
+  --fs-nav: 15px;
 
   /* Spacing: 4px base, use these steps only */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;

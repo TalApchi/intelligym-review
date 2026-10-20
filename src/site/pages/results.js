@@ -4,12 +4,15 @@ import { loadLastResult, clearLastResult } from "../store.js";
 import { SKILLS } from "../../../content/skills.js";
 import { esc, section, button, fmtDate } from "../ui.js";
 
+export const title = "Your results | Soccer IQ";
+export const description = "Your latest Soccer IQ challenge result, kept only in this browser.";
+
 function empty() {
   return `
     <div class="empty">
       <p>No result on this device yet. Play the five challenges and your breakdown will appear here.</p>
       <p class="small">You can also explore the tips and tools without playing.</p>
-      <div class="cta-row">${button({ label: "Start the challenges", href: "play.html" })}<a class="btn btn--ghost" href="learn.html">Training tips</a></div>
+      <div class="cta-row">${button({ label: "Test yourself", href: "play.html" })}<a class="btn btn--ghost" href="learn.html">Training tips</a></div>
     </div>`;
 }
 
@@ -21,7 +24,7 @@ function filled(r) {
     return `
       <li class="res-row">
         <div class="res-row__top">
-          <h3>${esc(row.title)}${row.provisional ? ` <span class="tag">Provisional</span>` : ""}</h3>
+          <h3 class="h-sub">${esc(row.title)}${row.provisional ? ` <span class="tag">Provisional</span>` : ""}</h3>
           <strong>${pts}</strong>
         </div>
         <div class="bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
@@ -46,18 +49,23 @@ function filled(r) {
     </div>`;
 }
 
-export function render(main) {
-  const r = loadLastResult();
-  main.innerHTML = `
+const head = `
     <header class="page-head">
       <p class="kicker">Your results</p>
-      <h1 class="display display--lg">How you did</h1>
+      <h1 class="h-page">How you did</h1>
       <p class="lede">Your most recent run of the five challenges. It is stored only in this browser; there are no accounts.</p>
-    </header>
-    ${section("result", "", r ? filled(r) : empty())}`;
+    </header>`;
 
-  main.querySelector("#clear")?.addEventListener("click", () => {
+// The built page shows the empty state; mount() swaps in the saved result if there is one.
+export const view = () => `${head}${section("result", "", empty())}`;
+
+export function mount(main) {
+  const r = loadLastResult();
+  const box = main.querySelector("#result");
+  if (!r || !box) return;
+  box.innerHTML = filled(r);
+  box.querySelector("#clear")?.addEventListener("click", () => {
     clearLastResult();
-    render(main);
+    box.innerHTML = empty();
   });
 }

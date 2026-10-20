@@ -19,8 +19,8 @@ export const FORMATIONS = [
     ],
     away: [
       { id: "a-rb", role: "right back", x: 14, y: 12 },
-      { id: "a-rcb", role: "right centre-back", x: 27, y: 9 },
-      { id: "a-lcb", role: "left centre-back", x: 41, y: 9 },
+      { id: "a-rcb", role: "right center back", x: 27, y: 9 },
+      { id: "a-lcb", role: "left center back", x: 41, y: 9 },
       { id: "a-lb", role: "left back", x: 54, y: 12 },
       { id: "a-dm", role: "holding midfielder", x: 33, y: 23 },
     ],
@@ -36,8 +36,8 @@ export const FORMATIONS = [
       { id: "h-rw", role: "right winger", x: 60, y: 27 },
     ],
     away: [
-      { id: "a-rcb", role: "right centre-back", x: 28, y: 9 },
-      { id: "a-lcb", role: "left centre-back", x: 43, y: 10 },
+      { id: "a-rcb", role: "right center back", x: 28, y: 9 },
+      { id: "a-lcb", role: "left center back", x: 43, y: 10 },
       { id: "a-rm", role: "right midfielder", x: 21, y: 23 },
       { id: "a-cm", role: "central midfielder", x: 35, y: 27 },
       { id: "a-lm", role: "left midfielder", x: 51, y: 21 },
@@ -55,8 +55,8 @@ export const FORMATIONS = [
     ],
     away: [
       { id: "a-rb", role: "right back", x: 13, y: 9 },
-      { id: "a-rcb", role: "right centre-back", x: 25, y: 6 },
-      { id: "a-lcb", role: "left centre-back", x: 40, y: 8 },
+      { id: "a-rcb", role: "right center back", x: 25, y: 6 },
+      { id: "a-lcb", role: "left center back", x: 40, y: 8 },
       { id: "a-cm", role: "central midfielder", x: 27, y: 21 },
       { id: "a-lm", role: "left midfielder", x: 53, y: 23 },
     ],

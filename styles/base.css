@@ -17,8 +17,8 @@ body {
   background-attachment: fixed;
   color: var(--chalk);
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: var(--fs-body);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -35,10 +35,10 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.16em;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -61,11 +61,10 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
   padding: 0 var(--s6);
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-button);
+  letter-spacing: 0;
   text-decoration: none;
   cursor: pointer;
   user-select: none;
@@ -83,7 +82,15 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
 }
 .btn__arrow { width: 20px; height: 20px; transition: transform 0.2s var(--ease-out); }
 
+/* The most important action on a page (Test yourself, the coupon button): yellow */
+.btn--cta {
+  background: var(--cta);
+  color: var(--cta-ink);
+  box-shadow: 0 10px 30px -12px var(--cta-glow), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
 @media (hover: hover) {
+  .btn--cta:hover { --lift: -2px; background: var(--cta-hi); }
   .btn--primary:hover { --lift: -2px; background: var(--accent-hi); box-shadow: 0 16px 36px -12px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
   .btn--primary:hover .btn__arrow { transform: translateX(3px); }
   .btn--ghost:hover { border-color: var(--muted); }

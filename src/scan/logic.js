@@ -1,7 +1,7 @@
 // "Scan before receiving": the rules, with no DOM. Pure functions, tested in
 // site/tests/scan.test.mjs. Which pass is best in each situation is a DRAFT (situations.js,
 // approved: false) until Omri reviews it; the thresholds below are for consistency checks
-// and the generated sentences, not football rules.
+// and the generated sentences, not soccer rules.
 //
 // Coordinates are metres on the attacking half, as everywhere else: y = 0 is the
 // opponents' goal line at the top of the screen, y = 52.5 is halfway.
@@ -34,7 +34,7 @@ export function assessTarget(s, t) {
 }
 
 // The draft thresholds the situations are written to (PROVISIONAL, for consistency checks
-// and the generated sentences, not a football rule): blocked lane < 2.2 m, marked < 5 m,
+// and the generated sentences, not a soccer rule): blocked lane < 2.2 m, marked < 5 m,
 // open = nearest 7 m+ and lane 3 m+.
 export const SCAN_RULE = { lane: 2.2, marked: 5, openNear: 7, openLane: 3 };
 

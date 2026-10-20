@@ -1,78 +1,72 @@
-// Home page: the guided journey (play → results → learn → explore training).
+// Home page. One job: get visitors to take the test. Hero with the main button, a short
+// guided journey (play → results → learn → explore training), the five skills, a closing button.
 
 import { HOME } from "../../../content/home.js";
-import { SKILLS, WHY } from "../../../content/skills.js";
-import { TOOLS } from "../../../content/tools.js";
-import { TESTIMONIALS } from "../../../content/testimonials.js";
+import { SKILLS } from "../../../content/skills.js";
 import { SITE } from "../../../content/site.js";
-import { esc, button, shown, shownTestimonial, testimonialCard, section } from "../ui.js";
+import { esc, button, finalCta } from "../ui.js";
 import { loadLastResult } from "../store.js";
 import * as scene from "../../scene.js";
 import { buildPitch, startAmbientMotion } from "../../pitch.js";
 
-export function render(main) {
+export const title = "Soccer IQ | Test how well you read the game";
+export const description = "Five short soccer challenges on scanning, awareness, decisions and timing. Free, no account. Then learn how to train game intelligence.";
+
+export function view() {
   const h = HOME.hero;
-  const last = loadLastResult();
-  const steps = HOME.journey.map((s, i) => {
-    let extra = "";
-    if (i === 1 && last) extra = `<p class="step__mine">Your last result: <strong>${last.total}</strong> / ${last.available} points</p>`;
-    return `
-      <li class="step">
-        <span class="step__n" aria-hidden="true">${s.n}</span>
-        <div class="step__body">
-          <h3 class="step__title">${esc(s.title)}</h3>
-          <p>${esc(s.text)}</p>
-          ${extra}
-          <a class="step__link" href="${s.cta.href}">${esc(s.cta.label)} <span aria-hidden="true">→</span></a>
-        </div>
-      </li>`;
-  }).join("");
+  const steps = HOME.journey.map((s) => `
+    <li class="step">
+      <span class="step__n" aria-hidden="true">${esc(s.n)}</span>
+      <div class="step__body">
+        <h3 class="step__title"><a href="${s.cta.href}">${esc(s.title)}</a></h3>
+        <p>${esc(s.text)}</p>
+      </div>
+    </li>`).join("");
 
-  const tools = TOOLS.filter(shown).map((t) => `
-    <a class="tool-tile${t.featured ? " is-featured" : ""}" href="${t.featured ? "intelligym.html" : `tools.html#${t.id}`}">
-      ${t.featured ? `<span class="tag tag--partner">Featured partner</span>` : ""}
-      <span class="tool-tile__name">${esc(t.name)}</span>
-      <span class="tool-tile__format">${esc(t.formatShort)}</span>
-    </a>`).join("");
-
-  const quotes = TESTIMONIALS.filter((t) => t.featured && shownTestimonial(t));
-
-  main.innerHTML = `
-    <div class="journey">
-      <aside class="journey__lead">
+  return `
+    <section class="hero-home" aria-labelledby="home-title">
+      <div class="hero-home__copy">
         <p class="kicker">${esc(h.kicker)}</p>
-        <h1 class="display">${h.title.map((l, i) => `<span${i === h.title.length - 1 ? ' class="hl"' : ""}>${esc(l)}</span>`).join(" ")}</h1>
+        <h1 class="h-hero" id="home-title">${h.title.map((l, i) => `<span${i === h.title.length - 1 ? ' class="hl"' : ""}>${esc(l)}</span>`).join(" ")}</h1>
         <p class="lede">${esc(h.lede)}</p>
-        <div class="cta-row">${button(h.primary)}${button(h.secondary, "ghost")}</div>
+        <div class="cta-row">${button(h.primary)}</div>
         <p class="meta">${esc(h.meta)}</p>
-        <div class="stage-card stage-card--mini" aria-hidden="true"><div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
-      </aside>
+      </div>
+      <div class="stage-card stage-card--mini" aria-hidden="true"><div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
+    </section>
+
+    <section class="journey" aria-label="How it works">
       <ol class="journey__steps">${steps}</ol>
-    </div>
+      <p class="step__mine" id="last-result" hidden></p>
+    </section>
 
-    ${section("why", WHY.title, `
-      <p class="sec__lede">${esc(WHY.body)}</p>
+    <section class="sec sec--tight" aria-labelledby="skills-title">
+      <h2 class="h-section" id="skills-title">${esc(HOME.skillsTitle)}</h2>
       <ul class="skill-chips">${SKILLS.map((s) => `<li><a href="learn.html#${s.id}"><strong>${esc(s.name)}</strong><span>${esc(s.line)}</span></a></li>`).join("")}</ul>
-      <div class="why-points">${WHY.points.map((p) => `<div><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div>`).join("")}</div>`)}
+    </section>
 
-    ${section("tools", HOME.toolsTeaser.title, `
-      <p class="sec__lede">${esc(HOME.toolsTeaser.text)}</p>
-      <div class="tool-tiles">${tools}</div>
-      <p class="disclosure">${esc(SITE.disclosure.short)} <a href="about.html#relationship">What this means</a></p>
-      ${button(HOME.toolsTeaser.cta, "ghost")}`)}
-
-    ${quotes.length ? section("voices", HOME.testimonialsTeaser.title, `
-      <p class="sec__lede">${esc(HOME.testimonialsTeaser.note)}</p>
-      <div class="quotes">${quotes.map(testimonialCard).join("")}</div>
-      ${button(HOME.testimonialsTeaser.cta, "ghost")}`) : ""}
-
-    <section class="final-cta">
-      <h2 class="display display--md">${esc(HOME.finalCta.title)}</h2>
-      <p>${esc(HOME.finalCta.text)}</p>
-      ${button(HOME.finalCta.cta)}
-    </section>`;
-
-  const svg = main.querySelector("#pitch");
-  const handles = buildPitch(svg, scene);
-  startAmbientMotion(handles, svg.closest(".stage-card"));
+    ${finalCta(HOME.finalCta.title, HOME.finalCta.text, HOME.finalCta.cta)}`;
 }
+
+export function mount(main) {
+  const last = loadLastResult();
+  const el = main.querySelector("#last-result");
+  if (last && el) {
+    el.innerHTML = `Your last result: <strong>${last.total}</strong> / ${last.available} points. <a href="results.html">See the breakdown</a>`;
+    el.hidden = false;
+  }
+  const svg = main.querySelector("#pitch");
+  if (svg && !svg.childElementCount) {
+    const handles = buildPitch(svg, scene);
+    startAmbientMotion(handles, svg.closest(".stage-card"));
+  }
+}
+
+// Structured data for this page (written into <head> by the build).
+export const structuredData = () => ({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.name,
+  description: SITE.description,
+  publisher: { "@type": "Organization", name: "IntelliGym Labs", address: { "@type": "PostalAddress", addressRegion: "NJ", addressCountry: "US" } },
+});

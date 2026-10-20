@@ -1,26 +1,36 @@
-// About page, including #relationship (how Soccer IQ relates to IntelliGym) and #contact.
+// About page: the site name, the operator line directly beneath it, then short sections.
 
 import { ABOUT } from "../../../content/about.js";
 import { SITE } from "../../../content/site.js";
-import { esc, section, reviewNote } from "../ui.js";
+import { OFFERS, offerIsLive } from "../../../content/offers.js";
+import { esc, html, section, reviewNote, REVIEW } from "../ui.js";
 
-export function render(main) {
+export const title = "About Soccer IQ | IntelliGym Labs, New Jersey";
+export const description = "Soccer IQ is a soccer game-intelligence website run by IntelliGym Labs, New Jersey, U.S.: five challenges, training tips and a comparison of soccer training tools.";
+
+export function view() {
   const c = ABOUT.contact;
-  main.innerHTML = `
+  const offers = OFFERS.filter((o) => o.visible !== false && o.about && (offerIsLive(o) || REVIEW));
+  return `
     <header class="page-head">
       <p class="kicker">About</p>
-      <h1 class="display display--lg">${esc(ABOUT.title)}</h1>
+      <h1 class="h-page">${esc(ABOUT.title)}</h1>
+      <p class="operator">${esc(SITE.operator)}</p>
       <p class="lede">${esc(ABOUT.intro)}</p>
     </header>
 
     ${ABOUT.sections.map((s) => section("", s.title, `<p class="prose">${esc(s.body)}</p>`)).join("")}
 
-    ${section("relationship", "Soccer IQ and IntelliGym", `
-      <p class="prose">${esc(SITE.disclosure.long)}</p>
-      <p><a class="step__link" href="intelligym.html">The IntelliGym page <span aria-hidden="true">→</span></a></p>
-      ${reviewNote(SITE.disclosure.reviewNote)}`)}
+    ${offers.length ? section("coupons", "Coupons", offers.map((o) => `<p class="prose">${html(o.about)}</p>`).join("")) : ""}
 
-    ${c.body || c.reviewNote ? section("contact", c.title, `${c.body ? `<p class="prose">${c.body}</p>` : ""}${reviewNote(c.reviewNote)}`) : ""}
+    ${c.body || (REVIEW && c.reviewNote) ? section("contact", c.title, `${c.body ? `<p class="prose">${c.body}</p>` : ""}${reviewNote(c.reviewNote)}`) : ""}
 
     <p class="small credits">${esc(ABOUT.credits)}</p>`;
 }
+
+export const structuredData = () => ({
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: `About ${SITE.name}`,
+  publisher: { "@type": "Organization", name: "IntelliGym Labs", address: { "@type": "PostalAddress", addressRegion: "NJ", addressCountry: "US" } },
+});

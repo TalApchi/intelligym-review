@@ -2,6 +2,7 @@
 //
 // Each tip: { id, title, body, for: ["players"|"coaches"|"parents"], source?, visible }
 //   source: { label, url, checked } when the tip comes from someone else's published advice.
+//           Kept here for our records; it is not shown on the page.
 //   visible: false hides the tip without deleting it.
 
 const IG_CHECKED = "2026-10-18";
@@ -53,18 +54,3 @@ export const TIPS = [
     visible: true,
   },
 ];
-
-// Advice IntelliGym publishes for its own training programme. Shown as a separate,
-// credited group so it is clear it applies to IntelliGym training.
-export const IG_ADVICE = {
-  title: "IntelliGym's advice for its own training",
-  intro: "IntelliGym publishes practical guidance for athletes, parents and coaches using its programme. In summary:",
-  items: [
-    { id: "ig-routine", text: "Train 2 to 3 sessions a week, with at least 24 hours of rest between sessions.", source: { label: "IntelliGym FAQ: How often should an athlete train?", url: "https://soccer.intelligym.com/faq-items/how-often-should-an-athlete-train-with-the-intelligym/", checked: IG_CHECKED }, visible: true },
-    { id: "ig-complete", text: "\"It is more important to complete the training than it is to excel within the training environment.\"", source: { label: "IntelliGym: Onboarding tips & best practices", url: "https://soccer.intelligym.com/best-practices/", checked: IG_CHECKED }, visible: true },
-    { id: "ig-timing", text: "Avoid training right before a game or practice.", source: { label: "IntelliGym: Onboarding tips & best practices", url: "https://soccer.intelligym.com/best-practices/", checked: IG_CHECKED }, visible: true },
-    { id: "ig-repeat", text: "The training is hard on purpose; repeat earlier levels as often as needed.", source: { label: "IntelliGym FAQ: Is the training difficult?", url: "https://soccer.intelligym.com/faq-items/is-the-training-difficult/", checked: IG_CHECKED }, visible: true },
-    { id: "ig-measure", text: "Pair the training with on-field measures such as completed passes, takeaways and decision-making in games.", source: { label: "IntelliGym: Onboarding tips & best practices", url: "https://soccer.intelligym.com/best-practices/", checked: IG_CHECKED }, visible: true },
-    { id: "ig-encourage", text: "Parents and coaches: encourage and reward progress, individually or as a team.", source: { label: "IntelliGym: Onboarding tips & best practices", url: "https://soccer.intelligym.com/best-practices/", checked: IG_CHECKED }, visible: true },
-  ],
-};

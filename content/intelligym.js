@@ -1,12 +1,14 @@
-// IntelliGym: the featured partner product (intelligym.html, plus cards on the home and tools pages).
+// IntelliGym: detailed record of IntelliGym's published product facts, plans, terms and research.
 //
-// Every fact comes from IntelliGym's official pages and carries its source and the date checked.
-// Status values used on commercial entries:
+// Since Omri's 2026-10-20 feedback IntelliGym appears on the site like every other provider:
+// its profile and comparison cells live in tools.js. This file is the internal record behind
+// those cells. The only part shown is "Terms to confirm", inside IntelliGym's profile, in the
+// review build only. The coupon button lives in offers.js.
+//
+// Status values:
 //   "verified"    shown on the official page as quoted, on the date checked
-//   "to-confirm"  official pages disagree or the detail is incomplete: shown only in the review
-//                 build, inside "Terms to confirm", never as a promise
-//   "pending"     not available yet (for example a dedicated Soccer IQ offer)
-// `visible: false` hides an entry everywhere. `reviewNote` shows only in the review build.
+//   "to-confirm"  official pages disagree or the detail is incomplete
+// `reviewNote` is for Omri and Tal.
 
 const C = "2026-10-18"; // date checked
 const SRC = {
@@ -40,8 +42,8 @@ export const INTELLIGYM = {
   name: "The Soccer IntelliGym",
   company: "IntelliGym (ACE Applied Cognitive Engineering Ltd.)",
   website: "https://soccer.intelligym.com/",
-  tagline: "Cognitive training software for football players, from IntelliGym.",
-  summary: "A computer and iPhone training programme of game-like exercises designed to train the mental side of football, such as anticipation, attention and awareness. It is used by individual players, families and clubs.",
+  tagline: "Cognitive training software for soccer players, from IntelliGym.",
+  summary: "A computer and iPhone training program of game-like exercises designed to train the mental side of soccer, such as anticipation, attention and awareness. It is used by individual players, families and clubs.",
 
   // Short facts for the profile (each with its source).
   facts: [
@@ -50,7 +52,7 @@ export const INTELLIGYM = {
     { label: "How often", value: "2 to 3 sessions a week, with at least 24 hours of rest in between.", source: SRC.faqHow },
     { label: "Ages", value: "IntelliGym gives 10 to 25 as the general age range, starting from about 10.", source: SRC.faqAge },
     { label: "Who it is for", value: "Individual athletes, families (2 to 4 athletes) and teams (5 or more).", source: SRC.home },
-    { label: "Devices", value: "Windows or Mac computer, or iPhone (iOS 12 or later). Desktop and mobile are separate programmes; no Android version is listed.", source: SRC.faqMobile },
+    { label: "Devices", value: "Windows or Mac computer, or iPhone (iOS 12 or later). Desktop and mobile are separate programs; no Android version is listed.", source: SRC.faqMobile },
     { label: "Computer setup", value: "IntelliGym recommends a larger screen and a mouse rather than a trackpad.", source: SRC.install },
     { label: "For parents and coaches", value: "Progress reports, training history and a leaderboard in the Members Area; parents and coaches get their own access.", source: SRC.faqReports },
   ],
@@ -63,12 +65,12 @@ export const INTELLIGYM = {
     currency: "USD",
     note: "Prices as shown on IntelliGym's plans page on the date checked. Check the official page before buying.",
     groups: [
-      { id: "individual", title: "Individual (1 licence)", rows: [
+      { id: "individual", title: "Individual (1 license)", rows: [
         { id: "ind-monthly", plan: "Monthly", price: "$21.90 / month", billing: "Monthly subscription", label: "", status: "verified", visible: true },
         { id: "ind-seasonal", plan: "Seasonal", price: "$17.95 / month", billing: "6 months prepaid", total: "$107.70 for 6 months", label: "Marked \"Most Recommended\"", status: "verified", visible: true },
         { id: "ind-annual", plan: "Annual", price: "$15.90 / month", billing: "12 months prepaid", total: "$190.80 for 12 months", label: "Marked \"Save 27%\" against monthly", status: "verified", visible: true },
       ] },
-      { id: "family", title: "Family (2 to 4 licences)", rows: [
+      { id: "family", title: "Family (2 to 4 licenses)", rows: [
         { id: "fam-monthly", plan: "Monthly", price: "$17.90 / month", billing: "Monthly", status: "verified", visible: true },
         { id: "fam-seasonal", plan: "Seasonal", price: "$14.95 / month", billing: "6 months prepaid", status: "verified", visible: true },
         { id: "fam-annual", plan: "Annual", price: "$12.90 / month", billing: "12 months prepaid", label: "Marked \"Get Best Value\"", status: "verified", visible: true },
@@ -94,9 +96,6 @@ export const INTELLIGYM = {
       status: "verified", appliesTo: "Individual annual plan", region: "Not stated", expires: "No expiry stated", eligibility: "Not stated", source: SRC.app, visible: true },
     { id: "group-pricing", title: "Family and team pricing", text: "IntelliGym says it offers discounted pricing through its family and team plans, and custom pricing for clubs.",
       status: "verified", appliesTo: "Family and team plans", region: "Not stated", expires: "No expiry stated", eligibility: "Families of 2 to 4; teams of 5 or more", source: SRC.faqGroup, visible: true },
-    { id: "socceriq-offer", title: "Dedicated Soccer IQ offer", text: "A dedicated Soccer IQ offer for IntelliGym is pending. No Soccer IQ code or discount exists yet.",
-      status: "pending", appliesTo: "", region: "", expires: "", eligibility: "", code: "", source: null, visible: true,
-      reviewNote: "No coupon is published anywhere on IntelliGym's sites. Fill in code, discount, eligibility, region and expiry here once IntelliGym provides them, then set status to \"verified\"." },
   ],
 
   // Published terms that official pages agree on.
@@ -135,7 +134,7 @@ export const INTELLIGYM = {
     ] },
   ],
 
-  // What IntelliGym's cited research shows, described accurately. Used on intelligym.html and knowledge.html.
+  // What IntelliGym's cited research shows, described accurately. Used on knowledge.html.
   research: [
     { id: "vu", title: "VU Amsterdam academy study",
       what: "IntelliGym reports a 10-week randomised comparison with 52 academy players aged 14 to 17 from PSV Eindhoven and AZ Alkmaar. One group trained with IntelliGym twice a week; the control group watched match clips. Blinded raters scored small-sided games before and after.",
@@ -145,7 +144,7 @@ export const INTELLIGYM = {
     { id: "space-fortress", title: "Origins: the Space Fortress research",
       what: "IntelliGym's origins page traces its approach to Space Fortress, a training game it says was developed by DARPA and later studied with flight trainees in the 1990s.",
       result: "In the NASA Ames field test of helicopter trainees, the Space Fortress group's flight ratings were slightly higher than the other groups'.",
-      limits: "The paper reports that the group differences were not statistically significant and calls the results not conclusive. The studies involved aviation trainees, not footballers. IntelliGym's \"approved by NASA and DARPA\" wording is not supported by these sources.",
+      limits: "The paper reports that the group differences were not statistically significant and calls the results not conclusive. The studies involved aviation trainees, not soccer players. IntelliGym's \"approved by NASA and DARPA\" wording is not supported by these sources.",
       sources: [SRC.origins, SRC.nasa] },
   ],
 

@@ -11,7 +11,7 @@
 .review__back:hover { color: var(--chalk); }
 
 .review__intro { max-width: 760px; padding: var(--s6) 0 var(--s5); }
-.review__intro h1 { font: 800 clamp(30px, 6vw, 46px)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.01em; margin: 0 0 var(--s4); }
+.review__intro h1 { font: 800 clamp(30px, 6vw, 46px)/1.15 var(--font-display); letter-spacing: -0.01em; margin: 0 0 var(--s4); }
 .review__intro p, .review__intro li { color: var(--muted); line-height: 1.55; font-size: 16px; }
 .review__intro strong { color: var(--chalk); font-weight: 600; }
 .review__more { margin-top: var(--s4); border: 1px solid var(--rule); border-radius: var(--radius-sm); padding: var(--s3) var(--s4); background: var(--panel); }
@@ -32,7 +32,7 @@
 
 .rv { display: grid; gap: var(--s4); padding-top: var(--s5); border-top: 1px solid var(--rule); scroll-margin-top: var(--s4); }
 .rv__num { margin: 0; font: 700 13px/1 var(--font-display); letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
-.rv__title { margin: var(--s2) 0 0; font: 800 28px/1.05 var(--font-display); text-transform: uppercase; }
+.rv__title { margin: var(--s2) 0 0; font: 800 28px/1.15 var(--font-display); letter-spacing: -0.01em; }
 .rv__tags { margin: var(--s2) 0 0; font-size: 13px; color: var(--muted); }
 .rv__who { margin: 0 0 var(--s3); color: var(--muted); }
 .rv__who strong { color: var(--chalk); }
@@ -50,13 +50,13 @@
 .rv__opt:focus-visible { outline: 2px solid var(--chalk); outline-offset: 2px; }
 .rv__opt[aria-pressed="true"] { border-color: var(--accent); background: rgba(20, 196, 176, 0.12); }
 .rv__rank { font: 700 12px/1.2 var(--font-display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-.rv__opt--best .rv__rank { color: #e8b53c; }
+.rv__opt--best .rv__rank { color: var(--review); }
 .rv__result { font-size: 13px; color: var(--muted); }
 .rv__note { margin: var(--s1) 0 0 var(--s4); font-size: 14px; line-height: 1.45; color: var(--muted); }
 .rv__reset { margin-top: var(--s3); background: none; border: 0; padding: var(--s2) 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font: inherit; font-size: 14px; }
 
-.rv__why { margin-top: var(--s4); border-left: 2px solid #e8b53c; padding-left: var(--s3); }
-.rv__why h3 { margin: 0; font: 700 13px/1.2 var(--font-display); letter-spacing: 0.16em; text-transform: uppercase; color: #e8b53c; }
+.rv__why { margin-top: var(--s4); border-left: 2px solid var(--review); padding-left: var(--s3); }
+.rv__why h3 { margin: 0; font: 700 13px/1.2 var(--font-display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--review); }
 .rv__why p { margin: var(--s2) 0 0; line-height: 1.5; }
 
 .rv__decide { margin: var(--s4) 0 0; padding: var(--s3) var(--s4) var(--s4); border: 1px solid var(--rule); border-radius: var(--radius-sm); }
@@ -85,6 +85,6 @@
 }
 
 /* Section headings: Tactical choice, then the playground's Scan before receiving */
-.review__h2 { margin: var(--s5) 0 var(--s4); font: 800 clamp(24px, 4.5vw, 32px)/1.05 var(--font-display); text-transform: uppercase; letter-spacing: 0.01em; }
+.review__h2 { margin: var(--s5) 0 var(--s4); font: 800 clamp(24px, 4.5vw, 32px)/1.15 var(--font-display); letter-spacing: -0.01em; }
 .review__intro--scan { padding-top: var(--s5); }
 .review__intro--scan .review__h2 { margin-top: 0; }

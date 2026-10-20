@@ -86,8 +86,8 @@ export function describeMove(player, from, to) {
   const metres = Math.round(dist(from, to));
   const upScreen = to.y < from.y;
   const forward = player.team === "home" ? upScreen : !upScreen;
-  const centre = PITCH.width / 2;
-  const inside = Math.abs(to.x - centre) < Math.abs(from.x - centre);
+  const center = PITCH.width / 2;
+  const inside = Math.abs(to.x - center) < Math.abs(from.x - center);
   return {
     who: `${player.team === "home" ? "your" : "their"} ${player.role}`,
     how: `${metres} m ${forward ? "forward" : "deeper"} and ${inside ? "inside" : "wider"}`,

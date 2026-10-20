@@ -47,7 +47,7 @@ export const SPOT = {
   // and the up/down position by at least this much, so it is never a tiny slide
   // along the player's own line. (Our reading of the rule; adjust if Omri disagrees.)
   minAxisChange: 2,      // ⚙︎ metres
-  clearance: 6,          // ⚙︎ the moved player lands at least this far from everyone else (centre to centre)
+  clearance: 6,          // ⚙︎ the moved player lands at least this far from everyone else (center to center)
   edgeMargin: 3,         // ⚙︎ keep players this far inside the touchlines and goal line
   jitter: 1.5,           // ⚙︎ random nudge to formation spots, so rounds never repeat exactly
   hitRadius: 4.5,        // ⚙︎ a tap within this many metres of a player counts as that player
@@ -63,7 +63,7 @@ export const TRACK = {
   speed: 5,              // ⚙︎ metres per second in round 1 (Tal's playtest: 4 felt too slow, 5 felt right)
   speedUp: 0.2,          // ⚙︎ each later round is this much faster (+20 %: 6 m/s in round 2)
   legs: 4,               // ⚙︎ each run is made of this many straight-ish legs, smoothed into a curve
-  spacing: 6,            // ⚙︎ players start and finish at least this far apart (centre to centre)
+  spacing: 6,            // ⚙︎ players start and finish at least this far apart (center to center)
   edgeMargin: 4,         // ⚙︎ keep runs this far inside the touchlines and goal line
   crossDistance: 4,      // ⚙︎ a target "crossed paths" with someone if they came this close while moving
   hitRadius: 4.5,        // ⚙︎ a tap within this many metres of a player counts as that player

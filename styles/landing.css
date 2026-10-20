@@ -39,10 +39,9 @@
   display: grid;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(34px, 10vw, 52px);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
+  font-size: var(--fs-hero);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   margin-top: var(--s1);
 }
 .headline__accent { color: var(--accent); }
@@ -232,7 +231,7 @@
     min-height: calc(100svh - 72px - 160px);
   }
   .hero__copy { order: -1; gap: var(--s5); }
-  .headline { font-size: clamp(48px, 4.4vw, 66px); }
+  .headline { font-size: var(--fs-hero); }
   .lede { font-size: 18px; }
   .cta { justify-items: start; }
   .cta .btn { width: auto; min-width: 260px; }
@@ -250,6 +249,6 @@
   .topbar { height: 56px; }
   .hero { gap: var(--s4); }
   .hero__copy { gap: var(--s3); }
-  .headline { font-size: clamp(30px, 9vw, 44px); }
+  .headline { font-size: clamp(32px, 9vw, 40px); }
   .lede { font-size: 15px; }
 }

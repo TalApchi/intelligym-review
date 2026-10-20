@@ -1,21 +1,41 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="robots" content="noindex, nofollow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Test yourself | Soccer IQ</title>
-  <meta name="description" content="Five short football challenges about reading the game. Up to 100 points each. Free, no account.">
-  <link rel="icon" href="assets/brand/soccer-iq-icon.svg" type="image/svg+xml">
+  <meta name="description" content="Five short soccer challenges about reading the game. Up to 100 points each. Free, no account.">
+  <link rel="icon" href="assets/brand/socceriq-icon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#0b1018">
-  <link rel="preload" href="assets/fonts/unbounded-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/manrope-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/landing.css">
   <link rel="stylesheet" href="styles/game.css">
   <link rel="stylesheet" href="styles/site.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Soccer IQ">
+  <meta property="og:title" content="Test yourself | Soccer IQ">
+  <meta property="og:description" content="Five short soccer challenges about reading the game. Up to 100 points each. Free, no account.">
+  <meta name="robots" content="noindex, nofollow">
 </head>
 <body data-page="play">
+    <div class="review-banner" role="note"><strong>Review version.</strong> Notes marked &quot;Review&quot; are hidden in the public build.</div>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="index.html" aria-label="Soccer IQ home"><img class="" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91"></a>
+        <div class="site-header__actions">
+          <a class="btn btn--cta btn--sm header-cta" href="play.html" aria-current="page">Test yourself</a>
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+            <span class="nav-toggle__bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
+          </button>
+        </div>
+        <nav class="nav" id="site-nav" aria-label="Main">
+          <ul class="nav__list"><li><a class="nav__link" href="index.html">Home</a></li><li><a class="nav__link" href="learn.html">Training tips</a></li><li><a class="nav__link" href="knowledge.html">Knowledge hub</a></li><li><a class="nav__link" href="tools.html">Training tools</a></li><li><a class="nav__link" href="results.html">Your results</a></li></ul>
+        </nav>
+      </div>
+    </header>
   <main id="main" class="page page--play" tabindex="-1">
 
     <!-- SCREEN: challenge landing -->
@@ -52,7 +72,7 @@
             and time the through ball. Up to 100 points each, 500 in total.
           </p>
           <div class="cta reveal" style="--i:3">
-            <a class="btn btn--primary" href="#challenge" id="start-btn">
+            <a class="btn btn--cta" href="#challenge" id="start-btn">
               Start the challenges
               <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
@@ -72,6 +92,35 @@
     <section class="screen screen--game" id="screen-game" data-screen="game" hidden></section>
 
   </main>
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div class="footer__brand">
+          <img class="" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91">
+          <p>Soccer IQ is a soccer website about game intelligence: five short challenges, practical tips on reading the game, and a plain comparison of the tools that train it.</p>
+        </div>
+        
+    <div class="footer__col">
+      <h2 class="footer__title">Play</h2>
+      <ul><li><a href="play.html">Start the challenges</a></li><li><a href="results.html">Your results</a></li></ul>
+    </div>
+    <div class="footer__col">
+      <h2 class="footer__title">Learn</h2>
+      <ul><li><a href="learn.html#skills">The five skills</a></li><li><a href="learn.html#tips">Training tips</a></li><li><a href="knowledge.html">Knowledge hub</a></li></ul>
+    </div>
+    <div class="footer__col">
+      <h2 class="footer__title">Compare</h2>
+      <ul><li><a href="tools.html">Training tools</a></li><li><a href="tools.html#compare">Comparison table</a></li></ul>
+    </div>
+    <div class="footer__col">
+      <h2 class="footer__title">About</h2>
+      <ul><li><a href="about.html">About Soccer IQ</a></li><li><a href="faq.html">FAQ</a></li></ul>
+    </div>
+      </div>
+      <div class="site-footer__base">
+        <p>Soccer IQ Points describe how you did in these games. They are not an IQ test or a validated assessment.</p>
+        <p>© 2026 Soccer IQ</p>
+      </div>
+    </footer>
 
   <script type="module" src="src/site/boot.js"></script>
   <script type="module" src="src/main.js"></script>

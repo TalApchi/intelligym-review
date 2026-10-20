@@ -1,4 +1,4 @@
-// The five parts of game intelligence explained on the Learn page and previewed on the home page.
+// The five parts of game intelligence explained on the Training tips page and listed on the home page.
 // Our own plain-language explanations. `challenges` lists the Soccer IQ challenges (ids from src/config.js)
 // that ask for the skill. They are games, not a measure of the skill.
 
@@ -7,7 +7,7 @@ export const SKILLS = [
     id: "scanning",
     name: "Scanning",
     line: "Looking around before the ball arrives.",
-    body: "Quick looks over the shoulder and across the pitch, taken while the ball is on its way, so you already know where teammates, opponents and space are when it reaches you.",
+    body: "Quick looks over the shoulder and across the field, taken while the ball is on its way, so you already know where teammates, opponents and space are when it reaches you.",
     onPitch: ["Check both shoulders before you receive.", "Look again just before the pass is played: the picture changes."],
     challenges: ["scan"],
   },
@@ -44,14 +44,3 @@ export const SKILLS = [
     challenges: ["through"],
   },
 ];
-
-// Why it matters (home page). Our own wording; no performance claims.
-export const WHY = {
-  title: "Why game intelligence matters",
-  body: "Football is played in split seconds. Players who read the game well tend to be in the right place, see the pass early and waste fewer touches. These are skills you can think about, practise and talk about with your coach.",
-  points: [
-    { title: "See it earlier", text: "Scanning and anticipation buy time before the ball arrives." },
-    { title: "Choose better", text: "Knowing your options makes the decision easier under pressure." },
-    { title: "Move smarter", text: "Good positioning can mean fewer wasted runs." },
-  ],
-};

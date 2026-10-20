@@ -1,26 +1,31 @@
 // Header, navigation, footer and the review banner, shared by every page.
-// Copy comes from content/site.js.
+// Copy comes from content/site.js. The build writes this markup into each page (prerender);
+// mountShell() adds it in the browser only if it is missing (local preview), then wires the menu.
 
 import { SITE } from "../../content/site.js";
-import { esc, REVIEW, reviewNote } from "./ui.js";
+import { esc, REVIEW } from "./ui.js";
+
+const logoImg = (cls = "") =>
+  `<img class="${cls}" src="${SITE.logo.onDark}" alt="${esc(SITE.logo.alt)}" width="${SITE.logo.width}" height="${SITE.logo.height}">`;
 
 export function header(page) {
   const links = SITE.nav.map((n) =>
     `<li><a class="nav__link${n.page === page ? " is-current" : ""}" href="${n.href}"${n.page === page ? ' aria-current="page"' : ""}>${esc(n.label)}</a></li>`).join("");
+  const cta = SITE.cta;
   return `
-    ${REVIEW ? `<div class="review-banner" role="note"><strong>Review version</strong> ${esc(SITE.reviewBanner)}</div>` : ""}
+    ${REVIEW ? `<div class="review-banner" role="note"><strong>Review version.</strong> ${esc(SITE.reviewBanner.replace(/^Review version\.\s*/, ""))}</div>` : ""}
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="site-header__inner">
-        <a class="site-logo" href="index.html" aria-label="${esc(SITE.name)} home">
-          <img src="assets/brand/soccer-iq-logo-on-dark.svg" alt="${esc(SITE.name)}" width="146" height="30">
-        </a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-          <span class="nav-toggle__bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
-        </button>
+        <a class="site-logo" href="index.html" aria-label="${esc(SITE.name)} home">${logoImg()}</a>
+        <div class="site-header__actions">
+          <a class="btn btn--cta btn--sm header-cta" href="${cta.href}"${cta.page === page ? ' aria-current="page"' : ""}>${esc(cta.label)}</a>
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+            <span class="nav-toggle__bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
+          </button>
+        </div>
         <nav class="nav" id="site-nav" aria-label="Main">
           <ul class="nav__list">${links}</ul>
-          <a class="btn btn--primary btn--sm nav__play" href="play.html">Play</a>
         </nav>
       </div>
     </header>`;
@@ -36,9 +41,8 @@ export function footer() {
     <footer class="site-footer">
       <div class="site-footer__inner">
         <div class="footer__brand">
-          <img src="assets/brand/soccer-iq-logo-on-dark.svg" alt="${esc(SITE.name)}" width="146" height="30">
+          ${logoImg()}
           <p>${esc(SITE.description)}</p>
-          <p class="footer__disclosure">${esc(SITE.disclosure.short)} <a href="about.html#relationship">What this means</a></p>
         </div>
         ${cols}
       </div>
@@ -46,25 +50,22 @@ export function footer() {
         <p>${esc(SITE.footer.note)}</p>
         <p>${esc(SITE.copyright)}</p>
       </div>
-      ${reviewNote(SITE.disclosure.reviewNote)}
     </footer>`;
 }
 
 export function mountShell(page) {
-  document.body.insertAdjacentHTML("afterbegin", header(page));
-  document.body.insertAdjacentHTML("beforeend", footer());
+  if (!document.querySelector(".site-header")) {
+    document.body.insertAdjacentHTML("afterbegin", header(page));
+    document.body.insertAdjacentHTML("beforeend", footer());
+  }
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.getElementById("site-nav");
-  toggle.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") !== "true";
+  const set = (open) => {
     toggle.setAttribute("aria-expanded", String(open));
     nav.classList.toggle("is-open", open);
-  });
+  };
+  toggle.addEventListener("click", () => set(toggle.getAttribute("aria-expanded") !== "true"));
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && nav.classList.contains("is-open")) {
-      toggle.setAttribute("aria-expanded", "false");
-      nav.classList.remove("is-open");
-      toggle.focus();
-    }
+    if (e.key === "Escape" && nav.classList.contains("is-open")) { set(false); toggle.focus(); }
   });
 }

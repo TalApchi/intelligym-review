@@ -53,7 +53,7 @@ export function drawMarkings({ width, depth }, parent) {
   // Penalty arc: the part of the 9.15 m circle around the spot outside the box
   const dy = 16.5 - 11, dx = Math.sqrt(9.15 ** 2 - dy ** 2);
   el("path", { d: `M ${cx - dx} 16.5 A 9.15 9.15 0 0 0 ${cx + dx} 16.5` }, g);
-  // Centre circle (top half visible at the halfway line)
+  // Center circle (top half visible at the halfway line)
   el("path", { d: `M ${cx - 9.15} ${depth} A 9.15 9.15 0 0 1 ${cx + 9.15} ${depth}` }, g);
   // Corner arcs
   el("path", { d: `M 1 0 A 1 1 0 0 1 0 1` }, g);
@@ -96,7 +96,7 @@ function positionAt(p, t) {
   };
 }
 
-// Shorten a segment so it starts and ends at the edge of the discs, not their centres.
+// Shorten a segment so it starts and ends at the edge of the discs, not their centers.
 function trim(a, b, startGap, endGap) {
   const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
   const ux = dx / len, uy = dy / len;

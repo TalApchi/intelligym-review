@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/landing.css">
   <link rel="stylesheet" href="styles/site.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Soccer IQ","description":"Soccer IQ is a soccer website about game intelligence: five short challenges, practical tips on reading the game, and a plain comparison of the tools that train it.","publisher":{"@type":"Organization","name":"IntelliGym Labs","address":{"@type":"PostalAddress","addressRegion":"NJ","addressCountry":"US"}}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Soccer IQ","description":"Soccer IQ is a soccer website about game intelligence: five short challenges, practical tips on reading the game, and a plain comparison of the tools that train it."}</script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Soccer IQ">
   <meta property="og:title" content="Soccer IQ | Test how well you read the game">
@@ -26,7 +26,7 @@
       <div class="site-header__inner">
         <a class="site-logo" href="index.html" aria-label="Soccer IQ home"><img class="" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91"></a>
         <div class="site-header__actions">
-          <a class="btn btn--cta btn--sm header-cta" href="play.html">Test yourself</a>
+          <a class="btn btn--cta btn--sm header-cta" href="play.html">TEST YOURSELF</a>
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
             <span class="nav-toggle__bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
           </button>
@@ -42,18 +42,25 @@
         <p class="kicker">Soccer game intelligence</p>
         <h1 class="h-hero" id="home-title"><span>How well do you</span> <span class="hl">read the game?</span></h1>
         <p class="lede">Five short soccer challenges on scanning, awareness, decisions and timing. Free, no account.</p>
-        <div class="cta-row"><a class="btn btn--cta" href="play.html">Test yourself <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+        <div class="cta-row"><a class="btn btn--cta" href="play.html">TEST YOURSELF <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
         <p class="meta">A few minutes · phone or computer</p>
       </div>
-      <div class="stage-card stage-card--mini" aria-hidden="true"><div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
+      <div class="hero-home__stage" aria-hidden="true">
+        <div class="stage-card stage-card--hero">
+          <div class="stage-card__hud"><span class="hud-chip"><span class="hud-dot"></span>Live read</span><span class="hud-chip hud-chip--ghost">Your ball</span></div>
+          <div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div>
+          <ul class="stage-card__legend"><li><span class="key key--home"></span>Your team</li><li><span class="key key--opp"></span>Opponent</li><li><span class="key key--read"></span>The read</li></ul>
+        </div>
+      </div>
     </section>
 
-    <section class="journey" aria-label="How it works">
+    <section class="journey" aria-labelledby="journey-title">
+      <h2 class="label" id="journey-title">How it works</h2>
       <ol class="journey__steps">
     <li class="step">
       <span class="step__n" aria-hidden="true">1</span>
       <div class="step__body">
-        <h3 class="step__title"><a href="play.html">Play</a></h3>
+        <h3 class="step__title"><a href="play.html">TEST YOURSELF</a></h3>
         <p>Five challenges, up to 100 points each.</p>
       </div>
     </li>
@@ -81,7 +88,7 @@
       <p class="step__mine" id="last-result" hidden></p>
     </section>
 
-    <section class="sec sec--tight" aria-labelledby="skills-title">
+    <section class="sec sec--tight sec--quiet" aria-labelledby="skills-title">
       <h2 class="h-section" id="skills-title">The five skills we test</h2>
       <ul class="skill-chips"><li><a href="learn.html#scanning"><strong>Scanning</strong><span>Looking around before the ball arrives.</span></a></li><li><a href="learn.html#awareness"><strong>Awareness</strong><span>Keeping the whole picture in mind.</span></a></li><li><a href="learn.html#anticipation"><strong>Anticipation</strong><span>Seeing what is about to happen.</span></a></li><li><a href="learn.html#decisions"><strong>Decision-making</strong><span>Choosing the best option in the time you have.</span></a></li><li><a href="learn.html#timing"><strong>Timing</strong><span>Doing it at the right moment.</span></a></li></ul>
     </section>
@@ -90,7 +97,7 @@
   <section class="final-cta" aria-labelledby="final-cta-title">
     <h2 class="h-section" id="final-cta-title">Ready when you are</h2>
     <p>Practice rounds are never scored.</p>
-    <a class="btn btn--cta" href="play.html">Test yourself <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="btn btn--cta" href="play.html">TEST YOURSELF <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </section></main>
     <footer class="site-footer">
       <div class="site-footer__inner">
@@ -101,7 +108,7 @@
         
     <div class="footer__col">
       <h2 class="footer__title">Play</h2>
-      <ul><li><a href="play.html">Start the challenges</a></li><li><a href="results.html">Your results</a></li></ul>
+      <ul><li><a href="play.html">TEST YOURSELF</a></li><li><a href="results.html">Your results</a></li></ul>
     </div>
     <div class="footer__col">
       <h2 class="footer__title">Learn</h2>

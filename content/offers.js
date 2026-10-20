@@ -25,6 +25,7 @@ export const OFFERS = [
     id: "intelligym-coupon",
     provider: "intelligym",
     button: "Get a special IntelliGym coupon",
+    buttonShort: "Get the coupon", // the compact button in the comparison table
     url: "",
     code: "",
     discount: "",

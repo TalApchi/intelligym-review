@@ -56,20 +56,50 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 .btn--text:hover { color: var(--chalk); }
 .cta-row { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
 
-/* The coupon: the one large commercial button, inside the provider's profile */
+/* The coupon: a yellow ticket (notched ends, perforated stub). The button itself is unstyled so
+   its focus ring is not clipped by the ticket's notch mask. Large in the profile, compact in the table. */
 .coupon { display: grid; gap: var(--s3); }
-.btn--coupon {
-  width: 100%; min-height: 64px; font-size: 17px; font-weight: 800; letter-spacing: 0.02em;
-  text-transform: uppercase; gap: var(--s3);
+.coupon__btn {
+  display: block; width: 100%; padding: 0; border: 0; background: none; color: var(--cta-ink);
+  font: inherit; text-align: left; text-decoration: none; cursor: pointer; border-radius: 12px;
 }
-.btn--coupon[disabled] { cursor: not-allowed; opacity: 0.92; }
-.coupon__ball {
-  width: 22px; height: 22px; flex: none; border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 50%, var(--cta-ink) 0 22%, transparent 23%),
-    radial-gradient(circle at 50% 50%, transparent 0 60%, var(--cta-ink) 61% 68%, transparent 69%);
-  box-shadow: inset 0 0 0 2px var(--cta-ink);
+.coupon__btn[disabled] { cursor: not-allowed; }
+.coupon__ticket {
+  --notch: 11px;
+  display: flex; align-items: stretch; min-height: 68px;
+  background: var(--cta);
+  border-radius: 10px;
+  -webkit-mask: radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+          mask: radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(28, 20, 0, 0.12);
+  transition: background-color 0.15s;
 }
+a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
+.coupon__stub {
+  flex: none; display: grid; place-items: center; width: 64px; padding-left: 6px;
+  border-right: 2px dashed rgba(28, 20, 0, 0.35);
+}
+.coupon__stub svg { width: 28px; height: 28px; }
+.coupon__label {
+  flex: 1; display: flex; align-items: center; padding: var(--s3) var(--s5) var(--s3) var(--s4);
+  font-size: 17px; font-weight: 800; letter-spacing: 0.03em; line-height: 1.25; text-transform: uppercase;
+}
+.coupon__btn:focus-visible { outline: 2px solid var(--cta-hi); outline-offset: 4px; }
+
+.coupon--compact { margin-top: var(--s3); }
+.coupon__btn--compact { width: auto; max-width: 100%; display: inline-block; }
+.coupon__btn--compact .coupon__ticket { --notch: 6px; min-height: 40px; border-radius: 7px; }
+.coupon__btn--compact .coupon__stub { width: 34px; padding-left: 3px; border-right-width: 1.5px; }
+.coupon__btn--compact .coupon__stub svg { width: 17px; height: 17px; }
+.coupon__btn--compact .coupon__label { padding: 6px var(--s3) 6px 10px; font-size: 12.5px; letter-spacing: 0.04em; }
+
+@media (max-width: 400px) {
+  .coupon__stub { width: 52px; }
+  .coupon__label { font-size: 15.5px; padding-right: var(--s4); }
+}
+
 .coupon__details { display: grid; gap: var(--s1); font-size: var(--fs-small); }
 .coupon__details div { display: flex; gap: var(--s2); }
 .coupon__details dt { color: var(--dim); min-width: 110px; }
@@ -159,7 +189,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 
 /* ---------- Footer ---------- */
 
-.site-footer { border-top: 1px solid var(--rule-soft); background: rgba(11, 16, 24, 0.6); padding: var(--s7) var(--s4) var(--s6); }
+.site-footer {
+  border-top: 1px solid var(--rule-soft); padding: var(--s7) var(--s4) var(--s6);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 120' fill='none' stroke='%2314c4b0' stroke-opacity='0.14' stroke-width='1'%3E%3Cpath d='M70 0a50 50 0 0 0 100 0'/%3E%3Ccircle cx='120' cy='0' r='3' fill='%2314c4b0' fill-opacity='0.2' stroke='none'/%3E%3C/svg%3E") no-repeat center top / 190px auto,
+    rgba(11, 16, 24, 0.6);
+}
 .site-footer__inner { max-width: 1180px; margin: 0 auto; display: grid; gap: var(--s6); grid-template-columns: 1fr 1fr; }
 .footer__brand { grid-column: 1 / -1; display: grid; gap: var(--s3); max-width: 46ch; color: var(--muted); font-size: var(--fs-small); }
 .footer__brand img { height: 40px; width: auto; }
@@ -191,11 +226,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 .page-head::before {
   content: ""; position: absolute; z-index: -1; pointer-events: none;
   right: 0; top: 8px; width: min(46vw, 420px); aspect-ratio: 1;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%2314c4b0' stroke-width='1.2'%3E%3Ccircle cx='100' cy='100' r='46'/%3E%3Ccircle cx='100' cy='100' r='2.5' fill='%2314c4b0'/%3E%3Cpath d='M100 0v200'/%3E%3Cpath d='M0 40h40v120H0' /%3E%3C/svg%3E") no-repeat center / contain;
-  opacity: 0.09;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%2314c4b0' stroke-width='1.2'%3E%3Ccircle cx='100' cy='100' r='46'/%3E%3Ccircle cx='100' cy='100' r='2.5' fill='%2314c4b0'/%3E%3Cpath d='M100 0v200'/%3E%3Cpath d='M0 40h40v120H0'/%3E%3Cpath d='M0 76h14v48H0'/%3E%3Cpath d='M56 64 Q96 30 140 58' stroke-dasharray='2 5' stroke-linecap='round'/%3E%3Ccircle cx='56' cy='64' r='4.5' fill='%23f8fafc' stroke='none'/%3E%3Ccircle cx='140' cy='58' r='4.5' fill='%23f8fafc' stroke='none'/%3E%3Ccircle cx='150' cy='132' r='4.5'/%3E%3Ccircle cx='70' cy='150' r='4.5'/%3E%3C/svg%3E") no-repeat center / contain;
+  opacity: 0.11;
 }
 .page-head .kicker a { color: inherit; }
-.operator { font-size: var(--fs-sub); font-weight: 600; color: var(--chalk); margin-top: calc(var(--s2) * -1); }
 
 .sec { padding: var(--s7) 0 var(--s4); border-top: 1px solid var(--rule-soft); }
 .sec--tight { padding-top: var(--s5); }
@@ -221,7 +255,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 }
 .final-cta::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0.22;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 120' preserveAspectRatio='none'%3E%3Cpath d='M20 95 C120 20 230 110 380 30' fill='none' stroke='%2314c4b0' stroke-width='1.5' stroke-dasharray='3 7' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='95' r='4' fill='%23f8fafc'/%3E%3Ccircle cx='380' cy='30' r='4' fill='%23f8fafc'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 30'%3E%3Cpath d='M24 12 C130 2 250 16 376 5' fill='none' stroke='%2314c4b0' stroke-width='1.5' stroke-dasharray='3 7' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='12' r='2.5' fill='%23f8fafc'/%3E%3Ccircle cx='376' cy='5' r='2.5' fill='%23f8fafc'/%3E%3C/svg%3E") no-repeat center 10px / 100% auto;
 }
 .final-cta p { color: var(--muted); max-width: 50ch; }
 
@@ -241,42 +275,65 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 
 /* ---------- Home ---------- */
 
-.hero-home { display: grid; gap: var(--s5); padding: var(--s6) 0 var(--s5); align-items: center; }
+/* The hero fills the first screen under the header: headline, intro, pitch and the one button.
+   --chrome is the header (plus the review banner in the review build). */
+.hero-home {
+  --chrome: 64px;
+  position: relative; isolation: isolate;
+  display: grid; gap: var(--s5); align-content: center;
+  padding: var(--s5) 0 var(--s6);
+}
 .hero-home__copy { display: grid; gap: var(--s4); }
+.hero-home .h-hero { font-size: clamp(40px, 10.5vw, 76px); letter-spacing: -0.035em; line-height: 1.02; }
 .hero-home .h-hero span { display: block; }
-.hero-home .btn--cta { min-height: 60px; padding: 0 var(--s7); font-size: 18px; }
-.stage-card--mini { height: 220px; }
-.stage-card--mini .pitch { width: 92%; }
+.hero-home .lede { font-size: clamp(17px, 2.2vw, 20px); max-width: 44ch; }
+.hero-home .btn--cta { min-height: 62px; padding: 0 var(--s7); font-size: 18px; letter-spacing: 0.03em; }
+.stage-card--hero { height: clamp(250px, 70vw, 420px); }
+.stage-card--hero .pitch { width: 94%; }
 @media (min-width: 960px) {
-  .hero-home { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--s8); padding: var(--s8) 0 var(--s6); }
-  .stage-card--mini { height: 320px; }
+  .hero-home {
+    --chrome: 72px;
+    min-height: calc(100svh - var(--chrome));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s7);
+    align-items: center; padding: var(--s6) 0;
+  }
+  body:has(.review-banner) .hero-home { --chrome: 109px; }
+  .hero-home__copy { gap: var(--s5); }
+  .hero-home .h-hero { font-size: min(4.9vw, 72px); }
+  .stage-card--hero { height: auto; aspect-ratio: 1 / 0.86; max-height: calc(100svh - var(--chrome) - 96px); width: 100%; }
+  .stage-card--hero .pitch { width: 86%; }
+  .stage-card--hero .stage-card__hud { top: var(--s5); left: var(--s5); right: var(--s5); }
+  .stage-card--hero .stage-card__legend { left: var(--s5); bottom: var(--s5); }
+}
+@media (min-width: 960px) and (max-height: 760px) {
+  .hero-home .h-hero { font-size: clamp(40px, 5.6vw, 68px); }
 }
 
-.journey { padding: var(--s2) 0 var(--s5); }
-.journey__steps { list-style: none; display: grid; gap: var(--s2); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.step {
-  display: grid; grid-template-columns: 32px 1fr; gap: var(--s3); align-items: start;
-  padding: var(--s4); border-radius: var(--radius-sm); border: 1px solid var(--rule-soft);
-}
+/* Below the fold: the journey and skills, smaller and quieter */
+.journey { padding: var(--s6) 0 var(--s4); border-top: 1px solid var(--rule-soft); }
+.journey .label { margin-bottom: var(--s3); }
+.journey__steps { list-style: none; display: grid; gap: var(--s3) var(--s5); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.step { display: grid; grid-template-columns: 26px 1fr; gap: var(--s3); align-items: start; }
 .step__n {
-  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
-  font-weight: 800; font-size: 14px; border: 2px solid var(--accent); color: var(--accent-hi);
+  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  font-weight: 700; font-size: 12.5px; border: 1.5px solid var(--rule); color: var(--muted);
 }
-.step__title { font-size: 16px; font-weight: 700; }
+.step__title { font-size: 15px; font-weight: 700; }
 .step__title a { text-decoration: none; }
 .step__title a:hover { text-decoration: underline; }
-.step__body p { color: var(--muted); font-size: var(--fs-small); }
+.step__body p { color: var(--dim); font-size: var(--fs-small); }
 .step__mine { margin-top: var(--s3); font-size: var(--fs-small); color: var(--muted); }
 .step__mine strong { color: var(--accent-hi); }
 .step__mine a { color: var(--accent-hi); }
 
+.sec--quiet .h-section { font-size: var(--fs-sub); }
 .skill-chips { list-style: none; display: grid; gap: var(--s2); grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
 .skill-chips a {
   display: grid; gap: 2px; height: 100%; padding: var(--s3) var(--s4); border-radius: var(--radius-sm);
-  border: 1px solid var(--rule); text-decoration: none; transition: border-color 0.2s;
+  border: 1px solid var(--rule-soft); text-decoration: none; transition: border-color 0.2s;
 }
 .skill-chips a:hover { border-color: var(--accent); }
-.skill-chips strong { font-size: 16px; }
+.skill-chips strong { font-size: 15px; }
 .skill-chips span { color: var(--muted); font-size: var(--fs-small); }
 
 /* ---------- Training tips ---------- */
@@ -306,6 +363,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 .tool { display: grid; gap: var(--s4); align-content: start; }
 .tool__head { display: grid; gap: 2px; }
 .tool__name { font-size: 22px; }
+.tool__identity { font-size: 15.5px; font-weight: 600; color: var(--chalk); }
 .tool__company { font-size: var(--fs-small); color: var(--dim); }
 .tool > p { color: var(--muted); }
 .tool__more { font-size: var(--fs-small); }

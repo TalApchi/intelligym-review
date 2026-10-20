@@ -1,4 +1,4 @@
-// Site-wide content: name, navigation, footer, operator line, review banner, search settings.
+// Site-wide content: name, navigation, footer, review banner, search settings.
 // Edit text here; the layout is in src/site/shell.js.
 
 export const SITE = {
@@ -6,9 +6,6 @@ export const SITE = {
   tagline: "Better decisions on the pitch.",
   description: "Soccer IQ is a soccer website about game intelligence: five short challenges, practical tips on reading the game, and a plain comparison of the tools that train it.",
   copyright: "© 2026 Soccer IQ",
-
-  // Who runs the site. Shown on the About page directly under the site name, exactly as written.
-  operator: "IntelliGym Labs, New Jersey U.S",
 
   // Logo files (derived from Omri's originals in brand/omri/ by tools/derive_logo.py).
   // `width` and `height` keep the supplied proportions (415 x 91).
@@ -30,12 +27,12 @@ export const SITE = {
     { page: "tools", label: "Training tools", href: "tools.html" },
     { page: "results", label: "Your results", href: "results.html" },
   ],
-  cta: { page: "play", label: "Test yourself", href: "play.html" },
+  cta: { page: "play", label: "TEST YOURSELF", href: "play.html" },
 
   footer: {
     columns: [
       { title: "Play", links: [
-        { label: "Start the challenges", href: "play.html" },
+        { label: "TEST YOURSELF", href: "play.html" },
         { label: "Your results", href: "results.html" },
       ] },
       { title: "Learn", links: [

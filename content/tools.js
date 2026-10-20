@@ -114,6 +114,8 @@ export const TOOLS = [
     id: "intelligym",
     name: "The Soccer IntelliGym",
     sortName: "IntelliGym", // sorted under I
+    // Shown directly beneath the name (Tal, 2026-10-20; still to confirm with Omri, see docs/content-editing.md).
+    identity: "IntelliGym Labs, New Jersey U.S",
     company: "IntelliGym (ACE Applied Cognitive Engineering Ltd.)",
     website: "https://soccer.intelligym.com/",
     summary: "Computer and iPhone software with game-like exercises that IntelliGym designed to train the mental side of soccer, such as anticipation, attention and awareness. No headset or special equipment is needed.",
@@ -127,7 +129,7 @@ export const TOOLS = [
       limits: { text: "Reported as a self-deposited pilot analysis, not a journal paper; we could not read the full report.", source: IG.zenodo },
       pricing: { text: "Individual from $21.90 a month, or $15.90 a month on the annual plan ($190.80). Family and team plans available.", source: IG.app },
       trial: { text: "Monthly plans cancel any time; seasonal plans have a 30-day money back guarantee. Other terms differ between IntelliGym's own pages.", source: IG.guarantee,
-        reviewNote: "Annual guarantee (30 or 60 days), the free trial and monthly refunds conflict between official pages. See Terms to confirm on the IntelliGym page." },
+        reviewNote: "Annual guarantee (30 or 60 days), the free trial and monthly refunds conflict between official pages. See \"Terms to confirm\" in IntelliGym's profile above." },
       offers: { text: "Annual plan marked \"Save 27%\"; discounted family and team plans.", source: IG.app },
     },
     research: [

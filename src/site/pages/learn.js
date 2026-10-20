@@ -20,7 +20,7 @@ export function view() {
       <p>${esc(s.body)}</p>
       <h4 class="label">On the field</h4>
       <ul class="ticks">${s.onPitch.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>
-      <p class="small">Try it in: ${s.challenges.map((id) => `<a href="play.html">${esc(CHALLENGES[id].title)}</a>`).join(", ")}</p>
+      <p class="small">Tested in: ${s.challenges.map((id) => esc(CHALLENGES[id].title)).join(", ")}</p>
     </article>`).join("");
 
   const tips = TIPS.filter((t) => t.visible !== false).map((t) => `
@@ -41,7 +41,7 @@ export function view() {
       </div>
       <div class="tips">${tips}</div>`)}
 
-    ${finalCta("Put it to the test", "Five short challenges built around these skills.", { label: "Test yourself", href: "play.html" })}`;
+    ${finalCta("Put it to the test", "Five short challenges built around these skills.", { label: "TEST YOURSELF", href: "play.html" })}`;
 }
 
 export function mount(main) {

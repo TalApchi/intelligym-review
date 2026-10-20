@@ -1,12 +1,11 @@
-// Entry point: builds the landing pitch and runs the challenge flow.
+// Entry point for play.html: runs the challenge flow.
 //
 // Which screen comes next is decided by Tal's nextScreen() (flow.js).
 // This file keeps the current screen and each challenge's result, and asks
-// screens.js to draw. The URL hash only separates landing (no hash) from the
-// challenge (#challenge), so the browser Back button leaves the challenge.
+// screens.js to draw. There is no landing screen any more (Tal, 2026-10-20):
+// opening play.html, from any TEST YOURSELF link, goes straight to the first
+// challenge's instructions, and "landing" is only the flow's starting state.
 
-import * as scene from "./scene.js";
-import { buildPitch, startAmbientMotion } from "./pitch.js";
 import { nextScreen } from "./flow.js";
 import { PLAN } from "./config.js";
 import { renderScreen, summarize } from "./screens.js";
@@ -14,7 +13,6 @@ import { CHALLENGES } from "./config.js";
 import { saveLastResult } from "./site/store.js";
 import { BUILD } from "./build.js";
 
-const landing = document.getElementById("screen-landing");
 const game = document.getElementById("screen-game");
 
 // Review demo only: quiet links to the coach review page and the prototype playground,
@@ -22,7 +20,7 @@ const game = document.getElementById("screen-game");
 if (BUILD.review) {
   for (const [href, text] of [["review.html", "Coach review: draft tactical scenarios"], ["playground.html", "Prototype playground: new challenge ideas"]]) {
     const link = Object.assign(document.createElement("a"), { className: "footnote__review", href, textContent: text });
-    landing.querySelector(".footnote")?.append(link);
+    document.getElementById("play-footnote")?.append(link);
   }
 }
 
@@ -70,34 +68,23 @@ function skip() {
 
 function render() {
   if (cleanup) { cleanup(); cleanup = null; }
-  const onLanding = current.name === "landing";
-  landing.hidden = !onLanding;
-  game.hidden = onLanding;
-  if (onLanding) {
-    game.replaceChildren();
-  } else {
-    cleanup = renderScreen(game, current, { plan: PLAN, results, dispatch, skip });
-  }
+  cleanup = renderScreen(game, current, { plan: PLAN, results, dispatch, skip });
   window.scrollTo(0, 0);
   // Move keyboard / screen-reader focus to the new screen's heading.
-  const heading = (onLanding ? landing : game).querySelector("h1, h2");
+  const heading = game.querySelector("h1, h2");
   if (heading) { heading.setAttribute("tabindex", "-1"); heading.focus({ preventScroll: true }); }
 }
 
-function onHash() {
-  const inChallenge = location.hash === "#challenge";
-  if (inChallenge && current.name === "landing") {
-    dispatch("start");
-  } else if (!inChallenge && current.name !== "landing") {
-    // "Start over" on results is the flow's restart; Back mid-challenge abandons it.
-    if (!step("restart")) current = { name: "landing" };
-    render();
-  }
+// From the flow's starting state straight into the first challenge's instructions.
+// "Play again" on the results screen restarts the same way.
+function begin() {
+  current = { name: "landing" };
+  step("start");
+  render();
 }
 
-const pitchSvg = document.getElementById("pitch");
-const handles = buildPitch(pitchSvg, scene);
-startAmbientMotion(handles, pitchSvg.closest(".stage-card"));
+game.addEventListener("click", (e) => {
+  if (e.target.closest("[data-action=restart]")) { e.preventDefault(); begin(); }
+});
 
-window.addEventListener("hashchange", onHash);
-onHash();
+begin();

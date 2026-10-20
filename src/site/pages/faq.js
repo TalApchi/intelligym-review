@@ -12,7 +12,7 @@ export const offerFaqs = () => OFFERS.filter((o) => o.visible !== false && o.faq
 // The coupon is named in the title and description only while its question is on the page.
 const withOffers = offerFaqs().length > 0;
 export const title = `FAQ: Soccer IQ challenges, scores${withOffers ? ", training tools and coupons" : " and training tools"} | Soccer IQ`;
-export const description = `Answers about the Soccer IQ challenges and scores, the training tools we compare${withOffers ? ", who runs Soccer IQ, and the special IntelliGym coupon" : " and who runs Soccer IQ"}.`;
+export const description = `Answers about the Soccer IQ challenges and scores, the training tools we compare${withOffers ? " and the special IntelliGym coupon" : ""}.`;
 
 const groups = () => {
   const extra = offerFaqs();
@@ -36,7 +36,7 @@ export function view() {
   return `
     ${pageHead("FAQ", "Questions and answers", "About the Soccer IQ challenges, your scores and the training tools we compare.")}
     ${body}
-    ${finalCta("Still curious?", "Try the challenges and see how you read the game.", { label: "Test yourself", href: "play.html" })}`;
+    ${finalCta("Still curious?", "Try the challenges and see how you read the game.", { label: "TEST YOURSELF", href: "play.html" })}`;
 }
 
 export function mount(main) {

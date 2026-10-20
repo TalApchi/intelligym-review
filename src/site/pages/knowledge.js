@@ -45,7 +45,7 @@ export function view() {
 
     ${section("our-challenges", K.ourChallenges.title, `
       <p class="prose">${esc(K.ourChallenges.body)}</p>
-      <div class="cta-row">${button({ label: "Test yourself", href: "play.html" })}</div>`)}
+      <div class="cta-row">${button({ label: "TEST YOURSELF", href: "play.html" })}</div>`)}
 
     ${section("research", "Research cited by the providers", `
       <p class="sec__lede">The studies and reports each provider points to, so you can read them yourself.</p>

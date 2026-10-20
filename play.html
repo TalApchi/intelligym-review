@@ -26,7 +26,7 @@
       <div class="site-header__inner">
         <a class="site-logo" href="index.html" aria-label="Soccer IQ home"><img class="" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91"></a>
         <div class="site-header__actions">
-          <a class="btn btn--cta btn--sm header-cta" href="play.html" aria-current="page">Test yourself</a>
+          <a class="btn btn--cta btn--sm header-cta" href="play.html" aria-current="page">TEST YOURSELF</a>
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
             <span class="nav-toggle__bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
           </button>
@@ -38,58 +38,11 @@
     </header>
   <main id="main" class="page page--play" tabindex="-1">
 
-    <!-- SCREEN: challenge landing -->
-    <section class="screen screen--landing" id="screen-landing" data-screen="landing">
-      <div class="hero">
-
-        <div class="hero__stage" aria-hidden="true">
-          <div class="stage-card">
-            <div class="stage-card__hud">
-              <span class="hud-chip"><span class="hud-dot"></span>Live read</span>
-              <span class="hud-chip hud-chip--ghost">Your ball</span>
-            </div>
-            <div class="stage-card__camera">
-              <!-- The pitch SVG is built by src/pitch.js from data in src/scene.js -->
-              <svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg>
-            </div>
-            <ul class="stage-card__legend">
-              <li><span class="key key--home"></span>Your team</li>
-              <li><span class="key key--opp"></span>Opponent</li>
-              <li><span class="key key--read"></span>The read</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="hero__copy">
-          <p class="kicker reveal" style="--i:0">Five Soccer IQ challenges</p>
-          <h1 class="headline reveal" style="--i:1">
-            <span>See the play</span>
-            <span>before it</span>
-            <span class="headline__accent">happens.</span>
-          </h1>
-          <p class="lede reveal" style="--i:2">
-            Spot the change, track the runners, choose the pass, read the picture before it disappears
-            and time the through ball. Up to 100 points each, 500 in total.
-          </p>
-          <div class="cta reveal" style="--i:3">
-            <a class="btn btn--cta" href="#challenge" id="start-btn">
-              Start the challenges
-              <svg class="btn__arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            <p class="cta__meta">A few minutes <span aria-hidden="true">·</span> Practice rounds are never scored <span aria-hidden="true">·</span> No account</p>
-          </div>
-        </div>
-
-      </div>
-
-      <p class="footnote">
-        <span>Soccer IQ</span> Points describe how you did in these games. They are not an IQ test.
-        <a href="learn.html">Read about the skills first</a>
-      </p>
-    </section>
+    <h1 class="sr-only">Test yourself: five Soccer IQ challenges</h1>
 
     <!-- SCREENS: challenge flow (intro, play, feedback, results), drawn by src/screens.js -->
-    <section class="screen screen--game" id="screen-game" data-screen="game" hidden></section>
+    <section class="screen screen--game" id="screen-game" data-screen="game"></section>
+    <p class="footnote play__footnote" id="play-footnote">Soccer IQ Points describe how you did in these games. They are not an IQ test.</p>
 
   </main>
     <footer class="site-footer">
@@ -101,7 +54,7 @@
         
     <div class="footer__col">
       <h2 class="footer__title">Play</h2>
-      <ul><li><a href="play.html">Start the challenges</a></li><li><a href="results.html">Your results</a></li></ul>
+      <ul><li><a href="play.html">TEST YOURSELF</a></li><li><a href="results.html">Your results</a></li></ul>
     </div>
     <div class="footer__col">
       <h2 class="footer__title">Learn</h2>

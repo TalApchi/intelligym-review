@@ -12,7 +12,7 @@ function empty() {
     <div class="empty">
       <p>No result on this device yet. Play the five challenges and your breakdown will appear here.</p>
       <p class="small">You can also explore the tips and tools without playing.</p>
-      <div class="cta-row">${button({ label: "Test yourself", href: "play.html" })}<a class="btn btn--ghost" href="learn.html">Training tips</a></div>
+      <div class="cta-row">${button({ label: "TEST YOURSELF", href: "play.html" })}<a class="btn btn--ghost" href="learn.html">Training tips</a></div>
     </div>`;
 }
 

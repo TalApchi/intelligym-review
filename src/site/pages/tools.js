@@ -10,9 +10,12 @@ export const description = "A side-by-side comparison of soccer game-intelligenc
 
 const PROFILE_FACTS = ["format", "soccer", "hardware", "pricing"];
 
-// The big coupon button. Live (a link) once the offer has a URL; until then a disabled button
-// in the review build, and nothing at all in the public build.
-export function couponButton(offer) {
+// The coupon, drawn as a ticket. `compact` is the small version in the comparison table;
+// both read the same entry in offers.js. Live (a link) once the offer has a URL; until then
+// an inactive button in the review build, and nothing at all in the public build.
+const TICKET_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h15A1.5 1.5 0 0 1 21 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V14a2 2 0 0 0 0-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 6.5v11" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1.6 2.2"/><path d="m13 14.5 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="13.3" cy="10" r="1" fill="currentColor"/><circle cx="16.7" cy="14" r="1" fill="currentColor"/></svg>`;
+
+export function couponButton(offer, { compact = false } = {}) {
   const live = offerIsLive(offer);
   if (!live && !REVIEW) return "";
   const details = [
@@ -22,15 +25,19 @@ export function couponButton(offer) {
     offer.region && ["Region", offer.region],
     offer.expires && ["Ends", offer.expires],
   ].filter(Boolean);
-  const label = `<span class="coupon__ball" aria-hidden="true"></span>${esc(offer.button)}`;
+  const cls = `coupon__btn${compact ? " coupon__btn--compact" : ""}`;
+  const ticket = `<span class="coupon__ticket"><span class="coupon__stub">${TICKET_ICON}</span><span class="coupon__label">${esc(compact ? offer.buttonShort || offer.button : offer.button)}${compact && offer.buttonShort ? `<span class="sr-only"> (${esc(offer.button)})</span>` : ""}</span></span>`;
+  const control = live
+    ? `<a class="${cls}" href="${esc(offer.url)}" target="_blank" rel="noopener">${ticket}<span class="sr-only"> (opens IntelliGym's site in a new tab)</span></a>`
+    : `<button class="${cls}" type="button" disabled aria-disabled="true">${ticket}</button>`;
   return `
-    <div class="coupon">
-      ${live
-        ? `<a class="btn btn--cta btn--coupon" href="${esc(offer.url)}" target="_blank" rel="noopener">${label}<span class="sr-only"> (opens IntelliGym's site in a new tab)</span></a>`
-        : `<button class="btn btn--cta btn--coupon" type="button" disabled aria-disabled="true">${label}</button>`}
-      ${live && details.length ? `<dl class="coupon__details">${details.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+    <div class="coupon${compact ? " coupon--compact" : ""}">
+      ${control}
+      ${live && !compact && details.length ? `<dl class="coupon__details">${details.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
     </div>`;
 }
+
+const offersFor = (t) => OFFERS.filter((o) => o.provider === t.id && o.visible !== false);
 
 function termsToConfirm(t) {
   if (!REVIEW || !t.termsToConfirm?.length) return "";
@@ -50,11 +57,12 @@ function profile(t) {
     const row = COMPARE_ROWS.find((r) => r.key === k);
     return `<div><dt>${esc(row.label)}</dt><dd>${esc(t.compare[k].text)}</dd></div>`;
   }).join("");
-  const offers = OFFERS.filter((o) => o.provider === t.id && o.visible !== false).map(couponButton).join("");
+  const offers = offersFor(t).map((o) => couponButton(o)).join("");
   return `
     <article class="tool" id="${t.id}" aria-labelledby="${t.id}-name">
       <header class="tool__head">
         <h3 class="h-sub tool__name" id="${t.id}-name">${esc(t.name)}</h3>
+        ${t.identity ? `<p class="tool__identity">${esc(t.identity)}</p>` : ""}
         <p class="tool__company">${esc(t.company)}</p>
       </header>
       <p>${esc(t.summary)}</p>
@@ -74,7 +82,8 @@ function table(tools) {
       <th scope="row">${esc(r.label)}</th>
       ${tools.map((t) => {
         const c = t.compare[r.key] || { text: "Not published" };
-        return `<td>${esc(c.text)}${reviewNote(c.reviewNote)}</td>`;
+        const coupon = r.key === "offers" ? offersFor(t).map((o) => couponButton(o, { compact: true })).join("") : "";
+        return `<td>${esc(c.text)}${coupon}${reviewNote(c.reviewNote)}</td>`;
       }).join("")}
     </tr>`).join("");
   return `
@@ -100,12 +109,12 @@ export function view() {
       <h2 class="sec__title" id="compare-title">${esc(COMPARE.title)}</h2>
       <p class="sec__lede">${esc(COMPARE.intro)}</p>
       ${table(tools)}
-      <p class="small">Evidence notes describe what each provider cites. None of it is about the Soccer IQ challenges. <a href="knowledge.html#claims">How to read a training claim</a>. Soccer IQ is run by IntelliGym Labs (<a href="about.html">About</a>).</p>
+      <p class="small">Evidence notes describe what each provider cites. None of it is about the Soccer IQ challenges. <a href="knowledge.html#claims">How to read a training claim</a>.</p>
     </section>
 
     ${REVIEW ? section("", "", TOOLS_REVIEW_NOTES.map(reviewNote).join("")) : ""}
 
-    ${finalCta("See where you stand first", "Five free challenges in your browser. No account.", { label: "Test yourself", href: "play.html" })}`;
+    ${finalCta("See where you stand first", "Five free challenges in your browser. No account.", { label: "TEST YOURSELF", href: "play.html" })}`;
 }
 
 export const structuredData = () => ({

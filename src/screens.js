@@ -245,7 +245,7 @@ function results(_screen, ctx) {
           <a class="btn btn--primary" href="results.html">Your results page ${arrow}</a>
           <a class="btn btn--ghost" href="learn.html">How to improve</a>
           <a class="btn btn--ghost" href="tools.html">Training tools</a>
-          <a class="btn btn--text" href="#">Play again</a>
+          <a class="btn btn--text" href="play.html" data-action="restart">Play again</a>
         </div>
       </section>`,
   };

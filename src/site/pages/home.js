@@ -32,15 +32,22 @@ export function view() {
         <div class="cta-row">${button(h.primary)}</div>
         <p class="meta">${esc(h.meta)}</p>
       </div>
-      <div class="stage-card stage-card--mini" aria-hidden="true"><div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
+      <div class="hero-home__stage" aria-hidden="true">
+        <div class="stage-card stage-card--hero">
+          <div class="stage-card__hud"><span class="hud-chip"><span class="hud-dot"></span>Live read</span><span class="hud-chip hud-chip--ghost">Your ball</span></div>
+          <div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div>
+          <ul class="stage-card__legend"><li><span class="key key--home"></span>Your team</li><li><span class="key key--opp"></span>Opponent</li><li><span class="key key--read"></span>The read</li></ul>
+        </div>
+      </div>
     </section>
 
-    <section class="journey" aria-label="How it works">
+    <section class="journey" aria-labelledby="journey-title">
+      <h2 class="label" id="journey-title">How it works</h2>
       <ol class="journey__steps">${steps}</ol>
       <p class="step__mine" id="last-result" hidden></p>
     </section>
 
-    <section class="sec sec--tight" aria-labelledby="skills-title">
+    <section class="sec sec--tight sec--quiet" aria-labelledby="skills-title">
       <h2 class="h-section" id="skills-title">${esc(HOME.skillsTitle)}</h2>
       <ul class="skill-chips">${SKILLS.map((s) => `<li><a href="learn.html#${s.id}"><strong>${esc(s.name)}</strong><span>${esc(s.line)}</span></a></li>`).join("")}</ul>
     </section>
@@ -68,5 +75,4 @@ export const structuredData = () => ({
   "@type": "WebSite",
   name: SITE.name,
   description: SITE.description,
-  publisher: { "@type": "Organization", name: "IntelliGym Labs", address: { "@type": "PostalAddress", addressRegion: "NJ", addressCountry: "US" } },
 });

@@ -1,12 +1,12 @@
-// About page: the site name, the operator line directly beneath it, then short sections.
+// About page: the site name, a short intro, then short sections.
 
 import { ABOUT } from "../../../content/about.js";
 import { SITE } from "../../../content/site.js";
 import { OFFERS, offerIsLive } from "../../../content/offers.js";
 import { esc, html, section, reviewNote, REVIEW } from "../ui.js";
 
-export const title = "About Soccer IQ | IntelliGym Labs, New Jersey";
-export const description = "Soccer IQ is a soccer game-intelligence website run by IntelliGym Labs, New Jersey, U.S.: five challenges, training tips and a comparison of soccer training tools.";
+export const title = "About Soccer IQ";
+export const description = "Soccer IQ is a soccer game-intelligence website: five challenges, training tips and a comparison of soccer training tools.";
 
 export function view() {
   const c = ABOUT.contact;
@@ -15,7 +15,6 @@ export function view() {
     <header class="page-head">
       <p class="kicker">About</p>
       <h1 class="h-page">${esc(ABOUT.title)}</h1>
-      <p class="operator">${esc(SITE.operator)}</p>
       <p class="lede">${esc(ABOUT.intro)}</p>
     </header>
 
@@ -32,5 +31,5 @@ export const structuredData = () => ({
   "@context": "https://schema.org",
   "@type": "AboutPage",
   name: `About ${SITE.name}`,
-  publisher: { "@type": "Organization", name: "IntelliGym Labs", address: { "@type": "PostalAddress", addressRegion: "NJ", addressCountry: "US" } },
+  description,
 });

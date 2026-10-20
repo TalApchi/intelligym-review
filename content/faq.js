@@ -14,7 +14,7 @@ export const FAQ = [
       { id: "provisional", q: "Why are some results marked provisional?", a: "Some tactical situations are still being reviewed by a coach, so their scores can change.", visible: true },
       { id: "improve", q: "Will playing the challenges improve my game?", a: "We don't claim that. The challenges are short games that make you think about scanning, awareness, decisions and timing. For training, see the <a href=\"learn.html#tips\">training tips</a> and the <a href=\"tools.html\">training tools comparison</a>.", visible: true },
       { id: "tools", q: "Which training tools do you compare?", a: "BlazePod, Be Your Best, IntelliGym, NeuroTracker and Rezzil. Each is described from its official pages in the same format. See the <a href=\"tools.html#compare\">comparison table</a>.", visible: true },
-      { id: "who", q: "Who runs Soccer IQ?", a: "IntelliGym Labs, New Jersey, U.S. More on the <a href=\"about.html\">About page</a>.", visible: true },
+      { id: "who", q: "Who runs Soccer IQ?", a: "IntelliGym Labs, New Jersey, U.S. More on the <a href=\"about.html\">About page</a>.", visible: false } // hidden 2026-10-20: the company line now appears only in IntelliGym's profile,
     ],
   },
 ];

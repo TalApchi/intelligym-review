@@ -274,9 +274,31 @@ export const TOOLS = [
 
 ];
 
-// The order tools are shown in: alphabetical, so no provider is placed first by choice.
+// The order tools are shown in: alphabetical by default.
 const key = (t) => t.sortName || t.name;
 export const toolsInOrder = (list) => [...list].sort((a, b) => key(a).localeCompare(key(b)));
+
+// Fixed positions that override the alphabetical order on specific views (Omri, 2026-10-22).
+// This is a presentation choice, not a ranking. `at` counts from 1; the other tools keep
+// their alphabetical order around it.
+//   compare:   the comparison table columns (header, every cell and the coupon move together)
+//   knowledge: the evidence cards on the Knowledge hub; position 2 is the first row, right
+//              column on wide screens (two columns) and second in the single column on phones
+export const PLACEMENT = {
+  compare: [{ id: "intelligym", at: 2 }],
+  knowledge: [{ id: "intelligym", at: 2 }],
+};
+
+export function toolsFor(view, list) {
+  const out = toolsInOrder(list);
+  for (const { id, at } of PLACEMENT[view] || []) {
+    const i = out.findIndex((t) => t.id === id);
+    if (i < 0) continue;
+    const [tool] = out.splice(i, 1);
+    out.splice(Math.min(Math.max(at - 1, 0), out.length), 0, tool);
+  }
+  return out;
+}
 
 // Tools from the Base44 reference that we could not find under those names. Review build only.
 export const TOOLS_REVIEW_NOTES = [

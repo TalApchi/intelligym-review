@@ -62,4 +62,14 @@ export const SITE = {
     productionUrl: "https://socceriq.tech/",
     indexing: false,
   },
+
+  // Contact form on the About page: prepared but OFF (Omri, 2026-10-22). While `enabled` is
+  // false or `endpoint` is empty, no form, link or placeholder appears anywhere.
+  // `endpoint` is the URL the form posts to: a server-side script or a form service that keeps
+  // the recipient address on its side. Never put an email address here or anywhere in site/:
+  // everything in site/ is served publicly. See docs/content-editing.md before switching it on.
+  contact: {
+    enabled: false,
+    endpoint: "",
+  },
 };

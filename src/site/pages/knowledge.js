@@ -2,7 +2,7 @@
 // how to read claims, our challenges, and a reading list of the research the providers cite.
 
 import { KNOWLEDGE as K } from "../../../content/knowledge.js";
-import { TOOLS, toolsInOrder } from "../../../content/tools.js";
+import { TOOLS, toolsInOrder, toolsFor } from "../../../content/tools.js";
 import { esc, ext, section, shown, pageHead, button } from "../ui.js";
 
 export const title = "Soccer game intelligence: what it is and what the evidence says | Soccer IQ";
@@ -10,7 +10,7 @@ export const description = "What soccer game intelligence (soccer IQ) is, the re
 
 export function view() {
   const tools = toolsInOrder(TOOLS.filter(shown));
-  const evidence = tools.map((t) => `
+  const evidence = toolsFor("knowledge", tools).map((t) => `
     <article class="study">
       <h3 class="h-sub">${esc(t.name)}</h3>
       <dl class="study__dl">

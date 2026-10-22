@@ -486,6 +486,21 @@ thead th a { color: var(--accent-hi); }
 @media (min-width: 700px) { .results__next { display: flex; flex-wrap: wrap; } .results .results__next .btn { min-width: 0; } }
 
 .credits { margin-top: var(--s6); }
+
+/* Contact form (About page; only rendered once switched on in site.js) */
+.contact-form { display: grid; gap: var(--s4); max-width: 560px; }
+.field { display: grid; gap: var(--s1); }
+.field label { font-weight: 700; font-size: 15px; }
+.field__opt { font-weight: 500; color: var(--dim); }
+.field input, .field textarea {
+  width: 100%; min-height: 48px; padding: var(--s3); border-radius: var(--radius-sm);
+  border: 1px solid var(--rule); background: var(--ink-1); color: var(--chalk); font: 16px/1.5 var(--font-body);
+}
+.field input:focus-visible, .field textarea:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; }
+.field [aria-invalid="true"] { border-color: var(--alert); }
+.field__err { color: var(--alert); font-size: var(--fs-small); }
+.field--trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.contact-form__status { font-size: var(--fs-small); color: var(--muted); min-height: 1.4em; }
 .noscript { padding: var(--s6); text-align: center; }
 
 /* Phones: full-width main buttons */

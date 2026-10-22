@@ -1,7 +1,7 @@
 // Training tools page: one profile per provider (same structure for all, alphabetical),
 // then the comparison table (#compare). A provider's coupon button comes from offers.js.
 
-import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsInOrder } from "../../../content/tools.js";
+import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsInOrder, toolsFor } from "../../../content/tools.js";
 import { OFFERS, offerIsLive } from "../../../content/offers.js";
 import { esc, ext, reviewNote, shown, section, pageHead, finalCta, REVIEW } from "../ui.js";
 
@@ -108,7 +108,7 @@ export function view() {
     <section class="sec" id="compare" aria-labelledby="compare-title">
       <h2 class="sec__title" id="compare-title">${esc(COMPARE.title)}</h2>
       <p class="sec__lede">${esc(COMPARE.intro)}</p>
-      ${table(tools)}
+      ${table(toolsFor("compare", TOOLS.filter(shown)))}
       <p class="small">Evidence notes describe what each provider cites. None of it is about the Soccer IQ challenges. <a href="knowledge.html#claims">How to read a training claim</a>.</p>
     </section>
 

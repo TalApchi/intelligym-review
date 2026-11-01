@@ -11,11 +11,11 @@ import { THROUGH } from "../config.js";
 import { scorePass, scoreThrough, MISSED, BALL_SPEED, PLAYER_SPEED } from "./logic.js";
 import { THROUGH_SITUATIONS } from "./situations.js";
 import { fixedMove, pickRounds, explainSim } from "./sim.js";
-import { setupMove, playMove, markResult } from "./view.js";
+import { setupMove, playMove, markResult, showOffside } from "./view.js";
 import { timeline } from "./timeline.js";
-import { buildBoard, drawBall } from "../board.js";
+import { buildBoard, drawBall, bringIntoView } from "../board.js";
 
-const LABEL = { through: "Through", intercepted: "Cut out", covered: "Space closed", short: "To feet, not in behind", missed: "Missed" };
+const LABEL = { through: "Through", intercepted: "Cut out", covered: "Space closed", short: "To feet, not in behind", offside: "Offside", missed: "Missed" };
 const sentence = (m, res) => (res === "missed" ? MISSED : explainSim(m, res));
 
 function loadHistory() {
@@ -30,6 +30,7 @@ function verdictOf(m, res, score) {
   if (res === "missed") return "Missed";
   if (score.kind === "through") return "Through";
   const early = res.tr < m.window.start;
+  if (res.kind === "offside") return score.kind === "close" ? "Just late: offside" : "Too late: offside";
   return score.kind === "close" ? (early ? "Just early" : "Just late") : (early ? "Too early" : "Too late");
 }
 
@@ -38,17 +39,20 @@ function verdictOf(m, res, score) {
  * Calls onDone(result) after the last round, in the shape screens.js shows.
  * Returns a cleanup function that stops the animation and the key listener.
  */
-export function playThrough(root, { onDone }) {
+export function playThrough(root, { onDone, options = {}, returning = false }) {
+  const ROUNDS = options.rounds ?? THROUGH.rounds;
+  const PRACTICE = options.practice !== false; // the short test goes from the example straight to its round
   root.innerHTML = `
     <div class="play" data-phase="demo">
-      <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
       <section class="play__panel">
         <div class="play__meta">
           <span class="play__round"></span>
           <span class="play__phase"></span>
         </div>
         <h2 class="play__prompt" aria-live="polite"></h2>
+        <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
         <button class="btn btn--primary play__pass" type="button" hidden>Pass</button>
+        <button class="btn btn--text play__skip" type="button" hidden></button>
         <div class="play__result" hidden>
           <p class="verdict"><span class="verdict__name"></span><span class="verdict__pts"></span></p>
           <p class="play__line"></p>
@@ -67,7 +71,15 @@ export function playThrough(root, { onDone }) {
     play: $(".play"), round: $(".play__round"), phase: $(".play__phase"), prompt: $(".play__prompt"),
     pass: $(".play__pass"), result: $(".play__result"), verdictName: $(".verdict__name"), verdictPts: $(".verdict__pts"),
     line: $(".play__line"), tl: $(".play__tl"), replay: $(".play__replay"), again: $(".play__again"), next: $(".play__next"),
+    skip: $(".play__skip"),
   };
+  // A returning player can skip the demonstration and the practice try they've seen before.
+  function skipTo(label, fn) {
+    ui.skip.hidden = !returning || !label;
+    if (label) { ui.skip.textContent = label; ui.skip.onclick = () => { ui.skip.hidden = true; fn(); }; }
+  }
+  let hinted = false; // the timeline's "tap the bar" hint: shown once, not after every round
+  const tlFor = (m, rel, onPick) => { const tl = timeline(m, rel, onPick, !hinted); hinted = true; return tl; };
   const svg = $(".board");
   let alive = true;
   let gen = 0;          // each new animation bumps this; older ones stop
@@ -80,6 +92,7 @@ export function playThrough(root, { onDone }) {
     unbindKey();
     const board = buildBoard(svg);
     drawBall(board);
+    bringIntoView(ui.play);
     return setupMove(board, m);
   }
 
@@ -123,7 +136,7 @@ export function playThrough(root, { onDone }) {
     const yours = res === "missed" ? null : res.tr;
     const whatIf = release !== yours;
     const view = fresh(m);
-    const tl = timeline(m, yours, (t) => replay(m, res, t, after));
+    const tl = timeline(m, yours, (t) => replay(m, res, t, after), false);
     if (whatIf) tl.probe(release);
     ui.tl.replaceChildren(tl.el);
     ui.result.hidden = true;
@@ -134,18 +147,22 @@ export function playThrough(root, { onDone }) {
     if (!out) return;
     tl.playhead(null);
     markResult(view, out);
-    after(tl, whatIf ? `${sentence(m, out)} The dashed line is that moment; the red line is your pass.` : null);
+    if (out !== "missed" && out.kind === "offside") showOffside(view, out);
+    after(tl, whatIf ? `${sentence(m, out)} On the bar, the dashed line is that moment and the solid marker is your pass.` : null);
     ui.prompt.textContent = whatIf ? `If you'd passed then: ${LABEL[out.kind]}` : ui.prompt.textContent;
   }
+
+  const afterDemo = () => (PRACTICE ? practice() : round(0));
 
   // ---- 1. Demonstration ----
   async function demo() {
     const m = fixedMove(THROUGH_SITUATIONS, "demo", THROUGH.demoSeed);
     const view = fresh(m);
-    ui.round.textContent = "Demonstration";
+    ui.round.textContent = PRACTICE ? "Demonstration" : "Quick example";
     ui.phase.textContent = "Watch";
-    ui.prompt.textContent = `${m.title}: watch the ringed runner.`;
+    ui.prompt.textContent = "Watch the ringed runner and the pass.";
     ui.play.dataset.phase = "demo";
+    skipTo(PRACTICE ? "Skip the demonstration" : "Skip the example", () => { gen++; current?.stop(); afterDemo(); });
     const release = m.window.start + m.window.length / 2;
     const res = await play(view, {
       release,
@@ -155,13 +172,14 @@ export function playThrough(root, { onDone }) {
       },
     });
     if (!res) return;
+    skipTo(null);
     markResult(view, res);
     panel({
-      headline: "The ball goes into space",
-      verdict: "Demonstration",
-      line: `${m.about} Every player has the same top speed (${PLAYER_SPEED} m/s), and the ball always travels at ${BALL_SPEED} m/s, aimed where the runner will be when it arrives. The dashed circle is where the runner was when the ball was played. Each defender has a job: marking, covering, pressing you or holding a position. Too early and the runner is still in front of their marker, or someone is in the lane; too late and a covering defender or the keeper gets there.`,
+      headline: "Played into space: through",
+      verdict: PRACTICE ? "Demonstration" : "Example",
+      line: `Released before the runner got past their defensive line, so not offside, and aimed where the runner was going. Everyone runs at the same speed; you only choose when.`,
       replay: demo,
-      next: ["Practice try (unscored)", practice],
+      next: [PRACTICE ? "Practice try (unscored)" : "Your turn: scored round", afterDemo],
     });
   }
 
@@ -171,11 +189,14 @@ export function playThrough(root, { onDone }) {
     const view = fresh(m);
     ui.round.textContent = "Practice";
     ui.phase.textContent = "Unscored";
-    ui.prompt.textContent = `${m.title}: press Pass when you want to release it.`;
+    ui.prompt.textContent = `${m.title}: press Pass when it's on.`;
     ui.play.dataset.phase = "live";
+    skipTo("Skip the practice", () => { gen++; current?.stop(); round(0); });
     const res = await play(view, { live: true });
     if (!res) return;
+    skipTo(null);
     markResult(view, res);
+    if (res !== "missed" && res.kind === "offside") showOffside(view, res);
     const show = (tl, extra) => panel({
       headline: `Practice: ${LABEL[res === "missed" ? "missed" : res.kind]}`,
       verdict: "Practice",
@@ -186,7 +207,7 @@ export function playThrough(root, { onDone }) {
       again: ["Practice again", practice],
       next: ["Start round 1", () => round(0)],
     });
-    show(timeline(m, res === "missed" ? null : res.tr, (t) => replay(m, res, t, show)));
+    show(tlFor(m, res === "missed" ? null : res.tr, (t) => replay(m, res, t, show)));
   }
 
   // ---- 3. Scored rounds ----
@@ -195,20 +216,23 @@ export function playThrough(root, { onDone }) {
   let moves = null; // the play's situations, picked when round 1 starts
   async function round(i) {
     if (!moves) {
-      const out = pickRounds(THROUGH_SITUATIONS, loadHistory(), THROUGH.rounds);
+      // the short test picks two and plays the one with the wider window (a gentler single round)
+      const out = pickRounds(THROUGH_SITUATIONS, loadHistory(), Math.max(ROUNDS, options.pickFrom ?? ROUNDS));
       saveHistory(out.history);
-      moves = out.moves;
+      moves = out.moves.slice(0, ROUNDS);
     }
-    const last = i === THROUGH.rounds - 1;
+    const last = i === ROUNDS - 1;
     const m = moves[i];
     const view = fresh(m);
-    ui.round.textContent = `Round ${i + 1} of ${THROUGH.rounds}`;
+    skipTo(null);
+    ui.round.textContent = `Round ${i + 1} of ${ROUNDS}`;
     ui.phase.textContent = "Scored";
-    ui.prompt.textContent = `${m.title}: press Pass when you want to release it.`;
+    ui.prompt.textContent = `${m.title}: press Pass when it's on.`;
     ui.play.dataset.phase = "live";
     const res = await play(view, { live: true });
     if (!res) return;
     markResult(view, res);
+    if (res !== "missed" && res.kind === "offside") showOffside(view, res);
     const score = scorePass(m, res, THROUGH);
     const verdict = verdictOf(m, res, score);
     pts.push(score.pts);
@@ -216,13 +240,13 @@ export function playThrough(root, { onDone }) {
     const show = (tl, extra) => panel({
       headline: verdict,
       verdict: `Round ${i + 1}`,
-      pts: `${score.pts} pts`,
+      pts: `${score.pts} / 100 this round`,
       line: extra ?? sentence(m, res),
       tl,
       replay: () => replay(m, res, res === "missed" ? null : res.tr, show),
       next: last ? ["See your points", finish] : [`Round ${i + 2}`, () => round(i + 1)],
     });
-    show(timeline(m, res === "missed" ? null : res.tr, (t) => replay(m, res, t, show)));
+    show(tlFor(m, res === "missed" ? null : res.tr, (t) => replay(m, res, t, show)));
   }
 
   function finish() {
@@ -230,8 +254,8 @@ export function playThrough(root, { onDone }) {
     const through = rows.filter((r) => r.ok).length;
     onDone({
       points: scoreThrough(pts),
-      tally: `${through} of ${THROUGH.rounds} through`,
-      sub: `${through} of your ${THROUGH.rounds} passes got through. A pass just outside the window scores half.`,
+      tally: `${through} of ${ROUNDS} through`,
+      sub: `${ROUNDS > 1 ? `${through} of your ${ROUNDS} passes got through.` : through ? "Your pass got through." : "Your pass didn't get through."} A pass just outside the window scores half.`,
       rows,
     });
   }

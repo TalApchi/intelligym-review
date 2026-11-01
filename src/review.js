@@ -71,7 +71,7 @@ function card(s, i) {
     </header>
     <div class="rv__board board-card"><svg class="board" role="img" aria-label="${esc(s.title)}: the situation from above"></svg></div>
     <div class="rv__body">
-      <p class="rv__who">You are the <strong>${esc(s.home.find((p) => p.id === s.carrier).role)}</strong> (red ring).</p>
+      <p class="rv__who">You are the <strong>${esc(s.home.find((p) => p.id === s.carrier).role)}</strong> (teal ring).</p>
       <ol class="rv__options"></ol>
       <button class="rv__reset" type="button">Show the starting picture</button>
       <div class="rv__why"><h3>Why the draft scores it this way</h3><p>${esc(s.reasoning)}</p>${s.open ? `<p>${esc(s.open)}</p>` : ""}${s.question ? `<p><strong>Question for you:</strong> ${esc(s.question)}</p>` : ""}</div>
@@ -162,7 +162,7 @@ function scanCard(s, i) {
     </header>
     <div class="rv__board board-card"><svg class="board" role="img" aria-label="${esc(s.title)}: the picture the player scans"></svg></div>
     <div class="rv__body">
-      <p class="rv__who">You (red ring) are about to receive from the <strong>${esc(s.passer.role)}</strong> (P). The player sees this for 2 seconds, then the opponents disappear and they tap a teammate.</p>
+      <p class="rv__who">You (teal ring) are about to receive from the <strong>${esc(s.passer.role)}</strong> (P). The player sees this for 2 seconds, then the opponents disappear and they tap a teammate.</p>
       <ol class="rv__options"></ol>
       <button class="rv__reset" type="button">Clear the arrow</button>
       <div class="rv__why"><h3>Why the draft ranks it this way</h3><p>${esc(s.reasoning)}</p></div>

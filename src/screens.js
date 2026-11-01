@@ -2,8 +2,11 @@
 // Which screen to show is decided by nextScreen() in flow.js (via main.js);
 // this file only turns a screen object into markup and wires its buttons.
 
-import { CHALLENGES, SPOT, TRACK, DECIDE, SCAN, THROUGH, TIERS } from "./config.js";
+import { CHALLENGES, SPOT, TRACK, DECIDE, SCAN, THROUGH, TIERS, maxPoints } from "./config.js";
 import { tierFor } from "./tiers.js";
+import { hasSeen } from "./seen.js";
+import { observation, nextSkills } from "./results-logic.js";
+import { SKILLS } from "../content/skills.js";
 import { playSpot } from "./spot/play.js";
 import { playTrack } from "./track/play.js";
 import { playDecide, MOVE_KEY } from "./decide/play.js";
@@ -25,7 +28,7 @@ function progress(plan, index) {
   return `
     <div class="progress">
       <span class="progress__dots" aria-hidden="true">${dots}</span>
-      <span class="progress__label">${index + 1} of ${plan.challenges.length} <span aria-hidden="true">·</span> ${CHALLENGES[id].title}</span>
+      <span class="progress__label">${plan.id === "short" ? `Short test <span aria-hidden="true">·</span> ` : ""}${index + 1} of ${plan.challenges.length} <span aria-hidden="true">·</span> ${CHALLENGES[id].title}</span>
     </div>`;
 }
 
@@ -60,7 +63,7 @@ const TRACK_DEMO = `
 
 // A looping two-step explanation of the arrows. Step 1: solid trails with a travelling pulse are
 // movement already happening (a teammate's run, an opponent pressing). Step 2: after you pick,
-// a red dashed arrow previews your choice. The choice shown is not the runner, so the run never
+// a teal dashed arrow previews your choice. The choice shown is not the runner, so the run never
 // reads as the answer.
 const DECIDE_DEMO = `
   <svg class="demo demo--decide" viewBox="0 0 120 84" aria-hidden="true">
@@ -84,7 +87,7 @@ const DECIDE_DEMO = `
     <circle class="demo__home" cx="58" cy="60" r="4.2"/>
     <circle class="demo__mark demo__mark--still" cx="58" cy="60" r="7.5"/>
     <text class="demo__caption demo__caption--1" x="60" y="76">Solid: already moving</text>
-    <text class="demo__caption demo__caption--2" x="60" y="76">Red dashed: your choice</text>
+    <text class="demo__caption demo__caption--2" x="60" y="76">Dashed: your choice</text>
   </svg>`;
 
 // A looping mini demo: the opponents fade away, the teammates stay, one of them gets tapped.
@@ -124,19 +127,30 @@ const THROUGH_DEMO = `
 
 const DEMOS = { spot: SPOT_DEMO, track: TRACK_DEMO, decide: DECIDE_DEMO, scan: SCAN_DEMO, through: THROUGH_DEMO };
 
-const FACTS = {
-  spot: [`${SPOT.rounds} rounds`, `${SPOT.studyMs / 1000} s to look`, `${SPOT.answerMs / 1000} s to answer`],
-  track: [`${TRACK.rounds} rounds`, `${TRACK.targets} to follow`, `${TRACK.moveMs / 1000} s of running`, "Round 2 is faster"],
-  decide: [`${DECIDE.situations} situations`, "No clock", "Draft scenarios"],
-  scan: [`${SCAN.lookMs.length} situations`, `${SCAN.lookMs.map((ms) => ms / 1000).join(" / ")} s to look`, "Draft situations"],
-  through: ["A demonstration first", "1 practice try, unscored", `${THROUGH.rounds} scored rounds`, "A different situation each round"],
-};
+// The facts chips under each instruction, for the plan's length of each challenge.
+function facts(id, o = {}) {
+  const rounds = (n, word = "round") => `${n} ${word}${n === 1 ? "" : "s"}`;
+  switch (id) {
+    case "spot": return [rounds(o.rounds ?? SPOT.rounds), `${SPOT.studyMs / 1000} s to look`, `${SPOT.answerMs / 1000} s to answer`];
+    case "track": { const n = o.rounds ?? TRACK.rounds; return [rounds(n), `${TRACK.targets} to follow`, `${TRACK.moveMs / 1000} s of running`, ...(n > 1 ? ["Round 2 is faster"] : [])]; }
+    case "decide": return [rounds(DECIDE.situations, "situation"), "No clock", "Draft scenarios"];
+    case "scan": return [rounds(SCAN.lookMs.length, "situation"), `${SCAN.lookMs.map((ms) => ms / 1000).join(" / ")} s to look`, "Draft situations"];
+    case "through": return o.practice === false
+      ? ["A quick example first", rounds(o.rounds ?? THROUGH.rounds, "scored round")]
+      : ["A demonstration first", "1 practice try, unscored", rounds(o.rounds ?? THROUGH.rounds, "scored round"), "A different situation each round"];
+    default: return [];
+  }
+}
 
 // Tactical choice can only run with scenarios it is allowed to show.
 // Opponents vanish likewise needs situations (drafts only in the review demo and local preview).
 const playable = (id) => CHALLENGES[id].built
   && (id !== "decide" || usableScenarios(SCENARIOS, DECIDE).length > 0)
   && (id !== "scan" || usableSituations().length > 0);
+
+// A returning player (finished this challenge before in the full test) sees the same
+// instruction, with the example animation folded away behind "Show the example".
+const returning = (ctx, id) => ctx.plan.id === "full" && hasSeen(id);
 
 function intro(screen, ctx) {
   const id = ctx.plan.challenges[screen.index];
@@ -157,22 +171,37 @@ function intro(screen, ctx) {
     };
   }
 
-  const facts = FACTS[id] ?? [];
+  const seen = returning(ctx, id);
+  const draft = id === "decide" || id === "scan";
   return {
     html: `
       ${progress(ctx.plan, screen.index)}
-      <section class="intro">
-        <div class="intro__demo board-card">${DEMOS[id] ?? ""}</div>
-        <div class="intro__copy">
-          <p class="kicker">Challenge ${screen.index + 1}</p>
+      <section class="intro${seen ? " intro--seen" : ""}">
+        <div class="intro__head">
           <h2 class="intro__title">${c.title}</h2>
           <p class="intro__text">${c.instruction}</p>
-          <ul class="intro__facts">${facts.map((f) => `<li>${f}</li>`).join("")}</ul>
+        </div>
+        <div class="intro__demo board-card" ${seen ? "hidden" : ""}>${DEMOS[id] ?? ""}</div>
+        <div class="intro__foot">
+          <ul class="intro__facts">${facts(id, ctx.plan.options?.[id]).map((f) => `<li>${f}</li>`).join("")}</ul>
           ${id === "decide" ? MOVE_KEY : ""}
-          ${id === "decide" || id === "scan" ? `<p class="intro__draft"><span class="draft-badge">Provisional</span> The situations, ${id === "decide" ? "scores" : "rankings"} and explanations are drafts until Omri approves them.</p>` : ""}
-          <button class="btn btn--primary" type="button" data-event="ready">Ready ${arrow}</button>
+          ${draft ? `<p class="intro__draft"><span class="draft-badge">Provisional</span> The situations, ${id === "decide" ? "scores" : "rankings"} and explanations are drafts until Omri approves them.</p>` : ""}
+          <div class="intro__actions">
+            <button class="btn btn--primary" type="button" data-event="ready">${seen ? "Start" : "Ready"} ${arrow}</button>
+            ${seen ? `<button class="btn btn--text intro__show" type="button" aria-expanded="false">Show the example again</button>` : ""}
+          </div>
         </div>
       </section>`,
+    mount: seen ? (root) => {
+      const show = root.querySelector(".intro__show"), demo = root.querySelector(".intro__demo");
+      show?.addEventListener("click", () => {
+        const open = demo.hidden;
+        demo.hidden = !open;
+        show.setAttribute("aria-expanded", String(open));
+        show.textContent = open ? "Hide the example" : "Show the example again";
+      });
+      return null;
+    } : null,
   };
 }
 
@@ -182,6 +211,8 @@ function play(screen, ctx) {
     html: `${progress(ctx.plan, screen.index)}<div class="play-mount"></div>`,
     mount: (root) => PLAYERS[id](root.querySelector(".play-mount"), {
       onDone: (result) => ctx.dispatch("done", result),
+      options: ctx.plan.options?.[id] ?? {},
+      returning: returning(ctx, id),
     }),
   };
 }
@@ -197,6 +228,7 @@ function feedback(screen, ctx) {
       <span class="summary__line">${r.line}</span>
       <span class="summary__time">${r.aside}</span>
     </li>`).join("");
+  const averaged = result.rows.length > 1 ? " Your challenge score is the average of the rounds." : "";
 
   return {
     html: `
@@ -204,9 +236,12 @@ function feedback(screen, ctx) {
       <section class="summary">
         <p class="kicker">${CHALLENGES[id].title} · done</p>
         <h2 class="summary__score"><span class="summary__points">${result.points}</span><span class="summary__of">/ 100 points</span></h2>
-        <p class="summary__sub">${result.sub}</p>
-        <ol class="summary__rows">${rows}</ol>
-        <button class="btn btn--primary" type="button" data-event="continue">${last ? "See results" : "Next challenge"} ${arrow}</button>
+        <p class="summary__sub">${result.sub}${averaged}</p>
+        <button class="btn btn--primary summary__next" type="button" data-event="continue">${last ? "See results" : "Next challenge"} ${arrow}</button>
+        <details class="summary__details"${result.rows.length > 1 ? "" : " open"}>
+          <summary>Round by round</summary>
+          <ol class="summary__rows">${rows}</ol>
+        </details>
       </section>`,
   };
 }
@@ -221,32 +256,56 @@ export function summarize(plan, resultsByIndex) {
   return { played, total, available, tier };
 }
 
+// The results screen, for both plans. The short test's result is labelled as such, out of
+// 300, with a clear way into the full test; it never claims to equal the full test's score.
 function results(_screen, ctx) {
   const { played, total, available, tier } = summarize(ctx.plan, ctx.results);
+  const short = ctx.plan.id === "short";
 
   const rows = played.map(({ id, result }) => {
-    const title = CHALLENGES[id].title;
+    const c = CHALLENGES[id];
     if (!result || result.skipped) {
-      return `<li class="results__row is-pending"><span class="results__name">${title}</span><span class="results__flag">Not played</span></li>`;
+      return `<li class="results__row is-pending"><span class="results__name">${c.title}<small>${c.measures}</small></span><span class="results__flag">Not played</span></li>`;
     }
     const flag = result.provisional ? ` <span class="draft-badge draft-badge--small">Provisional</span>` : "";
-    return `<li class="results__row"><span class="results__name">${title}<small>${result.tally}${flag}</small></span><span class="results__pts">${result.points}<small>/100</small></span></li>`;
+    return `
+      <li class="results__row">
+        <span class="results__name">${c.title}${flag}<small>${c.measures}</small><small class="results__tally">${result.tally}</small></span>
+        <span class="results__pts">${result.points}<small>/100</small></span>
+        <span class="results__bar" aria-hidden="true"><span style="width:${Math.max(0, Math.min(100, result.points))}%"></span></span>
+      </li>`;
   }).join("");
+
+  const scoredRows = played.filter((p) => p.result && !p.result.skipped).map(({ id, result }) => ({ id, title: CHALLENGES[id].title, points: result.points }));
+  const note = observation(scoredRows);
+  const skills = nextSkills(scoredRows, SKILLS);
+  const tips = skills.length
+    ? `<p class="results__tips">Worth a read next: ${skills.map((k) => `<a href="learn.html#${k.id}">${k.name} tips</a>`).join(" and ")}.</p>`
+    : `<p class="results__tips">Ideas for practice on the pitch: <a href="learn.html#tips">training tips</a>.</p>`;
+
+  const actions = short
+    ? `
+        <a class="btn btn--cta results__full" href="${ctx.fullTestHref ?? "play.html"}" data-action="full-test">Take the full test: 5 challenges ${arrow}</a>
+        <button class="btn btn--ghost" type="button" data-action="restart">Replay the short test</button>`
+    : `
+        <a class="btn btn--primary" href="results.html">Your results page ${arrow}</a>
+        <a class="btn btn--ghost" href="learn.html">How to improve</a>
+        <a class="btn btn--text" href="play.html" data-action="restart">Play again</a>`;
 
   return {
     html: `
-      <section class="results">
-        <p class="kicker">Your results</p>
-        <h2 class="results__tier">${tier}</h2>
-        <p class="results__total"><strong>${total}</strong> challenge points out of ${available} available</p>
+      <section class="results${short ? " results--short" : ""}">
+        <p class="kicker">${short ? "Short test · your result" : "Your results"}</p>
+        <h2 class="results__total-head"><span class="results__big">${total}</span><span class="results__of"> / ${available} points</span></h2>
+        <p class="results__total">${short
+          ? "Three challenges, one round each. This short-test score is out of 300 and isn't comparable with the full test's 500."
+          : `${tier}<span aria-hidden="true"> · </span>${available === maxPoints(ctx.plan) ? "all five challenges" : `${played.filter((p) => p.result && !p.result.skipped).length} challenges scored`}`}</p>
+        ${note ? `<p class="results__observe">${note}</p>` : ""}
         <ul class="results__rows">${rows}</ul>
-        <p class="results__note">Points describe how you did in these challenges, nothing more. Tier names are game settings, not a rating of ability.${provisionalNote(played)}</p>
-        <div class="results__next">
-          <a class="btn btn--primary" href="results.html">Your results page ${arrow}</a>
-          <a class="btn btn--ghost" href="learn.html">How to improve</a>
-          <a class="btn btn--ghost" href="tools.html">Training tools</a>
-          <a class="btn btn--text" href="play.html" data-action="restart">Play again</a>
-        </div>
+        ${short ? `<p class="results__invite">The full test adds Tactical choice and Opponents vanish, with a practice try and more rounds per challenge.</p>` : ""}
+        <div class="results__next">${actions}</div>
+        ${tips}
+        <p class="results__note">Points describe how you did in these games, nothing more: not an IQ score, a ranking against other players, or proof of how you play in a match.${short ? "" : " Tier names are game settings."}${provisionalNote(played)}</p>
       </section>`,
   };
 }
@@ -262,12 +321,13 @@ function provisionalNote(played) {
 const SCREENS = { intro, play, feedback, results };
 
 /**
- * Renders `screen` into `root`. `ctx` = { plan, results, dispatch, skip }.
+ * Renders `screen` into `root`. `ctx` = { plan, results, dispatch, skip, fullTestHref }.
  * Returns a cleanup function (or null) to run before the next screen.
  */
 export function renderScreen(root, screen, ctx) {
   const view = SCREENS[screen.name](screen, ctx);
-  root.innerHTML = `<div class="game game--${screen.name}">${view.html}</div>`;
+  const id = screen.index === undefined ? "" : ctx.plan.challenges[screen.index];
+  root.innerHTML = `<div class="game game--${screen.name}"${id ? ` data-challenge="${id}"` : ""}>${view.html}</div>`;
   root.querySelectorAll("[data-event]").forEach((b) => b.addEventListener("click", () => ctx.dispatch(b.dataset.event)));
   root.querySelector('[data-action="skip"]')?.addEventListener("click", ctx.skip);
   return view.mount ? view.mount(root) : null;

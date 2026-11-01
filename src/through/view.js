@@ -5,7 +5,7 @@ import { passAt, ballStart } from "./logic.js";
 import { drawPlayers, markPlayer, placePlayers, placeBall, showArrow, BOARD_R } from "../board.js";
 import { el } from "../pitch.js";
 
-// Draws everyone at t = 0: you (red ring), the runner (chalk ring and a "Runner" label).
+// Draws everyone at t = 0: you (teal ring), the runner (chalk ring and a "Runner" label).
 export function setupMove(board, m) {
   const at = (f) => f(0);
   drawPlayers(board, [
@@ -39,8 +39,9 @@ export function drawAt(view, t, res) {
   else if (t <= res.t) ball = res.ballAtT(t);
   else {
     // after the moment of truth the ball goes with whoever got it
-    const who = res.kind === "through" ? pos.runner : pos[res.by.id];
-    ball = { x: who.x + 0.6, y: who.y - BOARD_R + 0.2 };
+    // (offside: play stops where the runner met the ball, for the free kick)
+    const who = res.kind === "through" ? pos.runner : res.kind === "offside" ? null : pos[res.by.id];
+    ball = who ? { x: who.x + 0.6, y: who.y - BOARD_R + 0.2 } : res.at;
   }
   placeBall(board, ball);
 }
@@ -52,9 +53,27 @@ export function showRelease(view, res) {
   el("circle", { cx: r.x, cy: r.y, r: BOARD_R, class: "board-ghost" }, view.board.marks);
 }
 
+// Offside, in a replay: where the line was at the moment of the pass (the second-last
+// defender, or the ball if that was deeper), dashed across the pitch, with that defender
+// and the runner ringed where they were then. Shown only when the pass was offside.
+export function showOffside(view, res) {
+  if (!res?.offside) return;
+  const { m, board } = view;
+  const y = res.offside.line;
+  const g = el("g", { class: "tb-offside" }, board.marks);
+  el("line", { x1: 0, y1: y, x2: 68, y2: y, class: "tb-offside__line" }, g);
+  const d = res.offside.secondLast;
+  if (d && res.offside.lineBy === "opponent") el("circle", { cx: d.x, cy: d.y, r: BOARD_R + 0.9, class: "tb-offside__ring" }, g);
+  const r = m.runnerAt(res.tr);
+  el("circle", { cx: r.x, cy: r.y, r: BOARD_R + 0.9, class: "tb-offside__ring tb-offside__ring--runner" }, g);
+  const label = el("text", { x: y > 6 ? 1.2 : 1.2, y: y > 4 ? y - 1 : y + 2.6, class: "tb-offside__label" }, g);
+  label.textContent = "Offside line when you passed";
+}
+
 export function markResult(view, res) {
   if (!res || res === "missed") return;
   if (res.kind === "through") markPlayer(view.board, "runner", "is-found");
+  else if (res.kind === "offside") markPlayer(view.board, "runner", "is-wrong");
   else markPlayer(view.board, res.by.id, "is-wrong");
 }
 

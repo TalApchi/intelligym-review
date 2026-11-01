@@ -8,6 +8,9 @@ export const HOME = {
     lede: "Five short soccer challenges on scanning, awareness, decisions and timing. Free, no account.",
     primary: { label: "TEST YOURSELF", href: "play.html" },
     meta: "A few minutes · phone or computer",
+    // A discreet second way in: the three-challenge short test (short-test.html). The main
+    // TEST YOURSELF action above stays the full test.
+    short: { label: "Short on time? Try the short test", href: "short-test.html" },
   },
 
   // The guided journey, kept to one line per step. `href` must be a real page.

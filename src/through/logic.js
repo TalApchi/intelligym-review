@@ -17,6 +17,7 @@
 
 import { seededRng } from "../spot/logic.js";
 import { positionAt } from "../track/logic.js";
+import { offsidePosition, offsideOffence } from "../offside.js";
 
 export const BALL_SPEED = 14;    // m/s, every pass
 export const PLAYER_SPEED = 6;   // m/s, every moving player, runner included
@@ -166,7 +167,30 @@ export const ballStart = (m, t) => (m.ballStartAt ? m.ballStartAt(t) : (({ x, y 
 
 // The pass you'd play at release time tr: aimed where the runner will be when the ball
 // gets there (constant ball speed), then checked against every defender on the way.
+// INVOLVED: a pass cut out within this many metres of the runner still involved them (they were
+// challenging for it), so an offside position at the pass is an offence (Law 11.2).
+export const INVOLVED = 3;
+
+// Was the runner in an offside position at the moment you played the ball (Law 11, offside.js)?
+// Judged on everyone's live positions at the release time, never where the ball is collected.
+export function runnerOffside(m, tr) {
+  return offsidePosition({ player: m.runnerAt(tr), ball: ballStart(m, tr), opponents: m.defenders.map((d) => d.at(tr)) });
+}
+
+// The pass you'd play at release time tr: what happens to the ball (rawPass), then offside.
+// If the runner was in an offside position at the release and became involved (played the
+// ball, or challenged for it), the result is "offside" whatever would have happened next.
 export function passAt(m, tr) {
+  const res = rawPass(m, tr);
+  const pos = runnerOffside(m, tr);
+  if (pos.offside !== true) return res;
+  const near = res.kind === "intercepted" ? dist(m.runnerAt(res.t), res.at) <= INVOLVED : true;
+  const involvement = res.kind === "intercepted" ? (near ? "challenges" : "none") : res.kind === "through" || res.kind === "short" ? "plays" : "challenges";
+  if (!offsideOffence(pos, involvement)) return { ...res, offsidePosition: pos };
+  return { ...res, kind: "offside", would: res.kind, by: null, offside: pos };
+}
+
+function rawPass(m, tr) {
   const from = ballStart(m, tr);
   let ta = tr;
   while (dist(m.runnerAt(ta), from) > BALL_SPEED * (ta - tr) && ta < tr + 5) ta += STEP;
@@ -215,6 +239,7 @@ export function explainPass(m, result) {
   const w = m.window;
   const when = result.tr < w.start ? "early" : result.tr >= w.end ? "late" : "in";
   const by = (s) => (w.start === null ? "" : s);
+  if (result.kind === "offside") return `${when === "late" ? "Too late. " : when === "early" ? "Too early. " : ""}Offside. When you played it, the runner was already about ${Math.max(0.5, -result.offside.margin).toFixed(1)} m beyond their second-last defender, so receiving the pass was an offence.`;
   if (result.kind === "through") {
     return `Through. The ball met the runner in space, ${Math.max(0, result.clear - 1.8).toFixed(0)} m clear of the nearest defender.`;
   }

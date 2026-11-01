@@ -1,8 +1,8 @@
 // The timeline under the board after a through ball: when a pass would have worked (green)
-// and when it wouldn't, with your pass as a red line. Tapping it (or arrow keys + Enter)
+// and when it wouldn't, with your pass as a solid marker. Tapping it (or arrow keys + Enter)
 // calls onPick(t) to replay "what if you'd passed here".
 
-export function timeline(m, release, onPick) {
+export function timeline(m, release, onPick, showHint = true) {
   const w = m.window, T = m.timeLimit;
   const pct = (t) => `${(Math.min(T, Math.max(0, t)) / T) * 100}%`;
   const box = document.createElement("div");
@@ -39,7 +39,7 @@ export function timeline(m, release, onPick) {
   hint.className = "tb-tl__hint";
   hint.textContent = release === null
     ? "You didn't pass. Tap the bar to see any moment."
-    : "Your pass is the red line. Tap the bar to see what a pass at that moment would have done.";
+    : "The marker is your pass. Tap the bar to see what a pass at any moment would have done.";
   bar.addEventListener("pointerup", (e) => {
     const r = bar.getBoundingClientRect();
     onPick(Math.min(T - 0.05, Math.max(0, ((e.clientX - r.left) / r.width) * T)));
@@ -51,6 +51,7 @@ export function timeline(m, release, onPick) {
     if (e.key !== "Enter") kbT = Math.min(T - 0.05, Math.max(0, kbT + (e.key === "ArrowRight" ? 0.1 : -0.1)));
     onPick(kbT);
   });
+  hint.hidden = !showHint;
   box.append(bar, legend, hint);
   return {
     el: box,

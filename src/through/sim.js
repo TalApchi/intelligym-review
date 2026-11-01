@@ -254,6 +254,13 @@ export function pickRounds(all, history, n, rng = Math.random) {
   return { moves, history: picked.history };
 }
 
+// Offside: judged at the moment you played it (Law 11), where the ball was collected doesn't matter.
+export function offsideSentence(m, res, runner = `your ${m.runnerRole}`) {
+  const past = Math.max(0.5, -res.offside.margin);
+  const by = res.offside.lineBy === "ball" ? "the ball" : "their second-last defender";
+  return `Offside. When you played it, ${runner} was already about ${past.toFixed(1)} m beyond ${by}, so receiving the pass was an offence. Pass before the runner crosses that line.`;
+}
+
 // What happened and why, from the job of the defender involved. One or two sentences.
 const cap = (t) => t[0].toUpperCase() + t.slice(1);
 export function explainSim(m, res) {
@@ -264,6 +271,7 @@ export function explainSim(m, res) {
   const late = w.start !== null && res.tr >= w.end;
   const when = early ? "Too early. " : late ? "Too late. " : "";
   if (res.kind === "through") return `Through. The ball met ${runner} in space, ${Math.max(0, res.clear - 1.8).toFixed(0)} m clear of the nearest defender.`;
+  if (res.kind === "offside") return `${when}${offsideSentence(m, res, runner)}`;
   const d = res.by;
   if (res.kind === "short") {
     return res.tr < m.runFrom

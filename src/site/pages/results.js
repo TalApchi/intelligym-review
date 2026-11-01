@@ -1,6 +1,6 @@
 // Your results: the last completed run, kept only in this browser (see store.js).
 
-import { loadLastResult, clearLastResult } from "../store.js";
+import { loadLastResult, clearLastResult, loadShortResult } from "../store.js";
 import { SKILLS } from "../../../content/skills.js";
 import { esc, section, button, fmtDate } from "../ui.js";
 
@@ -57,9 +57,20 @@ const head = `
     </header>`;
 
 // The built page shows the empty state; mount() swaps in the saved result if there is one.
-export const view = () => `${head}${section("result", "", empty())}`;
+export const view = () => `${head}${section("result", "", empty())}<div id="short-result"></div>`;
+
+// The short test's result, if any: kept apart and labelled, never mixed into the full test.
+function shortBlock(r) {
+  return section("short", "Short test", `
+    <p class="small">Your latest short test: ${r.total} / ${r.available} points over three challenges${r.at ? `, played ${fmtDate(r.at.slice(0, 10))}` : ""}. It is stored separately and isn't comparable with the full test's 500.</p>
+    <ul class="short-rows">${r.rows.map((row) => `<li><span>${esc(row.title)}</span><strong>${row.points == null ? "Skipped" : `${row.points} / 100`}</strong></li>`).join("")}</ul>
+    <div class="cta-row"><a class="btn btn--ghost" href="short-test.html">Replay the short test</a></div>`);
+}
 
 export function mount(main) {
+  const sr = loadShortResult();
+  const sbox = main.querySelector("#short-result");
+  if (sr && sbox) sbox.innerHTML = shortBlock(sr);
   const r = loadLastResult();
   const box = main.querySelector("#result");
   if (!r || !box) return;

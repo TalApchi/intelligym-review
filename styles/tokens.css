@@ -22,7 +22,7 @@
   /* Text */
   --chalk: #f8fafc;          /* primary text, our players, pitch lines */
   --muted: #a3b1c4;
-  --dim: #6b7a90;
+  --dim: #7a889c;            /* 5:1 on the page (was #6b7a90, 4.4:1) */
 
   /* Lines and borders (chalk at low opacity, never grey hex) */
   --rule: rgba(248, 250, 252, 0.14);
@@ -83,4 +83,102 @@
   --radius-lg: 20px;
 
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ---- Theme-aware roles (the light theme below overrides these) ---- */
+  color-scheme: dark;
+  --accent-text: var(--accent-hi);           /* teal used as TEXT (links, highlights) */
+  --page-glow-1: #10283a;                     /* the soft floodlight glows behind the page */
+  --page-glow-2: #0c2226;
+  --grain-alpha: 0.05;
+  --header-bg: rgba(11, 16, 24, 0.9);
+  --shadow-card: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+  --cta-border: transparent;                  /* yellow buttons: a darker edge on light pages */
+  --chip-bg: rgba(6, 9, 10, 0.72);            /* small labels over the pitch */
+  --footer-bg: rgba(11, 16, 24, 0.6);
+  --review-text: #ddd6fe;                     /* text inside review notes */
+  /* Boards and pitches */
+  --card-top: #0e1916;                        /* top of the board card gradient */
+  --board-line: rgba(238, 241, 236, 0.22);    /* pitch markings */
+  --board-spot: rgba(238, 241, 236, 0.3);
+  --board-ink: var(--chalk);                  /* arrows, trails, ghosts, labels drawn on the pitch */
+  --board-ink-soft: rgba(238, 241, 236, 0.06);
+  --board-label-halo: var(--ink-0);
+  --home-fill: var(--chalk);                  /* our players */
+  --home-rim: rgba(6, 9, 10, 0.55);
+  --home-rim-w: 0.25;
+  --ring: var(--accent);                      /* "yours / act here" rings on the pitch */
+  --ring-hi: var(--accent-hi);
+  --press-flow: #b6c4cf;
+  --player-shadow: rgba(0, 0, 0, 0.45);
+  --tl-on: rgba(84, 190, 120, 0.75);          /* through-ball timeline: pass on */
+  --tl-off: rgba(125, 143, 156, 0.35);
+  --offside-line: #fcd34d;                    /* the offside line in a replay (also dashed) */
+}
+
+/* ==========================================================================
+   Light theme. Chosen with the Light / Dark control (src/theme.js) or, on a
+   first visit, from the operating-system setting. Same identity: Manrope,
+   teal for "yours", yellow for the main calls to action, restrained extras.
+   Teal text is darkened so it keeps at least 4.5:1 on white.
+   ========================================================================== */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ink-0: #f4f7fa;
+  --ink-1: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #eef3f8;
+  --pitch-a: #d3e9d6;
+  --pitch-b: #c8e1cc;
+
+  --chalk: #0f172a;          /* primary text */
+  --muted: #475569;          /* 7.6:1 on white */
+  --dim: #5b6779;            /* 5.7:1 on white */
+  --rule: rgba(15, 23, 42, 0.16);
+  --rule-soft: rgba(15, 23, 42, 0.08);
+
+  --accent: #0f766e;         /* fills and rings; white text on it is 5.5:1 */
+  --accent-hi: #115e59;
+  --accent-ink: #ffffff;
+  --accent-glow: rgba(13, 148, 136, 0.3);
+  --accent-text: #0f766e;    /* 5.5:1 on white */
+
+  --cta: #fcd34d;
+  --cta-hi: #fde68a;
+  --cta-ink: #1c1400;
+  --cta-glow: rgba(202, 138, 4, 0.25);
+  --cta-border: #d6a614;
+  --alert: #b91c1c;
+
+  --review: #6d28d9;
+  --review-ink: #ffffff;
+  --review-bg: rgba(109, 40, 217, 0.07);
+
+  --opp-fill: #3b4a5c;
+  --opp-stroke: #0f172a;
+
+  --page-glow-1: #dbeafe;
+  --page-glow-2: #d5f5ef;
+  --grain-alpha: 0;
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --shadow-card: 0 30px 60px -36px rgba(15, 23, 42, 0.35);
+  --chip-bg: rgba(255, 255, 255, 0.85);
+  --footer-bg: rgba(255, 255, 255, 0.7);
+  --review-text: #4c1d95;
+
+  --card-top: #e3f1e5;
+  --board-line: rgba(22, 78, 52, 0.38);
+  --board-spot: rgba(22, 78, 52, 0.45);
+  --board-ink: #0b1018;
+  --board-ink-soft: rgba(11, 16, 24, 0.06);
+  --board-label-halo: #ffffff;
+  --home-fill: #ffffff;
+  --home-rim: rgba(11, 16, 24, 0.8);
+  --home-rim-w: 0.34;
+  --ring: #0f766e;
+  --ring-hi: #0f766e;
+  --press-flow: #64748b;
+  --player-shadow: rgba(15, 23, 42, 0.22);
+  --tl-on: rgba(22, 163, 74, 0.75);
+  --tl-off: rgba(100, 116, 139, 0.3);
+  --offside-line: #b45309;
 }

@@ -33,15 +33,19 @@
 //   lofted     true if the ball goes through the air
 //   moves      players who move during the outcome: { id: [x, y] }
 
+import { withKeeper } from "../offside.js";
+
 const P = ([id, role, x, y]) => ({ id, role, x, y });
 const pt = ([x, y]) => ({ x, y });
+
+// Pictures drawn without a goalkeeper get one on their goal line (withKeeper, offside.js).
 
 function scenario(s) {
   return {
     approved: false,
     ...s,
     home: s.home.map(P),
-    away: s.away.map(P),
+    away: withKeeper(s.away).map(P),
     cues: (s.cues || []).map(([id, x, y]) => ({ id, to: { x, y } })),
     options: s.options.map((o) => ({
       ...o,

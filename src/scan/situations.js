@@ -25,9 +25,10 @@
 //   notes      optional { id: sentence } to replace the generated sentence for a target
 
 const P = ([id, role, x, y]) => ({ id, role, x, y });
+import { withKeeper } from "../offside.js"; // pictures without a keeper get one on their goal line
 
 function situation(s) {
-  return { approved: false, ok: [], notes: {}, ...s, you: { x: s.you[0], y: s.you[1] }, passer: P(s.passer), home: s.home.map(P), away: s.away.map(P) };
+  return { approved: false, ok: [], notes: {}, ...s, you: { x: s.you[0], y: s.you[1] }, passer: P(s.passer), home: s.home.map(P), away: withKeeper(s.away).map(P) };
 }
 
 export const SCAN_SITUATIONS = [

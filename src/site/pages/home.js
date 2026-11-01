@@ -30,7 +30,7 @@ export function view() {
         <h1 class="h-hero" id="home-title">${h.title.map((l, i) => `<span${i === h.title.length - 1 ? ' class="hl"' : ""}>${esc(l)}</span>`).join(" ")}</h1>
         <p class="lede">${esc(h.lede)}</p>
         <div class="cta-row">${button(h.primary)}</div>
-        <p class="meta">${esc(h.meta)}</p>
+        <p class="meta">${esc(h.meta)}${h.short ? ` <span aria-hidden="true">·</span> <a class="meta__link" href="${h.short.href}">${esc(h.short.label)}</a>` : ""}</p>
       </div>
       <div class="hero-home__stage" aria-hidden="true">
         <div class="stage-card stage-card--hero">

@@ -6,7 +6,7 @@
 import { DECIDE } from "../config.js";
 import { SCENARIOS } from "./scenarios.js";
 import { usableScenarios, pickScenarios, outcomeAt, previewTarget, bestOptions, scoreDecide } from "./logic.js";
-import { buildBoard, drawPlayers, markPlayer, placePlayers, showArrow, clearMarks, showCues, clearCues, drawBall, placeBall } from "../board.js";
+import { buildBoard, drawPlayers, markPlayer, placePlayers, showArrow, clearMarks, showCues, clearCues, drawBall, placeBall, bringIntoView } from "../board.js";
 
 
 // This browser's history lives in localStorage, so scenarios don't repeat until the pool
@@ -30,7 +30,7 @@ function chooseScenarios() {
 export const MOVE_KEY = `
   <ul class="move-key" aria-label="What the arrows mean">
     <li class="move-key__now"><svg viewBox="0 0 30 10" aria-hidden="true"><line class="move-key__trail" x1="2" y1="5" x2="23" y2="5"/><path class="move-key__trail-head" d="M22 1.5 L28 5 L22 8.5 Z"/></svg>Already moving: runs and pressure</li>
-    <li class="move-key__plan"><svg viewBox="0 0 30 10" aria-hidden="true"><line class="move-key__dash" x1="2" y1="5" x2="23" y2="5"/><path class="move-key__dash-head" d="M22 1.5 L28 5 L22 8.5 Z"/></svg>Red dashed: your choice, once you pick</li>
+    <li class="move-key__plan"><svg viewBox="0 0 30 10" aria-hidden="true"><line class="move-key__dash" x1="2" y1="5" x2="23" y2="5"/><path class="move-key__dash-head" d="M22 1.5 L28 5 L22 8.5 Z"/></svg>Dashed: your choice, once you pick</li>
   </ul>`;
 
 /**
@@ -43,13 +43,13 @@ export function playDecide(root, { onDone }) {
 
   root.innerHTML = `
     <div class="play" data-phase="choose">
-      <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
       <section class="play__panel">
         <div class="play__meta">
           <span class="play__round"></span>
           <span class="draft-badge" hidden>Draft scenario</span>
         </div>
         <h2 class="play__prompt" aria-live="polite"></h2>
+        <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
         <div class="play__hint">${MOVE_KEY}</div>
         <div class="choices" role="radiogroup" aria-label="Your options"></div>
         <button class="btn btn--primary play__go" type="button" hidden>Play it</button>
@@ -58,7 +58,7 @@ export function playDecide(root, { onDone }) {
           <p class="play__line"></p>
           <p class="play__best"></p>
           <p class="play__why"></p>
-          <p class="play__provisional">Provisional: this score and explanation are drafts until Omri approves them.</p>
+          <p class="play__provisional">Provisional: scores and explanations are drafts until Omri approves them.</p>
           <button class="btn btn--primary play__next" type="button"></button>
         </div>
       </section>
@@ -138,6 +138,7 @@ export function playDecide(root, { onDone }) {
       ui.go.hidden = true;
       ui.play.dataset.phase = "choose";
       clearMarks(board);
+      bringIntoView(ui.play);
 
       drawPlayers(board, [...scenario.home.map((p) => ({ ...p, team: "home" })), ...scenario.away.map((p) => ({ ...p, team: "away" }))]);
       markPlayer(board, scenario.carrier, "is-carrier");
@@ -173,12 +174,14 @@ export function playDecide(root, { onDone }) {
       ui.play.dataset.phase = "reveal";
       ui.prompt.textContent = option.result;
       ui.verdictName.textContent = `${DECIDE.labels[pts]}${scenario.approved ? "" : " (draft)"}`;
-      ui.verdictPts.textContent = `${pts} pts`;
+      ui.verdictPts.textContent = `${pts} / 100 this situation`;
       ui.line.textContent = option.note;
       ui.best.textContent = top ? "" : `${scenario.approved ? "Top option" : "Top option (draft)"}: ${best.map((o) => o.label.toLowerCase()).join(", or ")}.`;
       ui.best.hidden = top;
       ui.why.textContent = `${scenario.approved ? "Why" : "Why (draft)"}: ${scenario.reasoning}${scenario.open ? ` ${scenario.open}` : ""}`;
       ui.next.textContent = last ? "See your points" : "Next situation";
+      // the long provisional note once is enough; the "(draft)" labels stay on every situation
+      root.querySelector(".play__provisional").hidden = scenario.approved || i > 0;
       ui.result.hidden = false;
       ui.next.focus({ preventScroll: true });
       ui.next.scrollIntoView?.({ block: "nearest", behavior: "smooth" }); // short phones

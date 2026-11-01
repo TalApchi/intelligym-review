@@ -167,3 +167,13 @@ export function clearCues(board) {
 export function clearMarks(board) {
   board.marks.replaceChildren();
 }
+
+// At the start of each round: if the previous round's result left the page scrolled (the
+// Next button sits under the pitch on short screens), bring the challenge's heading and pitch
+// back under the sticky header, so the next picture is never half hidden.
+export function bringIntoView(el) {
+  if (!el?.getBoundingClientRect) return;
+  const r = el.getBoundingClientRect();
+  const head = document.querySelector(".site-header")?.offsetHeight ?? 0;
+  if (r.top < head || r.top > window.innerHeight * 0.4) window.scrollTo({ top: window.scrollY + r.top - head - 8, behavior: "auto" });
+}

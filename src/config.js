@@ -6,33 +6,61 @@ import { BUILD } from "./build.js";
 // The order of challenges. nextScreen() walks through this list.
 export const PLAN = { challenges: ["spot", "track", "decide", "scan", "through"] };
 
+// The five challenges. `instruction` is shown above the pitch before each challenge (kept short:
+// one or two sentences). `measures` explains in plain language what the challenge's points
+// describe on the results screen (games, not a validated measure of the skill).
 export const CHALLENGES = {
   spot: {
     title: "Spot the change",
-    instruction: "Remember the picture. One player will move.",
+    instruction: "Remember where everyone is. The pitch goes blank and one player moves: tap them.",
+    measures: "Noticing what changed in the picture around you.",
     built: true,
   },
   track: {
     title: "Tracking runners",
-    instruction: "Two teammates will make runs. Keep your eyes on them.",
+    instruction: "Two teammates light up. Keep your eyes on them while everyone runs, then tap both.",
+    measures: "Keeping track of two moving teammates at once.",
     built: true,
   },
   decide: {
     title: "Tactical choice",
-    instruction: "You have the ball. Make the call.",
+    instruction: "You have the ball. Pick what you'd do, then play it.",
+    measures: "How your choice on the ball compares with our draft ranking of the options.",
     built: true,
   },
   scan: {
     title: "Opponents vanish",
-    instruction: "The ball is coming to you. Look at the whole picture while you can: the opponents will disappear before it arrives. Then tap the teammate you'd pass to.",
+    instruction: "Look at the whole picture while the ball comes to you. The opponents disappear: tap the teammate you'd pass to.",
+    measures: "How much of the picture you kept in mind when you chose a pass.",
     built: true,
   },
   through: {
     title: "Through ball",
-    instruction: "You have the ball and a teammate is making a run in behind. Press Pass when you want to release it: the ball is played into the space ahead of the runner. Too early and the runner is still in front of their marker, or someone is in the lane; too late and a covering defender or the keeper gets there. Each round is a different situation.",
+    instruction: "Press Pass (or the space bar) to play the ball into the space ahead of the ringed runner. Too early and a defender is still in the way; too late and it's cut out, or the runner is offside.",
+    measures: "Timing a pass into a run: not too early, not too late.",
     built: true,
   },
 };
+
+// The two ways to play. `options` changes a challenge's length for that plan only; the
+// rules, scoring and the 100-point maximum per challenge stay the same.
+//   full   the five-challenge test (500 points), with demonstrations and practice
+//   short  the campaign taster (short-test.html): three challenges, one round each (300
+//          points). Its result is stored separately and is not comparable with the full test.
+export const PLANS = {
+  full: { id: "full", label: "Full test", challenges: PLAN.challenges, options: {} },
+  short: {
+    id: "short",
+    label: "Short test",
+    challenges: ["spot", "track", "through"],
+    options: {
+      spot: { rounds: 1 },
+      track: { rounds: 1 },
+      through: { rounds: 1, practice: false, pickFrom: 2 },
+    },
+  },
+};
+export const maxPoints = (plan) => plan.challenges.length * 100;
 
 export const SPOT = {
   rounds: 2,             // ⚙︎ rounds per play
@@ -79,7 +107,7 @@ export const DECIDE = {
   // over the situations, so it stays out of 100. Scheme approved by Omri; each scenario's scores are still drafts.
   scale: [100, 75, 50, 25], // ⚙︎
   labels: { 100: "Top option", 75: "Good option", 50: "Fair option", 25: "Riskier option" },
-  outcomeMs: 1600,       // ⚙︎ how long the outcome animation plays
+  outcomeMs: 1150,       // ⚙︎ how long the outcome animation plays (was 1600; shorter dead time, same picture)
 };
 
 export const SCAN = {

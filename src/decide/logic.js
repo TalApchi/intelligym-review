@@ -118,3 +118,17 @@ export function scoreDecide(scores) {
   const sum = scores.reduce((n, s) => n + (s ?? 0), 0);
   return Math.round(sum / scores.length);
 }
+
+// The teammate an option passes to, or null for a shot, a dribble or a run with the ball:
+// the teammate who ends where the ball ends (moved there, or standing within 3 m of it).
+export function receiverOf(scenario, option) {
+  const end = option.ball[option.ball.length - 1];
+  let best = null, bestD = Infinity;
+  for (const p of scenario.home) {
+    if (p.id === scenario.carrier) continue;
+    const at = option.moves?.[p.id] ?? p;
+    const d = Math.hypot(at.x - end.x, at.y - end.y);
+    if (d < 3 && d < bestD) { best = p; bestD = d; }
+  }
+  return best;
+}

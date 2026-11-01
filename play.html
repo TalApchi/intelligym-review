@@ -7,6 +7,7 @@
   <meta name="description" content="Five short soccer challenges about reading the game. Up to 100 points each. Free, no account.">
   <link rel="icon" href="assets/brand/socceriq-icon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#0b1018">
+  <script src="src/theme.js"></script>
   <link rel="preload" href="assets/fonts/manrope-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
@@ -24,8 +25,14 @@
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="site-header__inner">
-        <a class="site-logo" href="index.html" aria-label="Soccer IQ home"><img class="" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91"></a>
+        <a class="site-logo" href="index.html" aria-label="Soccer IQ home"><img class="logo--on-dark" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91"><img class="logo--on-light" src="assets/brand/socceriq-logo-light.svg" alt="soccerIQ.tech" width="415" height="91"></a>
         <div class="site-header__actions">
+          
+  <button class="theme-toggle theme-toggle--bar" type="button" data-theme-toggle>
+    <span class="theme-toggle__icon theme-toggle__icon--to-light"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><path d="M10 1.8v2.4M10 15.8v2.4M1.8 10h2.4M15.8 10h2.4M4.2 4.2l1.7 1.7M14.1 14.1l1.7 1.7M4.2 15.8l1.7-1.7M14.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+    <span class="theme-toggle__icon theme-toggle__icon--to-dark"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.6 12.9A6.6 6.6 0 0 1 7.1 4.4a6.6 6.6 0 1 0 8.5 8.5Z" fill="currentColor"/></svg></span>
+    <span class="theme-toggle__text"></span>
+  </button>
           <a class="btn btn--cta btn--sm header-cta" href="play.html" aria-current="page">TEST YOURSELF</a>
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
             <span class="nav-toggle__bars" aria-hidden="true"></span><span class="sr-only">Menu</span>
@@ -33,6 +40,12 @@
         </div>
         <nav class="nav" id="site-nav" aria-label="Main">
           <ul class="nav__list"><li><a class="nav__link" href="index.html">Home</a></li><li><a class="nav__link" href="learn.html">Training tips</a></li><li><a class="nav__link" href="knowledge.html">Knowledge hub</a></li><li><a class="nav__link" href="tools.html">Training tools</a></li><li><a class="nav__link" href="results.html">Your results</a></li></ul>
+          <div class="nav__theme">
+  <button class="theme-toggle theme-toggle--menu" type="button" data-theme-toggle>
+    <span class="theme-toggle__icon theme-toggle__icon--to-light"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><path d="M10 1.8v2.4M10 15.8v2.4M1.8 10h2.4M15.8 10h2.4M4.2 4.2l1.7 1.7M14.1 14.1l1.7 1.7M4.2 15.8l1.7-1.7M14.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+    <span class="theme-toggle__icon theme-toggle__icon--to-dark"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.6 12.9A6.6 6.6 0 0 1 7.1 4.4a6.6 6.6 0 1 0 8.5 8.5Z" fill="currentColor"/></svg></span>
+    <span class="theme-toggle__text"></span>
+  </button></div>
         </nav>
       </div>
     </header>
@@ -48,7 +61,7 @@
     <footer class="site-footer">
       <div class="site-footer__inner">
         <div class="footer__brand">
-          <img class="" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91">
+          <img class="logo--on-dark" src="assets/brand/socceriq-logo-dark.svg" alt="soccerIQ.tech" width="415" height="91"><img class="logo--on-light" src="assets/brand/socceriq-logo-light.svg" alt="soccerIQ.tech" width="415" height="91">
           <p>Soccer IQ is a soccer website about game intelligence: five short challenges, practical tips on reading the game, and a plain comparison of the tools that train it.</p>
         </div>
         

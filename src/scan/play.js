@@ -10,7 +10,7 @@ import { SCAN_SITUATIONS } from "./situations.js";
 import { scanState, scanRank, scanFeedback, toSegment, targetsOf, scorePass, scoreScan } from "./logic.js";
 import { pickScenarios } from "../decide/logic.js";
 import { BALL_SPEED, REACH } from "../through/logic.js";
-import { buildBoard, drawPlayers, markPlayer, placePlayers, placeBall, setTappable, clearMarks, showArrow, drawBall, playerAt } from "../board.js";
+import { buildBoard, drawPlayers, markPlayer, placePlayers, placeBall, setTappable, clearMarks, showArrow, drawBall, playerAt, bringIntoView } from "../board.js";
 
 const VERDICT = { best: "Suggested option", reasonable: "Reasonable option", poor: "Riskier option" };
 const ease = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
@@ -46,7 +46,6 @@ export function playScan(root, { onDone }) {
 
   root.innerHTML = `
     <div class="play" data-phase="look">
-      <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
       <section class="play__panel">
         <div class="play__meta">
           <span class="play__round"></span>
@@ -54,12 +53,13 @@ export function playScan(root, { onDone }) {
         </div>
         <h2 class="play__prompt" aria-live="polite"></h2>
         <div class="timer" aria-hidden="true"><div class="timer__fill"></div></div>
+        <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
         <div class="play__result" hidden>
           <p class="verdict"><span class="verdict__name"></span><span class="verdict__pts"></span></p>
           <p class="play__line"></p>
           <p class="play__best"></p>
           <p class="play__why"></p>
-          <p class="play__provisional">Provisional: this ranking and explanation are drafts until Omri approves them.</p>
+          <p class="play__provisional">Provisional: rankings and explanations are drafts until Omri approves them.</p>
           <div class="play__buttons">
             <button class="btn btn--ghost play__replay" type="button">Replay</button>
             <button class="btn btn--primary play__next" type="button"></button>
@@ -128,7 +128,7 @@ export function playScan(root, { onDone }) {
     ui.timer.hidden = true;
     opponents(s, false);
     ui.prompt.textContent = "Here's the ball…";
-    const arrive = (dist(mid, to) / BALL_SPEED) * 1000 + 300;
+    const arrive = (dist(mid, to) / BALL_SPEED) * 1000 + 200;
     await run(arrive, (t) => placeBall(board, lerp(mid, to, ease(t / arrive))));
   }
 
@@ -165,10 +165,10 @@ export function playScan(root, { onDone }) {
     showArrow(board, s.you, m);
     const presser = kind === "marked" || kind === "tight" ? a.nearOpp : null;
     const ms = (dist(from, end) / BALL_SPEED) * 1000 * slow;
-    await run(ms + 500, (t) => {
+    await run(ms + 300, (t) => {
       placeBall(board, lerp(from, end, Math.min(1, t / ms)));
       // the nearest opponent steps towards the receiver, stopping short of the disc
-      if (presser) placePlayers(board, { [presser.id]: lerp(presser, lerp(presser, m, Math.max(0, 1 - 4 / dist(presser, m))), ease(Math.min(1, t / (ms + 500)))) });
+      if (presser) placePlayers(board, { [presser.id]: lerp(presser, lerp(presser, m, Math.max(0, 1 - 4 / dist(presser, m))), ease(Math.min(1, t / (ms + 300)))) });
     });
   }
 
@@ -192,6 +192,7 @@ export function playScan(root, { onDone }) {
       ui.badge.hidden = s.approved;
       ui.result.hidden = true;
       setup(s);
+      bringIntoView(ui.play);
       placeBall(board, passerFoot(s));
       await look(s, ms);
       if (!alive) return;
@@ -208,12 +209,12 @@ export function playScan(root, { onDone }) {
       ui.play.dataset.phase = "reveal";
       ui.prompt.textContent = id === s.passer.id ? `You played it ${name(s, id)}.` : `You passed to ${name(s, id)}.`;
       ui.verdictName.textContent = `${VERDICT[rank]}${draft ? " (draft)" : ""}`;
-      ui.verdictPts.textContent = `${p} pts`;
+      ui.verdictPts.textContent = `${p} / 100 this situation`;
       ui.line.textContent = scanFeedback(s, id);
       ui.best.textContent = rank === "best" ? "" : `${draft ? "Suggested option (draft)" : "Suggested option"}: ${name(s, s.best)} (circled).`;
       ui.best.hidden = rank === "best";
       ui.why.textContent = `${draft ? "Why (draft)" : "Why"}: ${s.reasoning}`;
-      ui.provisional.hidden = !draft;
+      ui.provisional.hidden = !draft || i > 0; // said once; "(draft)" stays on every verdict
       ui.next.textContent = last ? "See your points" : "Next situation · less time";
       ui.replay.onclick = async () => {
         if (!alive) return;
@@ -222,7 +223,7 @@ export function playScan(root, { onDone }) {
         setup(s);
         ui.prompt.textContent = "Replay: this is what you had to remember.";
         placeBall(board, youFoot(s));
-        await run(1800, () => {});
+        await run(1200, () => {});
         if (!alive) return;
         await outcome(s, id, 1.6);
         if (!alive) return;

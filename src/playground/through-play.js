@@ -14,7 +14,7 @@ import { timeline } from "../through/timeline.js";
 const ROUNDS = 3;
 const SLOW = 0.5; // replay speed
 const HISTORY_KEY = "ig.through.history";
-const STATUS = { through: "Through", intercepted: "Cut out", covered: "Space closed", short: "To feet, not in behind", missed: "Missed" };
+const STATUS = { through: "Through", intercepted: "Cut out", covered: "Space closed", short: "To feet, not in behind", offside: "Offside", missed: "Missed" };
 const statusOf = (res) => STATUS[res === "missed" ? "missed" : res.kind];
 const sentence = (m, res) => (res === "missed" ? MISSED : explainSim(m, res));
 // The demonstration and practice look the same every time (fixed seed, a fair variant).

@@ -4,7 +4,7 @@
 
 import { TRACK } from "../config.js";
 import { makeRound, positionsAt, gradeRound, feedbackLine, scoreTrack } from "./logic.js";
-import { buildBoard, drawPlayers, setTappable, playerAt, markPlayer, placePlayers } from "../board.js";
+import { buildBoard, drawPlayers, setTappable, playerAt, markPlayer, placePlayers, bringIntoView } from "../board.js";
 
 const COUNT = ["none", "one", "two", "three", "four"][TRACK.targets] ?? String(TRACK.targets);
 const PHASE = {
@@ -18,10 +18,10 @@ const PHASE = {
  * Calls onDone(result) after the last round, in the shape screens.js shows.
  * Returns a cleanup function that stops every timer and animation.
  */
-export function playTrack(root, { onDone }) {
+export function playTrack(root, { onDone, options = {} }) {
+  const ROUNDS = options.rounds ?? TRACK.rounds; // the short test plays round 1 only, at round 1 speed
   root.innerHTML = `
     <div class="play" data-phase="mark">
-      <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
       <section class="play__panel">
         <div class="play__meta">
           <span class="play__round"></span>
@@ -29,11 +29,13 @@ export function playTrack(root, { onDone }) {
         </div>
         <h2 class="play__prompt" aria-live="polite"></h2>
         <div class="timer" aria-hidden="true"><div class="timer__fill"></div></div>
+        <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
         <div class="play__picker" hidden>
           <p class="play__count" aria-live="polite"></p>
           <button class="btn btn--primary play__confirm" type="button" hidden>Confirm</button>
         </div>
         <div class="play__result" hidden>
+          <p class="verdict"><span class="verdict__name"></span><span class="verdict__pts"></span></p>
           <p class="play__line"></p>
           <p class="play__time"></p>
           <p class="play__key"><span>✓ followed</span><span>◌ missed</span><span>✕ not one of them</span></p>
@@ -47,7 +49,7 @@ export function playTrack(root, { onDone }) {
     play: $(".play"), round: $(".play__round"), phase: $(".play__phase"), prompt: $(".play__prompt"),
     fill: $(".timer__fill"), picker: $(".play__picker"), count: $(".play__count"), confirm: $(".play__confirm"),
     result: $(".play__result"), line: $(".play__line"), time: $(".play__time"), next: $(".play__next"),
-    key: $(".play__key"),
+    key: $(".play__key"), verdictName: $(".verdict__name"), verdictPts: $(".verdict__pts"),
   };
   const board = buildBoard($(".board"));
   const grades = [];
@@ -144,14 +146,15 @@ export function playTrack(root, { onDone }) {
   });
 
   async function run() {
-    for (let i = 0; i < TRACK.rounds; i++) {
+    for (let i = 0; i < ROUNDS; i++) {
       const round = makeRound(TRACK, i);
-      const last = i === TRACK.rounds - 1;
+      const last = i === ROUNDS - 1;
       const fast = i > 0;
-      ui.round.textContent = `Round ${i + 1} of ${TRACK.rounds}${fast ? " · faster" : ""}`;
+      ui.round.textContent = `Round ${i + 1} of ${ROUNDS}${fast ? " · faster" : ""}`;
       ui.result.hidden = true;
       ui.picker.hidden = true;
       ui.play.classList.remove("is-revealed");
+      bringIntoView(ui.play);
 
       // 1. Mark the targets
       drawPlayers(board, round.players.map((p) => ({ ...p, ...positionsAt(round, 0)[p.id] })));
@@ -193,6 +196,8 @@ export function playTrack(root, { onDone }) {
       ui.play.classList.add("is-revealed");
       ui.phase.textContent = `${found} of ${TRACK.targets}`;
       ui.prompt.textContent = found === TRACK.targets ? "All tracked." : found === 0 ? "Lost them." : `${found} of ${TRACK.targets} tracked.`;
+      ui.verdictName.textContent = `Round ${i + 1}`;
+      ui.verdictPts.textContent = `${Math.round((100 * found) / TRACK.targets)} / 100 this round`;
       ui.line.textContent = line;
       ui.time.textContent = `Picked in ${(timeMs / 1000).toFixed(1)} s`;
       ui.key.hidden = found === TRACK.targets;
@@ -203,7 +208,7 @@ export function playTrack(root, { onDone }) {
       await waitForNext();
     }
     const found = grades.reduce((n, g) => n + g.found.length, 0);
-    const total = TRACK.targets * TRACK.rounds;
+    const total = TRACK.targets * ROUNDS;
     onDone({
       points: scoreTrack(grades),
       tally: `${found} of ${total} tracked`,

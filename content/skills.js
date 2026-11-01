@@ -40,7 +40,7 @@ export const SKILLS = [
     name: "Timing",
     line: "Doing it at the right moment.",
     body: "Releasing a pass, making a run or stepping in at the moment it works: too early and the chance is not there yet, too late and it has gone.",
-    onPitch: ["Pass into a run when the runner is level with the last defender, not after.", "Delay your run until the passer can see you."],
+    onPitch: ["Pass into a run before the runner gets past the second-last defender (usually the last outfield player): level is onside, beyond is offside.", "Delay your run until the passer can see you."],
     challenges: ["through"],
   },
 ];

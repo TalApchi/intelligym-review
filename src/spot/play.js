@@ -5,7 +5,7 @@
 import { SPOT } from "../config.js";
 import { FORMATIONS } from "./formations.js";
 import { makeRounds, feedbackLine, scoreSpot } from "./logic.js";
-import { buildBoard, drawPlayers, setTappable, playerAt, markPlayer, showMove, clearMarks } from "../board.js";
+import { buildBoard, drawPlayers, setTappable, playerAt, markPlayer, showMove, clearMarks, bringIntoView } from "../board.js";
 
 const PHASE = {
   study: { label: "Look", prompt: "Remember the picture" },
@@ -19,10 +19,10 @@ const PHASE = {
  *   { points, tally, sub, rows: [{ ok, label, line, aside }] }
  * Returns a cleanup function that stops every timer (used when the visitor leaves).
  */
-export function playSpot(root, { onDone }) {
+export function playSpot(root, { onDone, options = {} }) {
+  const cfg = { ...SPOT, ...options }; // the short test plays one round
   root.innerHTML = `
     <div class="play" data-phase="study">
-      <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
       <section class="play__panel">
         <div class="play__meta">
           <span class="play__round"></span>
@@ -30,7 +30,9 @@ export function playSpot(root, { onDone }) {
         </div>
         <h2 class="play__prompt" aria-live="polite"></h2>
         <div class="timer" aria-hidden="true"><div class="timer__fill"></div></div>
+        <div class="play__board board-card"><svg class="board" aria-label="Pitch seen from above"></svg></div>
         <div class="play__result" hidden>
+          <p class="verdict"><span class="verdict__name"></span><span class="verdict__pts"></span></p>
           <p class="play__line"></p>
           <p class="play__time"></p>
           <button class="btn btn--primary play__next" type="button"></button>
@@ -42,10 +44,10 @@ export function playSpot(root, { onDone }) {
   const ui = {
     play: $(".play"), round: $(".play__round"), phase: $(".play__phase"), prompt: $(".play__prompt"),
     fill: $(".timer__fill"), result: $(".play__result"), line: $(".play__line"),
-    time: $(".play__time"), next: $(".play__next"),
+    time: $(".play__time"), next: $(".play__next"), verdictName: $(".verdict__name"), verdictPts: $(".verdict__pts"),
   };
   const board = buildBoard($(".board"));
-  const rounds = makeRounds(FORMATIONS, SPOT);
+  const rounds = makeRounds(FORMATIONS, cfg);
   const answers = [];
 
   // Everything that can fire later is tracked here, so cleanup can stop it all.
@@ -119,6 +121,7 @@ export function playSpot(root, { onDone }) {
       ui.round.textContent = `Round ${i + 1} of ${rounds.length}`;
       ui.result.hidden = true;
       clearMarks(board);
+      bringIntoView(ui.play);
 
       // 1. Study the picture
       drawPlayers(board, round.before);
@@ -151,6 +154,8 @@ export function playSpot(root, { onDone }) {
       showMove(board, round.from, round.to);
       markPlayer(board, round.moverId, "is-answer");
       if (picked) markPlayer(board, picked, "is-pick");
+      ui.verdictName.textContent = `Round ${i + 1}`;
+      ui.verdictPts.textContent = `${correct ? 100 : 0} / 100 this round`;
       ui.line.textContent = answers[i].line;
       ui.time.textContent = timeMs === null ? "No answer" : `Answered in ${(timeMs / 1000).toFixed(1)} s`;
       ui.next.textContent = last ? "See your points" : "Next round";
@@ -162,7 +167,7 @@ export function playSpot(root, { onDone }) {
     onDone({
       points: scoreSpot(answers),
       tally: `${spotted} of ${answers.length} spotted`,
-      sub: `You spotted ${spotted} of ${answers.length} changes. Time is shown, not scored.`,
+      sub: answers.length > 1 ? `You spotted ${spotted} of ${answers.length} changes. Time is shown, not scored.` : `${spotted ? "You spotted the change." : "You missed the change."} Time is shown, not scored.`,
       rows: answers.map((a, i) => ({
         ok: a.correct,
         label: `Round ${i + 1}`,

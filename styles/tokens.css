@@ -113,48 +113,9 @@
   --tl-on: rgba(84, 190, 120, 0.75);          /* through-ball timeline: pass on */
   --tl-off: rgba(125, 143, 156, 0.35);
   --offside-line: #fcd34d;                    /* the offside line in a replay (also dashed) */
+  --hero-visual-edge: rgba(11, 16, 24, 0.55); /* soft inner edge on the home hero picture */
+  --hero-visual-bg: #0b2a22;                /* behind the hero picture while it loads (its pitch color) */
 
-  /* Home hero illustration (src/site/hero-scene.js): a floodlit evening match */
-  --scene-grass-a: #1f6a3c;
-  --scene-grass-b: #24753f;
-  --scene-line: rgba(255, 255, 255, 0.82);
-  --scene-stand: #0c1420;
-  --scene-crowd-1: #1d2a3c;
-  --scene-crowd-2: #263649;
-  --scene-crowd-3: #314358;
-  --scene-boards: #0f766e;
-  --scene-boards-line: #2dd4bf;
-  --scene-net: rgba(255, 255, 255, 0.5);
-  --scene-net-back: rgba(6, 12, 10, 0.35);
-  --scene-post: #ffffff;
-  --scene-flood-a: rgba(255, 255, 255, 0.10);
-  --scene-flood-b: rgba(255, 255, 255, 0);
-  --scene-fade: rgba(11, 16, 24, 0.55);       /* bottom of the picture, toward the page */
-  --scene-shadow: rgba(0, 0, 0, 0.38);
-  --scene-home-shirt: #f8fafc;
-  --scene-home-shorts: #0f172a;
-  --scene-home-socks: #f8fafc;
-  --scene-home-number: #0f766e;
-  --scene-opp-shirt: #2b3a4d;
-  --scene-opp-shorts: #172231;
-  --scene-opp-socks: #2b3a4d;
-  --scene-gk-shirt: #f59e0b;
-  --scene-gk-shorts: #1f2937;
-  --scene-glove: #e2e8f0;
-  --scene-boot: #0b0f14;
-  --scene-hair: #1c1714;
-  --scene-skin-1: #c58c64;
-  --scene-skin-2: #8a5a3c;
-  --scene-skin-3: #e3b48f;
-  --scene-read: #2dd4bf;                      /* the pass, the run's target, the space */
-  --scene-read-halo: rgba(4, 32, 28, 0.55);
-  --scene-space: rgba(45, 212, 191, 0.32);
-  --scene-run: rgba(255, 255, 255, 0.9);
-  --scene-ball: #ffffff;
-  --scene-ball-patch: #111827;
-  --scene-ball-edge: rgba(17, 24, 39, 0.5);
-  --scene-chip-bg: rgba(6, 9, 10, 0.82);
-  --scene-chip-text: #f8fafc;
 }
 
 /* ==========================================================================
@@ -223,26 +184,6 @@
   --tl-on: rgba(22, 163, 74, 0.75);
   --tl-off: rgba(100, 116, 139, 0.3);
   --offside-line: #b45309;
+  --hero-visual-edge: rgba(11, 16, 24, 0.25);
 
-  /* Home hero illustration: the same match in daylight */
-  --scene-grass-a: #3f9a52;
-  --scene-grass-b: #48a75b;
-  --scene-line: rgba(255, 255, 255, 0.92);
-  --scene-stand: #cfd9e4;
-  --scene-crowd-1: #b4c2d1;
-  --scene-crowd-2: #a3b3c5;
-  --scene-crowd-3: #94a6ba;
-  --scene-boards: #0f766e;
-  --scene-boards-line: #5eead4;
-  --scene-net: rgba(255, 255, 255, 0.8);
-  --scene-net-back: rgba(20, 60, 35, 0.18);
-  --scene-flood-a: rgba(255, 255, 255, 0.14);
-  --scene-fade: rgba(244, 247, 250, 0.35);
-  --scene-shadow: rgba(10, 40, 20, 0.32);
-  --scene-opp-shirt: #1e293b;
-  --scene-opp-shorts: #0f172a;
-  --scene-opp-socks: #1e293b;
-  --scene-read-halo: rgba(4, 32, 28, 0.45);
-  --scene-chip-bg: rgba(255, 255, 255, 0.94);
-  --scene-chip-text: #0f172a;
 }

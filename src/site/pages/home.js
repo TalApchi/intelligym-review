@@ -6,10 +6,15 @@ import { SKILLS } from "../../../content/skills.js";
 import { SITE } from "../../../content/site.js";
 import { esc, button, finalCta } from "../ui.js";
 import { loadLastResult } from "../store.js";
-import { heroSceneSVG } from "../hero-scene.js";
 
 export const title = "Soccer IQ | Test how well you read the game";
 export const description = "Five short soccer challenges on scanning, awareness, decisions and timing. Free, no account. Then learn how to train game intelligence.";
+
+// The hero picture: Tal's approved image, used as supplied (original in brand/hero/), in
+// optimized sizes made from it (assets/hero/). Above the fold, so it is never lazy-loaded.
+const HERO_WIDTHS = [480, 720, 960, 1200, 1448];
+const srcset = (ext) => HERO_WIDTHS.map((w) => `${HOME.hero.visual.base}-${w}.${ext} ${w}w`).join(", ");
+const HERO_SIZES = "(min-width: 1240px) 560px, (min-width: 960px) 46vw, (max-width: 959px) and (max-height: 700px) 240px, min(640px, calc(100vw - 32px))";
 
 export function view() {
   const h = HOME.hero;
@@ -31,9 +36,12 @@ export function view() {
         <div class="cta-row">${button(h.primary)}</div>
         <p class="meta">${esc(h.meta)}${h.short ? ` <span aria-hidden="true">·</span> <a class="meta__link" href="${h.short.href}">${esc(h.short.label)}</a>` : ""}</p>
       </div>
-      <figure class="hero-home__stage hero-scene">
-        ${heroSceneSVG()}
-        <figcaption class="hero-scene__note">${esc(h.visualNote)}</figcaption>
+      <figure class="hero-home__stage hero-visual">
+        <picture>
+          <source type="image/webp" srcset="${srcset("webp")}" sizes="${HERO_SIZES}">
+          <img class="hero-visual__img" src="${h.visual.src}" srcset="${srcset("jpg")}" sizes="${HERO_SIZES}"
+            width="${h.visual.width}" height="${h.visual.height}" alt="${esc(h.visual.alt)}" fetchpriority="high" decoding="async">
+        </picture>
       </figure>
     </section>
 

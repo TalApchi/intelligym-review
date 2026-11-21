@@ -11,9 +11,14 @@ export const HOME = {
     // A discreet second way in: the three-challenge short test (short-test.html). The main
     // TEST YOURSELF action above stays the full test.
     short: { label: "Short on time? Try the short test", href: "short-test.html" },
-    // Caption on the hero picture: it is a drawing of a match moment, not footage or data
-    // from the challenges.
-    visualNote: "Illustration",
+    // The hero picture (Tal, 2026-11-21): a stylized 3D illustration, not a photograph or
+    // footage from the challenges. Sizes are made by tools/hero_images.py from brand/hero/.
+    visual: {
+      base: "assets/hero/hero-pitch",
+      src: "assets/hero/hero-pitch-960.jpg",
+      width: 1448, height: 1086,
+      alt: "Illustration of a soccer attack: a player dribbles toward the penalty area while a teammate runs into the box between defenders, with the goalkeeper set in goal.",
+    },
   },
 
   // The guided journey, kept to one line per step. `href` must be a real page.

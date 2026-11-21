@@ -304,80 +304,30 @@ a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
 }
 
 
-/* The hero picture: an original match illustration (src/site/hero-scene.js), the first thing
-   that says "soccer". It replaces the faint corner drawings and the dot pitch that used to be
-   here. Phones: on top, above the headline, sized so the headline and TEST YOURSELF still fit
-   on the first screen. Wide screens: the right half. */
-.hero-scene {
-  position: relative; margin: 0; overflow: hidden; isolation: isolate;
-  border-radius: var(--radius-lg); border: 1px solid var(--rule);
-  background: var(--scene-grass-a); box-shadow: var(--shadow-card);
-  height: clamp(168px, 31svh, 300px);
-}
-.hero-scene__svg { display: block; width: 100%; height: 100%; }
-.hero-scene__note {
-  position: absolute; right: var(--s3); bottom: var(--s3); z-index: 1; margin: 0;
-  padding: 3px 9px; border-radius: 999px; background: var(--scene-chip-bg); color: var(--scene-chip-text);
-  font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em;
-}
+/* The hero picture: Tal's approved 3D soccer image, shown whole (4:3, never cropped). Phones:
+   above the headline, full width; short phones: smaller and centred so TEST YOURSELF stays on
+   the first screen. Wide screens: the right half. The image keeps its own dark pitch in both
+   themes; a rounded frame and a soft edge in the page color tie it in. */
+.hero-visual { position: relative; margin: 0; width: 100%; aspect-ratio: 1448 / 1086; justify-self: center;
+  border-radius: var(--radius-lg); overflow: hidden; background: var(--hero-visual-bg); box-shadow: var(--shadow-card); isolation: isolate; }
+.hero-visual picture, .hero-visual__img { display: block; width: 100%; height: 100%; }
+.hero-visual__img { object-fit: cover; }
+.hero-visual::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--rule), inset 0 0 28px 4px var(--hero-visual-edge); }
 .hero-home__stage { order: -1; }
-@media (max-width: 959px) and (max-height: 700px) { .hero-scene { height: max(150px, 24svh); } } /* short phones */
+@media (max-width: 959px) { .hero-visual { max-width: 640px; } }
+@media (max-width: 959px) and (max-height: 700px) {
+  .hero-visual { width: auto; height: max(150px, 27svh); }
+  .hero-home { padding-top: var(--s4); }
+}
 @media (min-width: 960px) {
   .hero-home__stage { order: 0; }
-  .hero-scene { height: auto; aspect-ratio: 1 / 0.86; max-height: calc(100svh - var(--chrome) - 96px); width: 100%; }
-  .hero-scene__note { right: var(--s5); bottom: var(--s5); font-size: 12px; }
+  .hero-visual { max-width: 640px; }
 }
-
-/* Drawing classes for the illustration; every color comes from --scene-* in tokens.css */
-.sc-grass-a { fill: var(--scene-grass-a); } .sc-grass-b { fill: var(--scene-grass-b); }
-.sc-line { fill: none; stroke: var(--scene-line); stroke-width: 2.4; stroke-linejoin: round; }
-.sc-spot { fill: var(--scene-line); }
-.sc-stand { fill: var(--scene-stand); }
-.sc-crowd--0 { fill: var(--scene-crowd-1); } .sc-crowd--1 { fill: var(--scene-crowd-2); } .sc-crowd--2 { fill: var(--scene-crowd-3); }
-.sc-boards { fill: var(--scene-boards); } .sc-boards-line { fill: var(--scene-boards-line); }
-.sc-net-back { fill: var(--scene-net-back); }
-.sc-net { stroke: none; }
-.sc-mesh { fill: none; stroke: var(--scene-net); stroke-width: 0.9; }
-.sc-post { fill: none; stroke: var(--scene-post); stroke-width: 4.2; stroke-linejoin: round; stroke-linecap: round; }
-.sc-post--shade { stroke: var(--scene-shadow); }
-.sc-flood-a { stop-color: var(--scene-flood-a); } .sc-flood-b { stop-color: var(--scene-flood-b); }
-.sc-fade-a { stop-color: var(--scene-flood-b); } .sc-fade-b { stop-color: var(--scene-fade); }
-.sc-shadow { fill: var(--scene-shadow); }
-.sc-limb { stroke-linecap: round; fill: none; }
-.sc-torso { stroke-width: 6; stroke-linejoin: round; }
-.sc-home-shirt { stroke: var(--scene-home-shirt); fill: var(--scene-home-shirt); }
-.sc-home-shorts { stroke: var(--scene-home-shorts); fill: var(--scene-home-shorts); }
-.sc-home-socks { stroke: var(--scene-home-socks); }
-.sc-opp-shirt { stroke: var(--scene-opp-shirt); fill: var(--scene-opp-shirt); }
-.sc-opp-shorts { stroke: var(--scene-opp-shorts); fill: var(--scene-opp-shorts); }
-.sc-opp-socks { stroke: var(--scene-opp-socks); }
-.sc-gk-shirt { stroke: var(--scene-gk-shirt); fill: var(--scene-gk-shirt); }
-.sc-gk-shorts { stroke: var(--scene-gk-shorts); fill: var(--scene-gk-shorts); }
-.sc-gk-socks { stroke: var(--scene-gk-shirt); }
-.sc-glove { stroke: var(--scene-glove); }
-.sc-boot { stroke: var(--scene-boot); }
-.sc-hair { fill: var(--scene-hair); }
-.sc-skin-1 { stroke: var(--scene-skin-1); } .sc-skin-1-fill { fill: var(--scene-skin-1); }
-.sc-skin-2 { stroke: var(--scene-skin-2); } .sc-skin-2-fill { fill: var(--scene-skin-2); }
-.sc-skin-3 { stroke: var(--scene-skin-3); } .sc-skin-3-fill { fill: var(--scene-skin-3); }
-.sc-number { fill: var(--scene-home-number); font: 800 15px/1 var(--font-body); }
-.sc-ball { fill: var(--scene-ball); stroke: var(--scene-ball-edge); stroke-width: 0.8; }
-.sc-ball-patch { fill: var(--scene-ball-patch); }
-.sc-ball-seam { fill: none; stroke: var(--scene-ball-edge); stroke-width: 0.9; }
-.sc-space-pool { fill: var(--scene-space); }
-.sc-space-ring { fill: none; stroke: var(--scene-read); stroke-width: 2.2; stroke-dasharray: 7 6; }
-.sc-run { fill: none; stroke: var(--scene-run); stroke-width: 2.8; stroke-dasharray: 0.1 8; stroke-linecap: round; }
-.sc-pass-halo { fill: none; stroke: var(--scene-read-halo); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
-.sc-pass { fill: none; stroke: var(--scene-read); stroke-width: 4; stroke-dasharray: 14 9; stroke-linecap: round; stroke-linejoin: round; }
-.sc-pass-head { fill: var(--scene-read); stroke: var(--scene-read-halo); stroke-width: 1.5; }
-.sc-chip rect, .sc-chip-tail { fill: var(--scene-chip-bg); }
-.sc-chip-dot { fill: var(--scene-read); }
-.sc-chip text { fill: var(--scene-chip-text); font: 700 16px/1 var(--font-body); letter-spacing: 0.01em; }
-@media (max-width: 559px) { .sc-chip { display: none; } } /* too small to read on phones; the ring and arrow still show the space */
 @media (prefers-reduced-motion: no-preference) {
-  .sc-pass { animation: sc-flow 1.6s linear infinite; }
+  .hero-visual { animation: hero-in 0.6s var(--ease-out) both; }
 }
-@keyframes sc-flow { to { stroke-dashoffset: -46; } }
+@keyframes hero-in { from { opacity: 0; } to { opacity: 1; } }
 
 /* Below the fold: the journey and skills, smaller and quieter */
 .journey { padding: var(--s6) 0 var(--s4); border-top: 1px solid var(--rule-soft); position: relative; }

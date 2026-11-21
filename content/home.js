@@ -13,6 +13,9 @@ export const HOME = {
     short: { label: "Short on time? Try the short test", href: "short-test.html" },
     // The hero picture (Tal, 2026-11-21): a stylized 3D illustration, not a photograph or
     // footage from the challenges. Sizes are made by tools/hero_images.py from brand/hero/.
+    // The scoreboard-style strip under the headline. The numbers come from the full test's plan
+    // (src/config.js); only the labels live here.
+    strip: { challenges: "Challenges", points: "Points" },
     visual: {
       base: "assets/hero/hero-pitch",
       src: "assets/hero/hero-pitch-960.jpg",

@@ -42,11 +42,13 @@ sup { font-size: 0.5em; vertical-align: super; line-height: 0; }
   text-transform: uppercase;
   color: var(--muted);
 }
+/* A small slanted teal flag before each kicker label (broadcast caption style) */
 .kicker::before {
   content: "";
-  width: 18px;
-  height: 2px;
+  width: 12px;
+  height: 10px;
   background: var(--accent);
+  transform: skewX(-18deg);
 }
 
 /* ---------- Buttons ---------- */

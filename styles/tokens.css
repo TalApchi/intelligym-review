@@ -113,8 +113,10 @@
   --tl-on: rgba(84, 190, 120, 0.75);          /* through-ball timeline: pass on */
   --tl-off: rgba(125, 143, 156, 0.35);
   --offside-line: #fcd34d;                    /* the offside line in a replay (also dashed) */
-  --hero-visual-edge: rgba(11, 16, 24, 0.55); /* soft inner edge on the home hero picture */
-  --hero-visual-bg: #0b2a22;                /* behind the hero picture while it loads (its pitch color) */
+  --hero-visual-bg: #0b2a22;    /* behind the hero picture while it loads (its pitch color) */
+  --nav-mark: var(--cta);       /* the current page in the menus */
+  --hero-band: #162033;         /* light theme: navy band behind the hero picture */
+  --hero-mark: #2dd4bf;         /* the runner highlight; the picture is dark in both themes, so the bright teal in both */
 
 }
 
@@ -184,6 +186,5 @@
   --tl-on: rgba(22, 163, 74, 0.75);
   --tl-off: rgba(100, 116, 139, 0.3);
   --offside-line: #b45309;
-  --hero-visual-edge: rgba(11, 16, 24, 0.25);
 
 }

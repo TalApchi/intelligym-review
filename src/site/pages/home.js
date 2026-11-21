@@ -6,6 +6,7 @@ import { SKILLS } from "../../../content/skills.js";
 import { SITE } from "../../../content/site.js";
 import { esc, button, finalCta } from "../ui.js";
 import { loadLastResult } from "../store.js";
+import { PLANS, maxPoints } from "../../config.js";
 
 export const title = "Soccer IQ | Test how well you read the game";
 export const description = "Five short soccer challenges on scanning, awareness, decisions and timing. Free, no account. Then learn how to train game intelligence.";
@@ -14,7 +15,15 @@ export const description = "Five short soccer challenges on scanning, awareness,
 // optimized sizes made from it (assets/hero/). Above the fold, so it is never lazy-loaded.
 const HERO_WIDTHS = [480, 720, 960, 1200, 1448];
 const srcset = (ext) => HERO_WIDTHS.map((w) => `${HOME.hero.visual.base}-${w}.${ext} ${w}w`).join(", ");
-const HERO_SIZES = "(min-width: 1240px) 560px, (min-width: 960px) 46vw, (max-width: 959px) and (max-height: 700px) 240px, min(640px, calc(100vw - 32px))";
+const HERO_SIZES = "(min-width: 1240px) 660px, (min-width: 960px) 54vw, (max-width: 959px) and (max-height: 700px) 300px, min(720px, 100vw)";
+
+// The information strip under the headline: real numbers about the full test that
+// TEST YOURSELF opens, read from the game's own plan (config.js), so it can never drift.
+function infoStrip() {
+  const n = PLANS.full.challenges.length, pts = maxPoints(PLANS.full);
+  const cell = (v, l) => `<span class="info-strip__cell"><span class="info-strip__v">${v}</span><span class="info-strip__l">${esc(l)}</span></span>`;
+  return `<p class="info-strip">${cell(n, HOME.hero.strip.challenges)}<span class="sr-only"> / </span>${cell(pts, HOME.hero.strip.points)}</p>`;
+}
 
 export function view() {
   const h = HOME.hero;
@@ -32,17 +41,21 @@ export function view() {
       <div class="hero-home__copy">
         <p class="kicker">${esc(h.kicker)}</p>
         <h1 class="h-hero" id="home-title">${h.title.map((l, i) => `<span${i === h.title.length - 1 ? ' class="hl"' : ""}>${esc(l)}</span>`).join(" ")}</h1>
+        ${infoStrip()}
         <p class="lede">${esc(h.lede)}</p>
         <div class="cta-row">${button(h.primary)}</div>
         <p class="meta">${esc(h.meta)}${h.short ? ` <span aria-hidden="true">·</span> <a class="meta__link" href="${h.short.href}">${esc(h.short.label)}</a>` : ""}</p>
       </div>
-      <figure class="hero-home__stage hero-visual">
-        <picture>
-          <source type="image/webp" srcset="${srcset("webp")}" sizes="${HERO_SIZES}">
-          <img class="hero-visual__img" src="${h.visual.src}" srcset="${srcset("jpg")}" sizes="${HERO_SIZES}"
-            width="${h.visual.width}" height="${h.visual.height}" alt="${esc(h.visual.alt)}" fetchpriority="high" decoding="async">
-        </picture>
-      </figure>
+      <div class="hero-home__stage">
+        <figure class="hero-visual">
+          <picture>
+            <source type="image/webp" srcset="${srcset("webp")}" sizes="${HERO_SIZES}">
+            <img class="hero-visual__img" src="${h.visual.src}" srcset="${srcset("jpg")}" sizes="${HERO_SIZES}"
+              width="${h.visual.width}" height="${h.visual.height}" alt="${esc(h.visual.alt)}" fetchpriority="high" decoding="async">
+          </picture>
+          <span class="hero-scan" aria-hidden="true"><span class="hero-scan__spot"></span></span>
+        </figure>
+      </div>
     </section>
 
     <section class="journey" aria-labelledby="journey-title">

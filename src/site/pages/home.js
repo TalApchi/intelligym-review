@@ -6,8 +6,7 @@ import { SKILLS } from "../../../content/skills.js";
 import { SITE } from "../../../content/site.js";
 import { esc, button, finalCta } from "../ui.js";
 import { loadLastResult } from "../store.js";
-import * as scene from "../../scene.js";
-import { buildPitch, startAmbientMotion } from "../../pitch.js";
+import { heroSceneSVG } from "../hero-scene.js";
 
 export const title = "Soccer IQ | Test how well you read the game";
 export const description = "Five short soccer challenges on scanning, awareness, decisions and timing. Free, no account. Then learn how to train game intelligence.";
@@ -32,13 +31,10 @@ export function view() {
         <div class="cta-row">${button(h.primary)}</div>
         <p class="meta">${esc(h.meta)}${h.short ? ` <span aria-hidden="true">·</span> <a class="meta__link" href="${h.short.href}">${esc(h.short.label)}</a>` : ""}</p>
       </div>
-      <div class="hero-home__stage" aria-hidden="true">
-        <div class="stage-card stage-card--hero">
-          <div class="stage-card__hud"><span class="hud-chip"><span class="hud-dot"></span>Live read</span><span class="hud-chip hud-chip--ghost">Your ball</span></div>
-          <div class="stage-card__camera"><svg class="pitch" id="pitch" xmlns="http://www.w3.org/2000/svg"></svg></div>
-          <ul class="stage-card__legend"><li><span class="key key--home"></span>Your team</li><li><span class="key key--opp"></span>Opponent</li><li><span class="key key--read"></span>The read</li></ul>
-        </div>
-      </div>
+      <figure class="hero-home__stage hero-scene">
+        ${heroSceneSVG()}
+        <figcaption class="hero-scene__note">${esc(h.visualNote)}</figcaption>
+      </figure>
     </section>
 
     <section class="journey" aria-labelledby="journey-title">
@@ -61,11 +57,6 @@ export function mount(main) {
   if (last && el) {
     el.innerHTML = `Your last result: <strong>${last.total}</strong> / ${last.available} points. <a href="results.html">See the breakdown</a>`;
     el.hidden = false;
-  }
-  const svg = main.querySelector("#pitch");
-  if (svg && !svg.childElementCount) {
-    const handles = buildPitch(svg, scene);
-    startAmbientMotion(handles, svg.closest(".stage-card"));
   }
 }
 

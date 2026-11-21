@@ -13,6 +13,10 @@
 //   research                        studies the provider cites, listed in the Knowledge hub reading list
 //   links                           official links shown on the profile
 //   sources, checked                where the facts came from and when (internal; not shown on the page)
+//   readingTheGame                  optional, for tools that do not train decisions directly:
+//                                   { measures, use, limits, evidence } shown on the profile and the
+//                                   Knowledge hub. `measures` and `evidence` are verified facts;
+//                                   `use` and `limits` are our explanation, and the page labels them so
 //   termsToConfirm                  optional: conflicting terms, shown in the review build only
 //   status                          "verified" | "to-confirm" (to-confirm tools appear only in the review build)
 //   visible                         false hides the tool everywhere
@@ -87,6 +91,16 @@ const BP = {
   appStore: s("App Store: BlazePod", "https://apps.apple.com/us/app/blazepod/id1382204042"),
   oliveira: s("de-Oliveira et al. (2021), Journal of Sports Science & Medicine", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7919356/"),
   hoffman: s("BlazePod summary of Hoffman (2020)", "https://www.blazepod.com/blogs/resources/evaluation-of-a-reactive-agility-assessment-device-in-youth-football-players"),
+};
+
+const PM_C = "2026-11-21"; // PlayerMaker checked on its official pages
+const pm = (label, url) => ({ label, url, checked: PM_C });
+const PM = {
+  home: pm("PlayerMaker homepage (Black Friday sale banner on this date)", "https://www.playermaker.com/"),
+  how: pm("PlayerMaker: How it works", "https://www.playermaker.com/pages/how-it-works"),
+  faq: pm("PlayerMaker FAQ", "https://www.playermaker.com/pages/faq"),
+  teams: pm("PlayerMaker: Teams", "https://www.playermaker.com/pages/teams"),
+  plos: pm("Lewis et al. (2022), PLOS ONE 17(2): e0263518 (21 Championship players; one author employed by PlayerMaker; descriptive, no training effect tested)", "https://doi.org/10.1371/journal.pone.0263518"),
 };
 
 // Rows of the comparison table, in order. `key` matches the keys of each tool's `compare`.
@@ -272,32 +286,71 @@ export const TOOLS = [
     reviewNote: "Company: the Terms of Use name Play Coyotta Ltd. (Israel); the Privacy, Refund and Warranty pages name BlazePod Inc. (Weston, Florida). The young-athletes page markets to parents although the Terms set a 16+ age limit. Hoffman (2020) does not say whether \"football\" means soccer or American football, and its full text could not be read.",
   },
 
+  {
+    id: "playermaker",
+    name: "PlayerMaker",
+    company: "PlayerMaker Ltd., London, UK",
+    website: "https://www.playermaker.com/",
+    summary: "Two small motion sensors worn in straps on a player's boots, with an app that shows technical and physical data from training sessions and matches. It is a data-led way to review your own game, not a decision-making trainer. Sold as PlayerMaker 2.0 and a CITYPLAY special edition with Manchester City academy drills; teams and academies get packages with a coach dashboard.",
+    compare: {
+      format: { text: "Foot-mounted sensors and an app that record technical actions (touches, time on the ball, release time, foot use) and physical output (distance, sprints, top speed).", source: PM.how },
+      soccer: { text: "Yes, built for soccer. It tracks technical and physical performance; it does not train tactical decision-making directly.", source: PM.how },
+      hardware: { text: "Two sensors (6 g each) in silicone straps that fit cleats, turf or futsal shoes, a charging case, and the PlayerMaker app on a phone with Bluetooth. Kids' and adult strap sizes. Water-resistant, not waterproof.", source: PM.faq,
+        reviewNote: "Phone operating systems are not listed on the official pages we read. The FAQ says \"water-resistant, not waterproof\"; the Teams page calls the sensors \"waterproof\". We use the FAQ wording." },
+      users: { text: "Players from 8 years old, and their parents and coaches; team packages for clubs, academies and federations.", source: PM.faq },
+      sessions: { text: "Worn in any training session or match. Recording starts when the sensors leave the charging case and the data syncs to the app over Bluetooth afterwards; up to 6 hours per session.", source: PM.faq },
+      evidence: { text: "Cites FIFA Quality certification for its tracking system and lists published studies on what foot-mounted sensors measure, such as a peer-reviewed PLOS ONE paper (2022) that used PlayerMaker to count ball releases by 21 professional players.", source: PM.plos },
+      limits: { text: "The certification and studies are about measuring accurately, not about players improving. One author of the PLOS ONE paper works for PlayerMaker. The homepage's \"average improvement\" figures give no sample, method or comparison group. The data shows what your feet did, not whether a decision was right.", source: PM.home },
+      pricing: { text: "Kit prices change with seasonal sales; check the official site. A membership is needed to record and sync new sessions; it starts when the sensors are activated and renews at US$149 a year unless canceled. Team prices on request.", source: PM.faq,
+        reviewNote: "On 2026-11-21 the kits were shown at $199 (PlayerMaker 2.0) and $229 (CITYPLAY) during a Black Friday sale of $50 off each kit, with no end date visible, so the regular prices are unclear. The pages do not say outright whether the first membership year is included in the kit price." },
+      trial: { text: "30-day money back guarantee advertised. The membership can be canceled any time; without it, past sessions stay visible but new ones cannot be recorded.", source: PM.home,
+        reviewNote: "Holiday terms on 2026-11-21: November orders can be returned until January 15, 2027. Temporary, so not shown to visitors." },
+      offers: { text: "Seasonal sales from time to time ($50 off each kit for Black Friday on 2026-11-21, no end date shown).", source: PM.home },
+    },
+    readingTheGame: {
+      measures: "Touches, possessions, time on the ball, release time and which foot you use, plus your running and sprinting, in every session you wear it.",
+      use: "PlayerMaker takes a data-led approach to understanding your game. Rather than training tactical decisions directly, it shows patterns in what you actually did: for example, whether you take extra touches before releasing the ball, or rely on one foot. Players and coaches can use those patterns to reflect on their play and decide what to work on next.",
+      limits: "The numbers need match context and interpretation. A long time on the ball can be composure or hesitation, and no metric says whether a pass or decision was the right one.",
+      evidence: "We found no published study showing that using PlayerMaker improves match decisions. The studies it lists are about measurement.",
+    },
+    research: [
+      { label: "Lewis et al. (2022), Quantifying volume and high-speed technical actions of professional soccer players using foot-mounted inertial measurement units, PLOS ONE 17(2)", url: "https://doi.org/10.1371/journal.pone.0263518" },
+    ],
+    links: [
+      { label: "PlayerMaker website", url: "https://www.playermaker.com/" },
+      { label: "How it works", url: "https://www.playermaker.com/pages/how-it-works" },
+    ],
+    sources: Object.values(PM),
+    checked: PM_C,
+    status: "verified",
+    visible: true,
+    reviewNote: "Omri's link carried \"discount=earlyaccess\"; no early-access offer or coupon appears on PlayerMaker's official pages, so none is listed and the parameter is not used. No commercial relationship with PlayerMaker is assumed. Battery life, warranty length and phone requirements are not published on the pages we read.",
+  },
+
 ];
 
-// The order tools are shown in: alphabetical by default.
+// Alphabetical order: the Knowledge hub reading list and lists of names (FAQ, page title).
 const key = (t) => t.sortName || t.name;
 export const toolsInOrder = (list) => [...list].sort((a, b) => key(a).localeCompare(key(b)));
+export const toolNames = (list) => toolsInOrder(list).map(key);
 
-// Fixed positions that override the alphabetical order on specific views (Omri, 2026-10-22).
-// This is a presentation choice, not a ranking. `at` counts from 1; the other tools keep
-// their alphabetical order around it.
-//   compare:   the comparison table columns (header, every cell and the coupon move together)
-//   knowledge: the evidence cards on the Knowledge hub; position 2 is the first row, right
-//              column on wide screens (two columns) and second in the single column on phones
-export const PLACEMENT = {
-  compare: [{ id: "intelligym", at: 2 }],
-  knowledge: [{ id: "intelligym", at: 2 }],
+// Display order, written out in full for each view. This is an editorial choice, not a ranking,
+// and nothing on the page says "best" or "featured" because of it. List every tool by id; a
+// tool missing from a list is added at the end, alphabetically, and a test flags it.
+//   tools      tools.html: the provider cards AND the comparison table columns (Omri, 2026-11-21:
+//              IntelliGym first, top row; this replaces "column 2" from 2026-10-22)
+//   knowledge  the evidence cards on the Knowledge hub (Omri, 2026-10-22: IntelliGym second,
+//              the first row, right column on wide screens; unchanged)
+export const ORDER = {
+  tools: ["intelligym", "be-your-best", "blazepod", "neurotracker", "playermaker", "rezzil"],
+  knowledge: ["be-your-best", "intelligym", "blazepod", "neurotracker", "playermaker", "rezzil"],
 };
 
 export function toolsFor(view, list) {
-  const out = toolsInOrder(list);
-  for (const { id, at } of PLACEMENT[view] || []) {
-    const i = out.findIndex((t) => t.id === id);
-    if (i < 0) continue;
-    const [tool] = out.splice(i, 1);
-    out.splice(Math.min(Math.max(at - 1, 0), out.length), 0, tool);
-  }
-  return out;
+  const ids = ORDER[view] || [];
+  const listed = ids.map((id) => list.find((t) => t.id === id)).filter(Boolean);
+  const rest = toolsInOrder(list.filter((t) => !ids.includes(t.id)));
+  return [...listed, ...rest];
 }
 
 // Tools from the Base44 reference that we could not find under those names. Review build only.

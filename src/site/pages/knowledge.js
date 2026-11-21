@@ -4,6 +4,7 @@
 import { KNOWLEDGE as K } from "../../../content/knowledge.js";
 import { TOOLS, toolsInOrder, toolsFor } from "../../../content/tools.js";
 import { esc, ext, section, shown, pageHead, button } from "../ui.js";
+import { READING_ROWS } from "./tools.js";
 
 export const title = "Soccer game intelligence: what it is and what the evidence says | Soccer IQ";
 export const description = "What soccer game intelligence (soccer IQ) is, the research each training-tool provider cites and its limits, and how to read a training claim.";
@@ -17,6 +18,10 @@ export function view() {
         <div><dt>What the provider cites</dt><dd>${esc(t.compare.evidence.text)}</dd></div>
         <div><dt>Limits</dt><dd>${esc(t.compare.limits.text)}</dd></div>
       </dl>
+      ${t.readingTheGame ? `<div class="study__read">
+        <h4 class="tool__read-title">How it connects to reading the game</h4>
+        <dl class="study__dl">${READING_ROWS.filter(([k]) => t.readingTheGame[k]).map(([k, label]) => `<div><dt>${esc(label)}</dt><dd>${esc(t.readingTheGame[k])}</dd></div>`).join("")}</dl>
+      </div>` : ""}
       <a class="text-link" href="tools.html#${t.id}">${esc(t.name)} in the tools comparison <span aria-hidden="true">→</span></a>
     </article>`).join("");
 

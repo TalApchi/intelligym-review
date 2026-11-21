@@ -11,6 +11,9 @@ export const HOME = {
     // A discreet second way in: the three-challenge short test (short-test.html). The main
     // TEST YOURSELF action above stays the full test.
     short: { label: "Short on time? Try the short test", href: "short-test.html" },
+    // Caption on the hero picture: it is a drawing of a match moment, not footage or data
+    // from the challenges.
+    visualNote: "Illustration",
   },
 
   // The guided journey, kept to one line per step. `href` must be a real page.

@@ -288,8 +288,6 @@ a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
 .hero-home .h-hero span { display: block; }
 .hero-home .lede { font-size: clamp(17px, 2.2vw, 20px); max-width: 44ch; }
 .hero-home .btn--cta { min-height: 62px; padding: 0 var(--s7); font-size: 18px; letter-spacing: 0.03em; }
-.stage-card--hero { height: clamp(250px, 70vw, 420px); }
-.stage-card--hero .pitch { width: 94%; }
 @media (min-width: 960px) {
   .hero-home {
     --chrome: 72px;
@@ -300,30 +298,86 @@ a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
   body:has(.review-banner) .hero-home { --chrome: 109px; }
   .hero-home__copy { gap: var(--s5); }
   .hero-home .h-hero { font-size: min(4.9vw, 72px); }
-  .stage-card--hero { height: auto; aspect-ratio: 1 / 0.86; max-height: calc(100svh - var(--chrome) - 96px); width: 100%; }
-  .stage-card--hero .pitch { width: 86%; }
-  .stage-card--hero .stage-card__hud { top: var(--s5); left: var(--s5); right: var(--s5); }
-  .stage-card--hero .stage-card__legend { left: var(--s5); bottom: var(--s5); }
 }
 @media (min-width: 960px) and (max-height: 760px) {
   .hero-home .h-hero { font-size: clamp(40px, 5.6vw, 68px); }
 }
 
-/* Faint soccer details in the hero's empty corners, kept clear of text and controls:
-   a corner flag and its arc at the top right (all widths), and on wide screens a dotted run
-   between two players at the bottom left. */
-.hero-home::before, .hero-home::after { content: ""; position: absolute; z-index: -1; pointer-events: none; }
-.hero-home::before {
-  top: var(--s3); right: 0; width: 60px; height: 38px; opacity: 0.26;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 88 56' fill='none' stroke='%2314c4b0' stroke-width='1.2'%3E%3Cpath d='M0 1h87v55'/%3E%3Cpath d='M69 1a18 18 0 0 0 18 18'/%3E%3Cpath d='M87 1V-12' /%3E%3Cpath d='M87 1l-9 4 9 4' fill='%2314c4b0' fill-opacity='0.5'/%3E%3C/svg%3E") no-repeat right top / contain;
+
+/* The hero picture: an original match illustration (src/site/hero-scene.js), the first thing
+   that says "soccer". It replaces the faint corner drawings and the dot pitch that used to be
+   here. Phones: on top, above the headline, sized so the headline and TEST YOURSELF still fit
+   on the first screen. Wide screens: the right half. */
+.hero-scene {
+  position: relative; margin: 0; overflow: hidden; isolation: isolate;
+  border-radius: var(--radius-lg); border: 1px solid var(--rule);
+  background: var(--scene-grass-a); box-shadow: var(--shadow-card);
+  height: clamp(168px, 31svh, 300px);
 }
+.hero-scene__svg { display: block; width: 100%; height: 100%; }
+.hero-scene__note {
+  position: absolute; right: var(--s3); bottom: var(--s3); z-index: 1; margin: 0;
+  padding: 3px 9px; border-radius: 999px; background: var(--scene-chip-bg); color: var(--scene-chip-text);
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em;
+}
+.hero-home__stage { order: -1; }
+@media (max-width: 959px) and (max-height: 700px) { .hero-scene { height: max(150px, 24svh); } } /* short phones */
 @media (min-width: 960px) {
-  .hero-home::before { top: var(--s6); width: 104px; height: 66px; opacity: 0.28; }
-  .hero-home::after {
-    bottom: var(--s3); left: 0; width: 260px; height: 46px; opacity: 0.3;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 230 40' fill='none'%3E%3Cpath d='M12 30 C70 8 140 6 214 18' stroke='%2314c4b0' stroke-width='1.3' stroke-dasharray='1.5 6' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='30' r='4.5' fill='%23f8fafc'/%3E%3Ccircle cx='216' cy='18' r='4.5' fill='none' stroke='%23f8fafc' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat left bottom / contain;
-  }
+  .hero-home__stage { order: 0; }
+  .hero-scene { height: auto; aspect-ratio: 1 / 0.86; max-height: calc(100svh - var(--chrome) - 96px); width: 100%; }
+  .hero-scene__note { right: var(--s5); bottom: var(--s5); font-size: 12px; }
 }
+
+/* Drawing classes for the illustration; every color comes from --scene-* in tokens.css */
+.sc-grass-a { fill: var(--scene-grass-a); } .sc-grass-b { fill: var(--scene-grass-b); }
+.sc-line { fill: none; stroke: var(--scene-line); stroke-width: 2.4; stroke-linejoin: round; }
+.sc-spot { fill: var(--scene-line); }
+.sc-stand { fill: var(--scene-stand); }
+.sc-crowd--0 { fill: var(--scene-crowd-1); } .sc-crowd--1 { fill: var(--scene-crowd-2); } .sc-crowd--2 { fill: var(--scene-crowd-3); }
+.sc-boards { fill: var(--scene-boards); } .sc-boards-line { fill: var(--scene-boards-line); }
+.sc-net-back { fill: var(--scene-net-back); }
+.sc-net { stroke: none; }
+.sc-mesh { fill: none; stroke: var(--scene-net); stroke-width: 0.9; }
+.sc-post { fill: none; stroke: var(--scene-post); stroke-width: 4.2; stroke-linejoin: round; stroke-linecap: round; }
+.sc-post--shade { stroke: var(--scene-shadow); }
+.sc-flood-a { stop-color: var(--scene-flood-a); } .sc-flood-b { stop-color: var(--scene-flood-b); }
+.sc-fade-a { stop-color: var(--scene-flood-b); } .sc-fade-b { stop-color: var(--scene-fade); }
+.sc-shadow { fill: var(--scene-shadow); }
+.sc-limb { stroke-linecap: round; fill: none; }
+.sc-torso { stroke-width: 6; stroke-linejoin: round; }
+.sc-home-shirt { stroke: var(--scene-home-shirt); fill: var(--scene-home-shirt); }
+.sc-home-shorts { stroke: var(--scene-home-shorts); fill: var(--scene-home-shorts); }
+.sc-home-socks { stroke: var(--scene-home-socks); }
+.sc-opp-shirt { stroke: var(--scene-opp-shirt); fill: var(--scene-opp-shirt); }
+.sc-opp-shorts { stroke: var(--scene-opp-shorts); fill: var(--scene-opp-shorts); }
+.sc-opp-socks { stroke: var(--scene-opp-socks); }
+.sc-gk-shirt { stroke: var(--scene-gk-shirt); fill: var(--scene-gk-shirt); }
+.sc-gk-shorts { stroke: var(--scene-gk-shorts); fill: var(--scene-gk-shorts); }
+.sc-gk-socks { stroke: var(--scene-gk-shirt); }
+.sc-glove { stroke: var(--scene-glove); }
+.sc-boot { stroke: var(--scene-boot); }
+.sc-hair { fill: var(--scene-hair); }
+.sc-skin-1 { stroke: var(--scene-skin-1); } .sc-skin-1-fill { fill: var(--scene-skin-1); }
+.sc-skin-2 { stroke: var(--scene-skin-2); } .sc-skin-2-fill { fill: var(--scene-skin-2); }
+.sc-skin-3 { stroke: var(--scene-skin-3); } .sc-skin-3-fill { fill: var(--scene-skin-3); }
+.sc-number { fill: var(--scene-home-number); font: 800 15px/1 var(--font-body); }
+.sc-ball { fill: var(--scene-ball); stroke: var(--scene-ball-edge); stroke-width: 0.8; }
+.sc-ball-patch { fill: var(--scene-ball-patch); }
+.sc-ball-seam { fill: none; stroke: var(--scene-ball-edge); stroke-width: 0.9; }
+.sc-space-pool { fill: var(--scene-space); }
+.sc-space-ring { fill: none; stroke: var(--scene-read); stroke-width: 2.2; stroke-dasharray: 7 6; }
+.sc-run { fill: none; stroke: var(--scene-run); stroke-width: 2.8; stroke-dasharray: 0.1 8; stroke-linecap: round; }
+.sc-pass-halo { fill: none; stroke: var(--scene-read-halo); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+.sc-pass { fill: none; stroke: var(--scene-read); stroke-width: 4; stroke-dasharray: 14 9; stroke-linecap: round; stroke-linejoin: round; }
+.sc-pass-head { fill: var(--scene-read); stroke: var(--scene-read-halo); stroke-width: 1.5; }
+.sc-chip rect, .sc-chip-tail { fill: var(--scene-chip-bg); }
+.sc-chip-dot { fill: var(--scene-read); }
+.sc-chip text { fill: var(--scene-chip-text); font: 700 16px/1 var(--font-body); letter-spacing: 0.01em; }
+@media (max-width: 559px) { .sc-chip { display: none; } } /* too small to read on phones; the ring and arrow still show the space */
+@media (prefers-reduced-motion: no-preference) {
+  .sc-pass { animation: sc-flow 1.6s linear infinite; }
+}
+@keyframes sc-flow { to { stroke-dashoffset: -46; } }
 
 /* Below the fold: the journey and skills, smaller and quieter */
 .journey { padding: var(--s6) 0 var(--s4); border-top: 1px solid var(--rule-soft); position: relative; }
@@ -397,6 +451,8 @@ a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
 .tool__company { font-size: var(--fs-small); color: var(--dim); }
 .tool > p { color: var(--muted); }
 .tool__more { font-size: var(--fs-small); }
+.tool__read, .study__read { display: grid; gap: var(--s3); padding: var(--s4); border-radius: var(--radius-sm); border: 1px solid var(--rule); background: var(--rule-soft); }
+.tool__read-title { font-size: 15.5px; font-weight: 700; }
 .tool__more a { color: var(--accent-text); }
 .facts { display: grid; gap: var(--s3); }
 .facts dt { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--dim); }
@@ -511,7 +567,6 @@ thead th a { color: var(--accent-text); }
 /* ---------- Light theme: the faint soccer drawings use dark ink instead of chalk ---------- */
 :root[data-theme="light"] .page-head::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%2314c4b0' stroke-width='1.2'%3E%3Ccircle cx='100' cy='100' r='46'/%3E%3Ccircle cx='100' cy='100' r='2.5' fill='%2314c4b0'/%3E%3Cpath d='M100 0v200'/%3E%3Cpath d='M0 40h40v120H0'/%3E%3Cpath d='M0 76h14v48H0'/%3E%3Cpath d='M56 64 Q96 30 140 58' stroke-dasharray='2 5' stroke-linecap='round'/%3E%3Ccircle cx='56' cy='64' r='4.5' fill='%230f172a' stroke='none'/%3E%3Ccircle cx='140' cy='58' r='4.5' fill='%230f172a' stroke='none'/%3E%3Ccircle cx='150' cy='132' r='4.5'/%3E%3Ccircle cx='70' cy='150' r='4.5'/%3E%3C/svg%3E"); }
 :root[data-theme="light"] .final-cta::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 30'%3E%3Cpath d='M24 12 C130 2 250 16 376 5' fill='none' stroke='%2314c4b0' stroke-width='1.5' stroke-dasharray='3 7' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='12' r='2.5' fill='%230f172a'/%3E%3Ccircle cx='376' cy='5' r='2.5' fill='%230f172a'/%3E%3C/svg%3E"); }
-:root[data-theme="light"] .hero-home::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 230 40' fill='none'%3E%3Cpath d='M12 30 C70 8 140 6 214 18' stroke='%2314c4b0' stroke-width='1.3' stroke-dasharray='1.5 6' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='30' r='4.5' fill='%230f172a'/%3E%3Ccircle cx='216' cy='18' r='4.5' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3C/svg%3E"); }
 :root[data-theme="light"] .sec--quiet::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 22' fill='none'%3E%3Cpath d='M10 15 C40 4 70 4 100 12 S135 16 140 9' stroke='%2314c4b0' stroke-width='1.2' stroke-dasharray='1.5 5' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='15' r='4' fill='%230f172a'/%3E%3Ccircle cx='55' cy='7' r='4' fill='none' stroke='%230f172a' stroke-width='1.4'/%3E%3Ccircle cx='100' cy='12' r='4' fill='%230f172a'/%3E%3Ccircle cx='140' cy='9' r='4' fill='none' stroke='%2314c4b0' stroke-width='1.6'/%3E%3C/svg%3E"); }
 
 /* ---------- Theme: logo versions and the Light / Dark control ---------- */

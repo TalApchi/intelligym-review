@@ -2,6 +2,10 @@
 // Answers may contain simple HTML links. Provider coupon questions are not written here:
 // they come from offers.js (one per offer), so a coupon question appears only for a real offer.
 
+import { TOOLS, toolNames } from "./tools.js";
+const names = toolNames(TOOLS.filter((t) => t.visible !== false));
+const toolList = `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+
 export const FAQ = [
   {
     group: "Soccer IQ",
@@ -13,7 +17,7 @@ export const FAQ = [
       { id: "practice", q: "Do practice rounds count?", a: "No. Demonstrations and practice tries are never scored. Each challenge is worth up to 100 points.", visible: true },
       { id: "provisional", q: "Why are some results marked provisional?", a: "Some tactical situations are still being reviewed by a coach, so their scores can change.", visible: true },
       { id: "improve", q: "Will playing the challenges improve my game?", a: "We don't claim that. The challenges are short games that make you think about scanning, awareness, decisions and timing. For training, see the <a href=\"learn.html#tips\">training tips</a> and the <a href=\"tools.html\">training tools comparison</a>.", visible: true },
-      { id: "tools", q: "Which training tools do you compare?", a: "BlazePod, Be Your Best, IntelliGym, NeuroTracker and Rezzil. Each is described from its official pages in the same format. See the <a href=\"tools.html#compare\">comparison table</a>.", visible: true },
+      { id: "tools", q: "Which training tools do you compare?", a: `${toolList}. Each is described from its official pages in the same format. See the <a href=\"tools.html#compare\">comparison table</a>.`, visible: true },
       { id: "who", q: "Who runs Soccer IQ?", a: "IntelliGym Labs, New Jersey, U.S. More on the <a href=\"about.html\">About page</a>.", visible: false } // hidden 2026-10-20: the company line now appears only in IntelliGym's profile,
     ],
   },

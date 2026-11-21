@@ -1,11 +1,11 @@
-// Training tools page: one profile per provider (same structure for all, alphabetical),
-// then the comparison table (#compare). A provider's coupon button comes from offers.js.
+// Training tools page: one profile per provider (same structure for all), then the comparison
+// table (#compare). Both use ORDER.tools in content/tools.js (IntelliGym first). A provider's coupon button comes from offers.js.
 
-import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsInOrder, toolsFor } from "../../../content/tools.js";
+import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolNames, toolsFor } from "../../../content/tools.js";
 import { OFFERS, offerIsLive } from "../../../content/offers.js";
 import { esc, ext, reviewNote, shown, section, pageHead, finalCta, REVIEW } from "../ui.js";
 
-export const title = "Soccer training tools compared: BlazePod, Be Your Best, IntelliGym, NeuroTracker, Rezzil | Soccer IQ";
+export const title = `Soccer training tools compared: ${toolNames(TOOLS.filter((t) => t.visible !== false)).join(", ")} | Soccer IQ`;
 export const description = "A side-by-side comparison of soccer game-intelligence training tools: what each one is, the equipment you need, price, trial and refund terms, and the evidence each provider cites.";
 
 const PROFILE_FACTS = ["format", "soccer", "hardware", "pricing"];
@@ -52,6 +52,26 @@ function termsToConfirm(t) {
     </details>`;
 }
 
+// For tools that measure rather than train decisions (PlayerMaker): what it measures (fact),
+// how the data can help (our explanation, labelled as such), what it can't tell you, evidence.
+// Shared with the Knowledge hub so the wording is the same in both places.
+export const READING_ROWS = [
+  ["measures", "What it measures"],
+  ["use", "How the data can help (our view)"],
+  ["limits", "What it can't tell you"],
+  ["evidence", "Evidence on decisions"],
+];
+
+function readingTheGame(t) {
+  const r = t.readingTheGame;
+  if (!r) return "";
+  return `
+      <section class="tool__read" aria-label="${esc(t.name)} and reading the game">
+        <h4 class="tool__read-title">How it connects to reading the game</h4>
+        <dl class="facts">${READING_ROWS.filter(([k]) => r[k]).map(([k, label]) => `<div><dt>${esc(label)}</dt><dd>${esc(r[k])}</dd></div>`).join("")}</dl>
+      </section>`;
+}
+
 function profile(t) {
   const facts = PROFILE_FACTS.map((k) => {
     const row = COMPARE_ROWS.find((r) => r.key === k);
@@ -67,6 +87,7 @@ function profile(t) {
       </header>
       <p>${esc(t.summary)}</p>
       <dl class="facts">${facts}</dl>
+      ${readingTheGame(t)}
       <p class="tool__more"><a href="#compare">Sessions, evidence, trial and refund terms in the comparison</a></p>
       ${offers}
       <div class="cta-row">${t.links.map((l) => ext(l.url, l.label, "btn btn--ghost btn--sm")).join("")}</div>
@@ -98,9 +119,9 @@ function table(tools) {
 }
 
 export function view() {
-  const tools = toolsInOrder(TOOLS.filter(shown));
+  const tools = toolsFor("tools", TOOLS.filter(shown));
   return `
-    ${pageHead("Training tools", "Soccer training tools compared", "Tools that train reading the game away from regular practice: what each one is, what you need, what it costs and what evidence it cites, from each provider's own pages.",
+    ${pageHead("Training tools", "Soccer training tools compared", "Tools that train, or help you review, how you play: what each one is, what you need, what it costs and what evidence it cites, from each provider's own pages.",
       `<div class="cta-row"><a class="btn btn--ghost" href="#compare">Jump to the comparison</a></div>`)}
 
     ${section("profiles", "The tools", `<div class="tools">${tools.map(profile).join("")}</div>`)}
@@ -108,7 +129,7 @@ export function view() {
     <section class="sec" id="compare" aria-labelledby="compare-title">
       <h2 class="sec__title" id="compare-title">${esc(COMPARE.title)}</h2>
       <p class="sec__lede">${esc(COMPARE.intro)}</p>
-      ${table(toolsFor("compare", TOOLS.filter(shown)))}
+      ${table(tools)}
       <p class="small">Evidence notes describe what each provider cites. None of it is about the Soccer IQ challenges. <a href="knowledge.html#claims">How to read a training claim</a>.</p>
     </section>
 
@@ -121,5 +142,5 @@ export const structuredData = () => ({
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "Soccer training tools compared",
-  itemListElement: toolsInOrder(TOOLS.filter(shown)).map((t, i) => ({ "@type": "ListItem", position: i + 1, name: t.name, url: t.website })),
+  itemListElement: toolsFor("tools", TOOLS.filter(shown)).map((t, i) => ({ "@type": "ListItem", position: i + 1, name: t.name, url: t.website })),
 });

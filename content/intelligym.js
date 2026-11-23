@@ -43,7 +43,7 @@ export const INTELLIGYM = {
   company: "IntelliGym (ACE Applied Cognitive Engineering Ltd.)",
   website: "https://soccer.intelligym.com/",
   tagline: "Cognitive training software for soccer players, from IntelliGym.",
-  summary: "A computer and iPhone training program of game-like exercises designed to train the mental side of soccer, such as anticipation, attention and awareness. It is used by individual players, families and clubs.",
+  summary: "A computer and mobile training program of game-like exercises designed to train the mental side of soccer, such as anticipation, attention and awareness. It is used by individual players, families and clubs.",
 
   // Short facts for the profile (each with its source).
   facts: [
@@ -52,7 +52,7 @@ export const INTELLIGYM = {
     { label: "How often", value: "2 to 3 sessions a week, with at least 24 hours of rest in between.", source: SRC.faqHow },
     { label: "Ages", value: "IntelliGym gives 10 to 25 as the general age range, starting from about 10.", source: SRC.faqAge },
     { label: "Who it is for", value: "Individual athletes, families (2 to 4 athletes) and teams (5 or more).", source: SRC.home },
-    { label: "Devices", value: "Windows or Mac computer, or iPhone (iOS 12 or later). Desktop and mobile are separate programs; no Android version is listed.", source: SRC.faqMobile },
+    { label: "Devices", value: "Computer and mobile.", source: SRC.faqMobile }, // Omri, 2026-11-23
     { label: "Computer setup", value: "IntelliGym recommends a larger screen and a mouse rather than a trackpad.", source: SRC.install },
     { label: "For parents and coaches", value: "Progress reports, training history and a leaderboard in the Members Area; parents and coaches get their own access.", source: SRC.faqReports },
   ],
@@ -100,24 +100,17 @@ export const INTELLIGYM = {
 
   // Published terms that official pages agree on.
   terms: [
-    { id: "cancel-monthly", text: "Monthly plans can be cancelled at any time.", source: SRC.faqGuarantee, status: "verified", visible: true },
-    { id: "seasonal-guarantee", text: "Seasonal plans come with a 30-day money back guarantee.", source: SRC.faqGuarantee, status: "verified", visible: true },
+  // Omri's approved wording (2026-11-23): monthly = cancel any time; annual = 30-day money-back guarantee.
+    { id: "cancel-monthly", text: "Monthly plans can be canceled anytime.", source: SRC.faqGuarantee, status: "verified", visible: true },
+    { id: "annual-guarantee", text: "Annual plans come with a 30-day money-back guarantee.", source: SRC.faqGuarantee, status: "verified", visible: true },
   ],
 
   // Where official pages disagree. Review build only, in an expandable "Terms to confirm" box.
   // Each version keeps its own source. Nothing here is shown publicly until resolved.
   termsToConfirm: [
-    { id: "annual-guarantee", topic: "Money back guarantee on annual plans", versions: [
-      { text: "30 days", source: SRC.faqGuarantee, note: "US FAQ; also the US home page and the plans page" },
-      { text: "60 days", source: SRC.faqGuaranteeUK, note: "UK FAQ (edited the same day as the US one); also the UK and DE home pages" },
-    ] },
     { id: "free-trial", topic: "Free trial", versions: [
       { text: "\"We do not offer free trials\"", source: SRC.faqTrial, note: "US FAQ" },
       { text: "\"Get 7 days free trial\" buttons on every plan", source: SRC.app, note: "Plans page" },
-    ] },
-    { id: "monthly-refund", topic: "Refund on monthly plans", versions: [
-      { text: "Can be cancelled any time (no refund mentioned)", source: SRC.faqGuarantee, note: "US FAQ" },
-      { text: "\"7-day money back guarantee\"", source: SRC.app, note: "Plans page, monthly cards" },
     ] },
     { id: "prices", topic: "Prices", versions: [
       { text: "Individual $21.90 / month; annual $15.90 / month ($190.80); seasonal $17.95 / month ($107.70)", source: SRC.app, note: "Plans page (modified June 2026)" },

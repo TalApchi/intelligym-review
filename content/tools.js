@@ -132,18 +132,22 @@ export const TOOLS = [
     identity: "IntelliGym Labs, New Jersey U.S",
     company: "IntelliGym (ACE Applied Cognitive Engineering Ltd.)",
     website: "https://soccer.intelligym.com/",
-    summary: "Computer and iPhone software with game-like exercises that IntelliGym designed to train the mental side of soccer, such as anticipation, attention and awareness. No headset or special equipment is needed.",
+    summary: "Computer and mobile software with game-like exercises that IntelliGym designed to train the mental side of soccer, such as anticipation, attention and awareness. No headset or special equipment is needed.",
     compare: {
       format: { text: "Game-like cognitive training exercises on screen, in 30-minute sessions.", source: IG.how },
       soccer: { text: "Made for soccer players, training skills IntelliGym links to the game, such as anticipation and awareness. IntelliGym says it \"is not a video game\".", source: s("IntelliGym: Best practices", "https://soccer.intelligym.com/best-practices/") },
-      hardware: { text: "Windows or Mac computer, or iPhone (iOS 12+). No Android version listed.", source: IG.mobile },
+      hardware: { text: "Computer and mobile. No headset or special equipment.", source: IG.mobile }, // platform wording from Omri, 2026-11-23
       users: { text: "Players about 10 to 25, families and teams; parents and coaches get progress reports.", source: IG.age },
       sessions: { text: "30 minutes (8 levels of about 4 minutes), 2 to 3 times a week.", source: IG.session },
-      evidence: { text: "VU Amsterdam study with 52 academy players from PSV and AZ: IntelliGym reports a 27% larger on-field improvement than a control group after 10 weeks.", source: IG.vu },
-      limits: { text: "Reported as a self-deposited pilot analysis, not a journal paper; we could not read the full report.", source: IG.zenodo },
+      // Evidence, limits and the subscription terms below are Omri's approved wording for IntelliGym
+      // (supplied by Tal, 2026-11-23). Keep the text exactly as given; `strong` marks his emphasis.
+      // "football" is his word and stays here; our own copy says "soccer".
+      evidence: { text: "Tested by the world’s top football clubs and academies and validated by leading universities across Europe and the US, IntelliGym is proven to be highly effective—demonstrating a 27% to 40% greater on-field performance improvement over control groups across multiple studies.",
+        strong: ["27% to 40%"], source: IG.home },
+      limits: { text: "Proven highly effective in controlled studies involving thousands of participants by VU Amsterdam, University of Cologne, Technion, and University of Delaware, and presented at the Mayo Clinic—used to date by hundreds of thousands of athletes worldwide.",
+        strong: ["VU Amsterdam", "University of Cologne", "Technion", "University of Delaware", "Mayo Clinic"], source: IG.home },
       pricing: { text: "Individual from $21.90 a month, or $15.90 a month on the annual plan ($190.80). Family and team plans available.", source: IG.app },
-      trial: { text: "Monthly plans cancel any time; seasonal plans have a 30-day money back guarantee. Other terms differ between IntelliGym's own pages.", source: IG.guarantee,
-        reviewNote: "Annual guarantee (30 or 60 days), the free trial and monthly refunds conflict between official pages. See \"Terms to confirm\" in IntelliGym's profile above." },
+      trial: { text: "Monthly plans can be canceled anytime, while annual plans come with a 30-day money-back guarantee.", source: IG.guarantee },
       offers: { text: "Annual plan marked \"Save 27%\"; discounted family and team plans.", source: IG.app },
     },
     research: [

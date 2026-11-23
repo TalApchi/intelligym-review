@@ -177,6 +177,15 @@ a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
   .site-logo img { height: 28px; }
   .header-cta { padding: 0 var(--s3); font-size: 14px; }
 }
+/* The narrowest phones (320 px, e.g. older or compact Android phones): logo, TEST YOURSELF and the
+   menu button must fit in one row, or the browser zooms the whole page out. */
+@media (max-width: 359px) {
+  .site-header__inner { gap: var(--s2); padding: 0 12px; }
+  .site-header__actions { gap: 6px; }
+  .site-logo img { height: 22px; }
+  .header-cta { padding: 0 10px; font-size: 13px; letter-spacing: 0.02em; }
+  .nav-toggle { width: 40px; height: 40px; }
+}
 
 @media (min-width: 980px) {
   .site-header__inner { height: 72px; }
@@ -371,7 +380,9 @@ a.coupon__btn:hover .coupon__ticket { background: var(--cta-hi); }
 @media (min-width: 680px) and (max-width: 959px) {
   .hero-visual { width: 100%; max-width: 720px; margin-inline: 0; }
 }
-@media (max-width: 959px) and (max-height: 700px) {
+/* Short phones, including the common 360×740 and 360×800 Android sizes: a smaller picture and
+   TEST YOURSELF before the intro, so the button is on the first screen. */
+@media (max-width: 959px) and (max-height: 800px) {
   .hero-visual { width: auto; height: max(150px, 31svh); margin-inline: 0; --cut: 12px; }
   .hero-home { padding-top: var(--s3); }
   .hero-home__copy { gap: var(--s3); }
@@ -641,6 +652,15 @@ thead th a { color: var(--accent-text); }
 .short-intro__start { width: 100%; min-height: 60px; font-size: 18px; letter-spacing: 0.03em; }
 .short-intro__meta { font-size: var(--fs-small); color: var(--dim); text-align: center; }
 @media (min-width: 720px) { .short-intro { margin-top: var(--s7); } }
+/* Short, narrow phones (e.g. 320×658 Android): tighter spacing so TEST YOURSELF is on the first screen */
+@media (max-width: 719px) and (max-height: 700px) {
+  .short-intro { gap: var(--s3); margin-top: var(--s3); }
+  .short-intro__title { font-size: clamp(30px, 9.5vw, 40px); }
+  .short-intro__lede { font-size: 16px; line-height: 1.45; }
+  .short-intro__tasks li { padding: 8px var(--s3); }
+  .short-intro__tasks li::before { width: 28px; height: 28px; }
+  .short-intro__start { min-height: 54px; }
+}
 .meta__link { color: var(--accent-text); font-weight: 600; }
 .short-rows { list-style: none; display: grid; gap: var(--s1); margin: var(--s3) 0; max-width: 520px; }
 .short-rows li { display: flex; justify-content: space-between; gap: var(--s3); padding: var(--s2) 0; border-bottom: 1px solid var(--rule-soft); }

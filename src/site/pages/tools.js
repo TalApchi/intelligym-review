@@ -1,11 +1,11 @@
 // Training tools page: one profile per provider (same structure for all), then the comparison
 // table (#compare). Both use ORDER.tools in content/tools.js (IntelliGym first). A provider's coupon button comes from offers.js.
 
-import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolNames, toolsFor } from "../../../content/tools.js";
+import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsFor } from "../../../content/tools.js";
 import { OFFERS, offerIsLive } from "../../../content/offers.js";
 import { esc, ext, reviewNote, shown, section, pageHead, finalCta, REVIEW } from "../ui.js";
 
-export const title = `Soccer training tools compared: ${toolNames(TOOLS.filter((t) => t.visible !== false)).join(", ")} | Soccer IQ`;
+export const title = "Soccer Training Tools Comparison | Soccer IQ";
 export const description = "A side-by-side comparison of soccer game-intelligence training tools: what each one is, the equipment you need, price, trial and refund terms, and the evidence each provider cites.";
 
 const PROFILE_FACTS = ["format", "soccer", "hardware", "pricing"];
@@ -75,7 +75,7 @@ function readingTheGame(t) {
 function profile(t) {
   const facts = PROFILE_FACTS.map((k) => {
     const row = COMPARE_ROWS.find((r) => r.key === k);
-    return `<div><dt>${esc(row.label)}</dt><dd>${esc(t.compare[k].text)}</dd></div>`;
+    return `<div><dt>${esc(row.label)}</dt><dd>${cellText(t.compare[k])}</dd></div>`;
   }).join("");
   const offers = offersFor(t).map((o) => couponButton(o)).join("");
   return `
@@ -96,6 +96,13 @@ function profile(t) {
     </article>`;
 }
 
+// A cell's text, escaped, with any phrases listed in `strong` emphasised (provider-approved wording).
+export function cellText(c) {
+  let html = esc(c.text);
+  for (const p of c.strong || []) html = html.split(esc(p)).join(`<strong>${esc(p)}</strong>`);
+  return html;
+}
+
 function table(tools) {
   const head = tools.map((t) => `<th scope="col"><a href="#${t.id}">${esc(t.name)}</a></th>`).join("");
   const rows = COMPARE_ROWS.map((r) => `
@@ -104,7 +111,7 @@ function table(tools) {
       ${tools.map((t) => {
         const c = t.compare[r.key] || { text: "Not published" };
         const coupon = r.key === "offers" ? offersFor(t).map((o) => couponButton(o, { compact: true })).join("") : "";
-        return `<td>${esc(c.text)}${coupon}${reviewNote(c.reviewNote)}</td>`;
+        return `<td>${cellText(c)}${coupon}${reviewNote(c.reviewNote)}</td>`;
       }).join("")}
     </tr>`).join("");
   return `
@@ -121,7 +128,7 @@ function table(tools) {
 export function view() {
   const tools = toolsFor("tools", TOOLS.filter(shown));
   return `
-    ${pageHead("Training tools", "Soccer training tools compared", "Tools that train, or help you review, how you play: what each one is, what you need, what it costs and what evidence it cites, from each provider's own pages.",
+    ${pageHead("Training tools", "Soccer Training Tools Comparison", "Tools that train, or help you review, how you play: what each one is, what you need, what it costs and what evidence it cites, from each provider's own pages.",
       `<div class="cta-row"><a class="btn btn--ghost" href="#compare">Jump to the comparison</a></div>`)}
 
     ${section("profiles", "The tools", `<div class="tools">${tools.map(profile).join("")}</div>`)}
@@ -141,6 +148,6 @@ export function view() {
 export const structuredData = () => ({
   "@context": "https://schema.org",
   "@type": "ItemList",
-  name: "Soccer training tools compared",
+  name: "Soccer Training Tools Comparison",
   itemListElement: toolsFor("tools", TOOLS.filter(shown)).map((t, i) => ({ "@type": "ListItem", position: i + 1, name: t.name, url: t.website })),
 });

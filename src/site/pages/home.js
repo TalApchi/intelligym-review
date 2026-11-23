@@ -15,7 +15,7 @@ export const description = "Five short soccer challenges on scanning, awareness,
 // optimized sizes made from it (assets/hero/). Above the fold, so it is never lazy-loaded.
 const HERO_WIDTHS = [480, 720, 960, 1200, 1448];
 const srcset = (ext) => HERO_WIDTHS.map((w) => `${HOME.hero.visual.base}-${w}.${ext} ${w}w`).join(", ");
-const HERO_SIZES = "(min-width: 1240px) 660px, (min-width: 960px) 54vw, (max-width: 959px) and (max-height: 700px) 300px, min(720px, 100vw)";
+const HERO_SIZES = "(min-width: 1240px) 660px, (min-width: 960px) 54vw, (max-width: 959px) and (max-height: 800px) 340px, min(720px, 100vw)";
 
 // The information strip under the headline: real numbers about the full test that
 // TEST YOURSELF opens, read from the game's own plan (config.js), so it can never drift.

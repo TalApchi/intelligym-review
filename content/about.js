@@ -10,11 +10,16 @@ export const ABOUT = {
     { title: "How we compare training tools", body: "Each tool is described from its own official pages, in the same format. The tools are different kinds of products, so the comparison shows how they differ rather than ranking them." },
     { title: "Your privacy", body: "There are no accounts. Your latest challenge result is stored only in your own browser so the Your results page can show it; clearing your browser data removes it." },
   ],
-  // General coupon wording (Omri, 2026-10-22): names no provider. Shown while any provider
-  // offer is live (and always in the review build). The coupon buttons themselves are in offers.js.
+  // General coupon wording (Omri, 2026-10-22, updated 2026-11-24): names no provider and makes
+  // no ownership statement. Shown while any provider offer in offers.js is live (always in the
+  // review build). The coupons and "Check offers" links themselves are in offers.js.
   coupons: {
-    title: "Coupons",
-    body: "Some providers offer discount coupons, which you're welcome to use. Purchases are made directly with the provider you choose, and payment, product use, support, refunds and any other purchase matters are handled by that provider under its own terms. Soccer IQ does not process payments or provide the products you buy.",
+    title: "Coupons and offers",
+    body: [
+      "Where a provider has a discount code or an offer link, you'll find it alongside that tool on the Training tools page.",
+      "A \"Check offers\" link takes you to the provider's own website to see what it currently offers. It does not guarantee a discount.",
+      "Purchases, payment, product use, support and refunds are handled directly by the provider you choose, under its own terms. Soccer IQ does not process payments or supply the products you buy.",
+    ],
   },
 
   // The contact form is prepared but switched off: see `contact` in site.js and

@@ -3,7 +3,7 @@
 // Since Omri's 2026-10-20 feedback IntelliGym appears on the site like every other provider:
 // its profile and comparison cells live in tools.js. This file is the internal record behind
 // those cells. The only part shown is "Terms to confirm", inside IntelliGym's profile, in the
-// review build only. The coupon button lives in offers.js.
+// review build only (genuine open questions for Omri). The coupon (20%, SOCCERIQ20) lives in offers.js.
 //
 // Status values:
 //   "verified"    shown on the official page as quoted, on the date checked
@@ -48,8 +48,9 @@ export const INTELLIGYM = {
   // Short facts for the profile (each with its source).
   facts: [
     { label: "What it trains (IntelliGym's description)", value: "Anticipation, divided and peripheral attention, working memory, task switching, situational and spatial awareness, pattern recognition.", source: SRC.faqHow },
-    { label: "Session", value: "30-minute sessions made up of 8 levels of about 4 minutes each.", source: SRC.faqSession },
-    { label: "How often", value: "2 to 3 sessions a week, with at least 24 hours of rest in between.", source: SRC.faqHow },
+    // Session wording from Omri (2026-11-24); matches the comparison's "Sessions" cell in tools.js.
+    { label: "Session", value: "Each session takes 20–30 minutes, with unlimited sessions available.", source: SRC.faqSession },
+    { label: "How often", value: "Recommended 2–3 times a week.", source: SRC.faqHow },
     { label: "Ages", value: "IntelliGym gives 10 to 25 as the general age range, starting from about 10.", source: SRC.faqAge },
     { label: "Who it is for", value: "Individual athletes, families (2 to 4 athletes) and teams (5 or more).", source: SRC.home },
     { label: "Devices", value: "Computer and mobile.", source: SRC.faqMobile }, // Omri, 2026-11-23
@@ -74,7 +75,7 @@ export const INTELLIGYM = {
         { id: "fam-monthly", plan: "Monthly", price: "$17.90 / month", billing: "Monthly", status: "verified", visible: true },
         { id: "fam-seasonal", plan: "Seasonal", price: "$14.95 / month", billing: "6 months prepaid", status: "verified", visible: true },
         { id: "fam-annual", plan: "Annual", price: "$12.90 / month", billing: "12 months prepaid", label: "Marked \"Get Best Value\"", status: "verified", visible: true },
-      ], reviewNote: "The page does not say whether family prices are per member or for the whole family. Confirm before publishing." },
+      ], internalNote: "The page does not say whether family prices are per member or for the whole family. Plans are not displayed on the site." },
       { id: "teams", title: "Teams and clubs", rows: [
         { id: "teams", plan: "Team / club", price: "Custom pricing", billing: "Contact IntelliGym", status: "verified", visible: true },
       ] },
@@ -84,8 +85,9 @@ export const INTELLIGYM = {
   // Where to buy. Links go to IntelliGym's own pages; Soccer IQ does not sell anything.
   purchaseLinks: [
     { id: "plans", label: "See plans on IntelliGym", url: "https://soccerapp.intelligym.com/", primary: true, visible: true },
-    { id: "store", label: "IntelliGym main store", url: "https://soccer.intelligym.com/pricing-en/", visible: true,
-      reviewNote: "This store loads its prices by script, so we could not read them. Confirm which store Soccer IQ should link to." },
+    // Resolved 2026-11-24: Omri gave soccerapp.intelligym.com as the coupon destination, which is
+    // also the "Plans and prices" link. This main store is a record only and is not linked.
+    { id: "store", label: "IntelliGym main store", url: "https://soccer.intelligym.com/pricing-en/", visible: false },
     { id: "ios", label: "iPhone app (App Store)", url: "https://apps.apple.com/app/id6538727452", visible: true },
     { id: "clubs", label: "Teams and clubs", url: "https://soccer.intelligym.com/club-wide-training/", visible: true },
   ],

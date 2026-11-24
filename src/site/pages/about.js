@@ -10,8 +10,9 @@ export const title = "About Soccer IQ";
 export const description = "Soccer IQ is a soccer game-intelligence website: five challenges, training tips and a comparison of soccer training tools.";
 
 export function view() {
-  // General coupon wording, shown while any provider offer is live (always in the review build).
-  const coupons = OFFERS.some((o) => o.visible !== false && (offerIsLive(o) || REVIEW));
+  // General, provider-neutral coupon wording: shown while any provider offer (a confirmed code or
+  // a "Check offers" link) is live, in both builds, and always in the review build.
+  const coupons = REVIEW || OFFERS.some(offerIsLive);
   // Empty while the contact form is off (SITE.contact): no section, heading or placeholder.
   const form = contactForm(SITE.contact, ABOUT.contact);
   return `
@@ -23,7 +24,7 @@ export function view() {
 
     ${ABOUT.sections.map((s) => section("", s.title, `<p class="prose">${esc(s.body)}</p>`)).join("")}
 
-    ${coupons ? section("coupons", ABOUT.coupons.title, `<p class="prose">${esc(ABOUT.coupons.body)}</p>`) : ""}
+    ${coupons ? section("coupons", ABOUT.coupons.title, ABOUT.coupons.body.map((p) => `<p class="prose">${esc(p)}</p>`).join("")) : ""}
 
     ${form ? section("contact", ABOUT.contact.title, form) : ""}
 

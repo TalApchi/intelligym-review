@@ -20,9 +20,11 @@
 //   termsToConfirm                  optional: conflicting terms, shown in the review build only
 //   status                          "verified" | "to-confirm" (to-confirm tools appear only in the review build)
 //   visible                         false hides the tool everywhere
-//   reviewNote                      review build only
+//   reviewNote                      shown in the review build only: use it ONLY for a question that still
+//                                   needs Omri's decision (see docs/outstanding-items.md)
+//   internalNote                    research record, never shown in any build
 //
-// Coupons and special offers live in offers.js (one entry per offer, linked by the tool's id).
+// Coupons and "Check offers" links live in offers.js (one entry per provider, linked by the tool's id).
 
 const C = "2026-10-18"; // date checked
 const s = (label, url) => ({ label, url, checked: C });
@@ -128,17 +130,19 @@ export const TOOLS = [
     id: "intelligym",
     name: "The Soccer IntelliGym",
     sortName: "IntelliGym", // sorted under I
-    // Shown directly beneath the name (Tal, 2026-10-20; still to confirm with Omri, see docs/content-editing.md).
+    // Shown directly beneath the name (Tal, 2026-10-20; placement to confirm with Omri, see docs/outstanding-items.md).
     identity: "IntelliGym Labs, New Jersey U.S",
     company: "IntelliGym (ACE Applied Cognitive Engineering Ltd.)",
     website: "https://soccer.intelligym.com/",
     summary: "Computer and mobile software with game-like exercises that IntelliGym designed to train the mental side of soccer, such as anticipation, attention and awareness. No headset or special equipment is needed.",
     compare: {
-      format: { text: "Game-like cognitive training exercises on screen, in 30-minute sessions.", source: IG.how },
+      format: { text: "Game-like cognitive training exercises on screen, in sessions of 20–30 minutes.", source: IG.how },
       soccer: { text: "Made for soccer players, training skills IntelliGym links to the game, such as anticipation and awareness. IntelliGym says it \"is not a video game\".", source: s("IntelliGym: Best practices", "https://soccer.intelligym.com/best-practices/") },
       hardware: { text: "Computer and mobile. No headset or special equipment.", source: IG.mobile }, // platform wording from Omri, 2026-11-23
       users: { text: "Players about 10 to 25, families and teams; parents and coaches get progress reports.", source: IG.age },
-      sessions: { text: "30 minutes (8 levels of about 4 minutes), 2 to 3 times a week.", source: IG.session },
+      // Session wording from Omri (2026-11-24), exact. "Unlimited sessions" is about how often you
+      // can train, not the price: pricing and subscription terms are unchanged.
+      sessions: { text: "Each session takes 20–30 minutes (recommended 2–3 times a week), with unlimited sessions available.", source: IG.session },
       // Evidence, limits and the subscription terms below are Omri's approved wording for IntelliGym
       // (supplied by Tal, 2026-11-23). Keep the text exactly as given; `strong` marks his emphasis.
       // "football" is his word and stays here; our own copy says "soccer".
@@ -194,7 +198,7 @@ export const TOOLS = [
     checked: C,
     status: "verified",
     visible: true,
-    reviewNote: "A Meta Quest 3S giveaway ran 11 June to 18 July 2026 and has expired, so it is not listed.",
+    internalNote: "A Meta Quest 3S giveaway ran 11 June to 18 July 2026 and has expired, so it is not listed.",
   },
   {
     id: "neurotracker",
@@ -254,7 +258,7 @@ export const TOOLS = [
     checked: C,
     status: "verified",
     visible: true,
-    reviewNote: "The Meta Quest store price and whether a PlayStation VR2 version is on sale could not be confirmed from readable official pages.",
+    internalNote: "The Meta Quest store price and whether a PlayStation VR2 version is on sale could not be confirmed from readable official pages.",
   },
   {
     id: "blazepod",
@@ -271,7 +275,7 @@ export const TOOLS = [
       evidence: { text: "A research page with about 30 references. Studies that used BlazePod itself mainly test it as a measuring tool, for example a test-retest study with 24 young adults.", source: BP.research },
       limits: { text: "The cited BlazePod studies check that it measures reaction time reliably; none shows that training with it improves soccer performance. Homepage percentages are company statistics.", source: BP.oliveira },
       pricing: { text: "Kits from US$219 (3 pods) to US$1,352 (12-pod team bundle) at regular prices. App: free Go tier; Pro US$12.99 a month or US$99.99 a year at regular prices.", source: BP.home,
-        reviewNote: "On 2026-10-20 a 20% \"Fall Sale\" was running with no end date (kits from $175.20; Pro $10.39 a month or $79.99 a year, marked \"Website exclusive offer\"). Regular prices are shown here because the sale has no stated end." },
+        internalNote: "On 2026-10-20 a 20% \"Fall Sale\" was running with no end date (kits from $175.20; Pro $10.39 a month or $79.99 a year, marked \"Website exclusive offer\"). Regular prices are shown here because the sale has no stated end." },
       trial: { text: "30-day money back guarantee on hardware (US returns need a return number within 14 days; shipping not refunded). App: full refund within 14 days of the first subscription; trial length not published.", source: BP.refund },
       offers: { text: "Sitewide sales from time to time (up to 20% off on 2026-10-20, no end date shown).", source: BP.home },
     },
@@ -287,7 +291,7 @@ export const TOOLS = [
     checked: "2026-10-20",
     status: "verified",
     visible: true,
-    reviewNote: "Company: the Terms of Use name Play Coyotta Ltd. (Israel); the Privacy, Refund and Warranty pages name BlazePod Inc. (Weston, Florida). The young-athletes page markets to parents although the Terms set a 16+ age limit. Hoffman (2020) does not say whether \"football\" means soccer or American football, and its full text could not be read.",
+    internalNote: "Company: the Terms of Use name Play Coyotta Ltd. (Israel); the Privacy, Refund and Warranty pages name BlazePod Inc. (Weston, Florida). The young-athletes page markets to parents although the Terms set a 16+ age limit. Hoffman (2020) does not say whether \"football\" means soccer or American football, and its full text could not be read.",
   },
 
   {
@@ -300,15 +304,15 @@ export const TOOLS = [
       format: { text: "Foot-mounted sensors and an app that record technical actions (touches, time on the ball, release time, foot use) and physical output (distance, sprints, top speed).", source: PM.how },
       soccer: { text: "Yes, built for soccer. It tracks technical and physical performance; it does not train tactical decision-making directly.", source: PM.how },
       hardware: { text: "Two sensors (6 g each) in silicone straps that fit cleats, turf or futsal shoes, a charging case, and the PlayerMaker app on a phone with Bluetooth. Kids' and adult strap sizes. Water-resistant, not waterproof.", source: PM.faq,
-        reviewNote: "Phone operating systems are not listed on the official pages we read. The FAQ says \"water-resistant, not waterproof\"; the Teams page calls the sensors \"waterproof\". We use the FAQ wording." },
+        internalNote: "Phone operating systems are not listed on the official pages we read. The FAQ says \"water-resistant, not waterproof\"; the Teams page calls the sensors \"waterproof\". We use the FAQ wording." },
       users: { text: "Players from 8 years old, and their parents and coaches; team packages for clubs, academies and federations.", source: PM.faq },
       sessions: { text: "Worn in any training session or match. Recording starts when the sensors leave the charging case and the data syncs to the app over Bluetooth afterwards; up to 6 hours per session.", source: PM.faq },
       evidence: { text: "Cites FIFA Quality certification for its tracking system and lists published studies on what foot-mounted sensors measure, such as a peer-reviewed PLOS ONE paper (2022) that used PlayerMaker to count ball releases by 21 professional players.", source: PM.plos },
       limits: { text: "The certification and studies are about measuring accurately, not about players improving. One author of the PLOS ONE paper works for PlayerMaker. The homepage's \"average improvement\" figures give no sample, method or comparison group. The data shows what your feet did, not whether a decision was right.", source: PM.home },
       pricing: { text: "Kit prices change with seasonal sales; check the official site. A membership is needed to record and sync new sessions; it starts when the sensors are activated and renews at US$149 a year unless canceled. Team prices on request.", source: PM.faq,
-        reviewNote: "On 2026-11-21 the kits were shown at $199 (PlayerMaker 2.0) and $229 (CITYPLAY) during a Black Friday sale of $50 off each kit, with no end date visible, so the regular prices are unclear. The pages do not say outright whether the first membership year is included in the kit price." },
+        internalNote: "On 2026-11-21 the kits were shown at $199 (PlayerMaker 2.0) and $229 (CITYPLAY) during a Black Friday sale of $50 off each kit, with no end date visible, so the regular prices are unclear. The pages do not say outright whether the first membership year is included in the kit price." },
       trial: { text: "30-day money back guarantee advertised. The membership can be canceled any time; without it, past sessions stay visible but new ones cannot be recorded.", source: PM.home,
-        reviewNote: "Holiday terms on 2026-11-21: November orders can be returned until January 15, 2027. Temporary, so not shown to visitors." },
+        internalNote: "Holiday terms on 2026-11-21: November orders can be returned until January 15, 2027. Temporary, so not shown to visitors." },
       offers: { text: "Seasonal sales from time to time ($50 off each kit for Black Friday on 2026-11-21, no end date shown).", source: PM.home },
     },
     readingTheGame: {
@@ -328,7 +332,7 @@ export const TOOLS = [
     checked: PM_C,
     status: "verified",
     visible: true,
-    reviewNote: "Omri's link carried \"discount=earlyaccess\"; no early-access offer or coupon appears on PlayerMaker's official pages, so none is listed and the parameter is not used. No commercial relationship with PlayerMaker is assumed. Battery life, warranty length and phone requirements are not published on the pages we read.",
+    internalNote: "Omri's link carried \"discount=earlyaccess\"; no early-access offer or coupon appears on PlayerMaker's official pages, so none is listed and the parameter is not used (the \"Check offers\" link goes to the plain homepage). Battery life, warranty length and phone requirements are not published on the pages we read.",
   },
 
 ];
@@ -357,9 +361,10 @@ export function toolsFor(view, list) {
   return [...listed, ...rest];
 }
 
-// Tools from the Base44 reference that we could not find under those names. Review build only.
+// Review-build notes under the comparison: only questions that still need Omri's decision.
+// Settled research notes are kept as `internalNote` on each tool; the full list of open items is
+// docs/outstanding-items.md. (2026-11-24: the Base44 "not found" and "no press kit" notes were
+// records, not questions, and moved to docs/outstanding-items.md.)
 export const TOOLS_REVIEW_NOTES = [
-  "\"CogniSport Decision Trainer\" and \"Game Analysis Software Pro\" from the Base44 template were not found as real products, so they are not listed.",
-  "None of these companies publishes a press kit, so the profiles use text only, with no product photos or logos.",
-  "Confirm with Omri that Soccer IQ has no commercial relationship with the other providers before public release. Future provider coupons go in content/offers.js.",
+  "For Omri: will Soccer IQ receive a commission or other benefit from the provider offers (IntelliGym's code, or the coupons being arranged with other companies)? If so, we recommend a short provider-neutral disclosure next to the offers before public launch.",
 ];

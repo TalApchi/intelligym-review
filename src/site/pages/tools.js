@@ -1,8 +1,10 @@
 // Training tools page: one profile per provider (same structure for all), then the comparison
-// table (#compare). Both use ORDER.tools in content/tools.js (IntelliGym first). A provider's coupon button comes from offers.js.
+// table (#compare). Both use ORDER.tools in content/tools.js (IntelliGym first). A provider's
+// coupon or "Check offers" link comes from offers.js.
 
 import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsFor } from "../../../content/tools.js";
-import { OFFERS, offerIsLive } from "../../../content/offers.js";
+import { liveOffersFor } from "../../../content/offers.js";
+import { offerView, mountOffers } from "../offer.js";
 import { esc, ext, reviewNote, shown, section, pageHead, finalCta, REVIEW } from "../ui.js";
 
 export const title = "Soccer Training Tools Comparison | Soccer IQ";
@@ -10,34 +12,11 @@ export const description = "A side-by-side comparison of soccer game-intelligenc
 
 const PROFILE_FACTS = ["format", "soccer", "hardware", "pricing"];
 
-// The coupon, drawn as a ticket. `compact` is the small version in the comparison table;
-// both read the same entry in offers.js. Live (a link) once the offer has a URL; until then
-// an inactive button in the review build, and nothing at all in the public build.
-const TICKET_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h15A1.5 1.5 0 0 1 21 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V14a2 2 0 0 0 0-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 6.5v11" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1.6 2.2"/><path d="m13 14.5 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="13.3" cy="10" r="1" fill="currentColor"/><circle cx="16.7" cy="14" r="1" fill="currentColor"/></svg>`;
-
-export function couponButton(offer, { compact = false } = {}) {
-  const live = offerIsLive(offer);
-  if (!live && !REVIEW) return "";
-  const details = [
-    offer.discount && ["Discount", offer.discount],
-    offer.code && ["Code", offer.code],
-    offer.eligibility && ["Who can use it", offer.eligibility],
-    offer.region && ["Region", offer.region],
-    offer.expires && ["Ends", offer.expires],
-  ].filter(Boolean);
-  const cls = `coupon__btn${compact ? " coupon__btn--compact" : ""}`;
-  const ticket = `<span class="coupon__ticket"><span class="coupon__stub">${TICKET_ICON}</span><span class="coupon__label">${esc(compact ? offer.buttonShort || offer.button : offer.button)}${compact && offer.buttonShort ? `<span class="sr-only"> (${esc(offer.button)})</span>` : ""}</span></span>`;
-  const control = live
-    ? `<a class="${cls}" href="${esc(offer.url)}" target="_blank" rel="noopener">${ticket}<span class="sr-only"> (opens IntelliGym's site in a new tab)</span></a>`
-    : `<button class="${cls}" type="button" disabled aria-disabled="true">${ticket}</button>`;
-  return `
-    <div class="coupon${compact ? " coupon--compact" : ""}">
-      ${control}
-      ${live && !compact && details.length ? `<dl class="coupon__details">${details.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-    </div>`;
-}
-
-const offersFor = (t) => OFFERS.filter((o) => o.provider === t.id && o.visible !== false);
+// A provider's offer (content/offers.js, drawn by ../offer.js): the yellow coupon ticket for a
+// confirmed code, or a "Check offers" link to the provider's homepage. Only live offers are drawn,
+// in the review and public builds alike.
+const offersFor = (t) => liveOffersFor(t.id);
+const shortName = (t) => t.sortName || t.name;
 
 function termsToConfirm(t) {
   if (!REVIEW || !t.termsToConfirm?.length) return "";
@@ -77,7 +56,9 @@ function profile(t) {
     const row = COMPARE_ROWS.find((r) => r.key === k);
     return `<div><dt>${esc(row.label)}</dt><dd>${cellText(t.compare[k])}</dd></div>`;
   }).join("");
-  const offers = offersFor(t).map((o) => couponButton(o)).join("");
+  const offers = offersFor(t);
+  const coupons = offers.filter((o) => o.kind === "coupon").map((o) => offerView(o, shortName(t))).join("");
+  const links = offers.filter((o) => o.kind === "link").map((o) => offerView(o, shortName(t))).join("");
   return `
     <article class="tool" id="${t.id}" aria-labelledby="${t.id}-name">
       <header class="tool__head">
@@ -89,8 +70,8 @@ function profile(t) {
       <dl class="facts">${facts}</dl>
       ${readingTheGame(t)}
       <p class="tool__more"><a href="#compare">Sessions, evidence, trial and refund terms in the comparison</a></p>
-      ${offers}
-      <div class="cta-row">${t.links.map((l) => ext(l.url, l.label, "btn btn--ghost btn--sm")).join("")}</div>
+      ${coupons}
+      <div class="cta-row">${links}${t.links.map((l) => ext(l.url, l.label, "btn btn--ghost btn--sm")).join("")}</div>
       ${termsToConfirm(t)}
       ${reviewNote(t.reviewNote)}
     </article>`;
@@ -110,8 +91,8 @@ function table(tools) {
       <th scope="row">${esc(r.label)}</th>
       ${tools.map((t) => {
         const c = t.compare[r.key] || { text: "Not published" };
-        const coupon = r.key === "offers" ? offersFor(t).map((o) => couponButton(o, { compact: true })).join("") : "";
-        return `<td>${cellText(c)}${coupon}${reviewNote(c.reviewNote)}</td>`;
+        const offer = r.key === "offers" ? offersFor(t).map((o) => offerView(o, shortName(t), { compact: true })).join("") : "";
+        return `<td>${cellText(c)}${offer}${reviewNote(c.reviewNote)}</td>`;
       }).join("")}
     </tr>`).join("");
   return `
@@ -143,6 +124,10 @@ export function view() {
     ${REVIEW ? section("", "", TOOLS_REVIEW_NOTES.map(reviewNote).join("")) : ""}
 
     ${finalCta("See where you stand first", "Five free challenges in your browser. No account.", { label: "TEST YOURSELF", href: "play.html" })}`;
+}
+
+export function mount(main) {
+  mountOffers(main);
 }
 
 export const structuredData = () => ({

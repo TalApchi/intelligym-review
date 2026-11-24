@@ -3,16 +3,16 @@
 
 import { FAQ } from "../../../content/faq.js";
 import { OFFERS, offerIsLive } from "../../../content/offers.js";
-import { esc, html, reviewNote, shown, pageHead, finalCta, REVIEW } from "../ui.js";
+import { esc, html, reviewNote, shown, pageHead, finalCta } from "../ui.js";
 
-// Offer questions appear when the offer is live, or in the review build.
-export const offerFaqs = () => OFFERS.filter((o) => o.visible !== false && o.faq && (offerIsLive(o) || REVIEW))
+// Offer questions appear while their offer is live (content/offers.js), in both builds.
+export const offerFaqs = () => OFFERS.filter((o) => o.faq && offerIsLive(o))
   .map((o) => ({ id: o.id, q: o.faq.q, a: o.faq.a, visible: true }));
 
 // The coupon is named in the title and description only while its question is on the page.
 const withOffers = offerFaqs().length > 0;
 export const title = `FAQ: Soccer IQ challenges, scores${withOffers ? ", training tools and coupons" : " and training tools"} | Soccer IQ`;
-export const description = `Answers about the Soccer IQ challenges and scores, the training tools we compare${withOffers ? " and the special IntelliGym coupon" : ""}.`;
+export const description = `Answers about the Soccer IQ challenges and scores, the training tools we compare${withOffers ? " and the IntelliGym coupon" : ""}.`;
 
 const groups = () => {
   const extra = offerFaqs();

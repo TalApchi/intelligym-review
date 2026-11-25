@@ -127,17 +127,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 .coupon__details div { display: flex; gap: var(--s2); }
 .coupon__details dt { color: var(--dim); min-width: 110px; }
 
-/* "Check offers": a link to a provider's own site (no code). Teal outline, the size of the
-   profile's other link buttons, so it fits the normal layout and never looks like the coupon. */
-.offer-link {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 var(--s4);
-  border: 1.5px solid var(--accent); border-radius: var(--radius-sm);
-  color: var(--accent-text); font-size: 15px; font-weight: 700; text-decoration: none;
-}
-.offer-link .ext { color: inherit; }
-@media (hover: hover) { .offer-link:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); } }
-.offer-link:focus-visible { outline: 2px solid var(--chalk); outline-offset: 3px; }
-.offer-link--compact { display: flex; justify-content: center; margin-top: var(--s3); min-height: 40px; padding: 4px 8px; font-size: 13.5px; }
+/* Deal ticket ("CHECK FOR DEALS", kind "deal"): the same yellow ticket with one supporting line
+   and one link, no code. Only the supporting line's weight differs from the coupon's code row. */
+.coupon--deal .coupon__code-row { font-weight: 600; line-height: 1.35; }
 
 /* ---------- Review-only notes (review build): violet, never yellow ---------- */
 

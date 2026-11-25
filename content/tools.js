@@ -24,7 +24,7 @@
 //                                   needs Omri's decision (see docs/outstanding-items.md)
 //   internalNote                    research record, never shown in any build
 //
-// Coupons and "Check offers" links live in offers.js (one entry per provider, linked by the tool's id).
+// Coupons and CHECK FOR DEALS tickets live in offers.js (one entry per provider, linked by the tool's id).
 
 const C = "2026-10-18"; // date checked
 const s = (label, url) => ({ label, url, checked: C });
@@ -332,7 +332,7 @@ export const TOOLS = [
     checked: PM_C,
     status: "verified",
     visible: true,
-    internalNote: "Omri's link carried \"discount=earlyaccess\"; no early-access offer or coupon appears on PlayerMaker's official pages, so none is listed and the parameter is not used (the \"Check offers\" link goes to the plain homepage). Battery life, warranty length and phone requirements are not published on the pages we read.",
+    internalNote: "Omri's link carried \"discount=earlyaccess\"; no early-access offer or coupon appears on PlayerMaker's official pages, so none is listed and the parameter is not used (the deal ticket links to the plain homepage). Battery life, warranty length and phone requirements are not published on the pages we read.",
   },
 
 ];

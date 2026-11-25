@@ -1,5 +1,6 @@
-// Provider offers on the page: the yellow coupon ticket (kind "coupon") and the "Check offers"
-// link (kind "link"). Content comes from content/offers.js; this file only draws and wires it.
+// Provider offers on the page, all as the yellow ticket: the coupon (kind "coupon": code, Copy code,
+// link) and the deal ticket (kind "deal": "CHECK FOR DEALS", no code, one link to the official
+// site). Content comes from content/offers.js; this file only draws and wires it.
 // Large in the provider's profile, compact in the comparison table.
 
 import { esc } from "./ui.js";
@@ -34,14 +35,26 @@ export function couponTicket(o, providerName, { compact = false } = {}) {
     </div>`;
 }
 
-// "Check offers": a link to the provider's own site. Says nothing about a discount.
-export function offerLink(o, providerName, { compact = false } = {}) {
-  return `<a class="offer-link${compact ? " offer-link--compact" : ""}" href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.label)}${EXT}<span class="sr-only"> at ${esc(providerName)} (opens ${esc(providerName)}'s website in a new tab)</span></a>`;
+// Deal ticket: same ticket, headline, one supporting line and ONE link. No code, no Copy code.
+export function dealTicket(o, providerName, { compact = false } = {}) {
+  return `
+    <div class="coupon coupon--deal${compact ? " coupon--compact" : ""}">
+      <div class="coupon__ticket">
+        <span class="coupon__stub">${TICKET_ICON}</span>
+        <div class="coupon__body">
+          <p class="coupon__headline">${esc(o.headline)}</p>
+          <p class="coupon__code-row">${esc(o.codeLine)}</p>
+          <div class="coupon__actions">
+            <a class="coupon__use" href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.label)}${EXT}<span class="sr-only"> for ${esc(providerName)} (opens in a new tab)</span></a>
+          </div>
+        </div>
+      </div>
+    </div>`;
 }
 
 export function offerView(o, providerName, opts) {
   if (o.kind === "coupon") return couponTicket(o, providerName, opts);
-  if (o.kind === "link") return offerLink(o, providerName, opts);
+  if (o.kind === "deal") return dealTicket(o, providerName, opts);
   return "";
 }
 

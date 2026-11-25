@@ -12,12 +12,12 @@ export const ABOUT = {
   ],
   // General coupon wording (Omri, 2026-10-22, updated 2026-11-24): names no provider and makes
   // no ownership statement. Shown while any provider offer in offers.js is live (always in the
-  // review build). The coupons and "Check offers" links themselves are in offers.js.
+  // review build). The coupon and deal tickets themselves are in offers.js.
   coupons: {
     title: "Coupons and offers",
     body: [
       "Where a provider has a discount code or an offer link, you'll find it alongside that tool on the Training tools page.",
-      "A \"Check offers\" link takes you to the provider's own website to see what it currently offers. It does not guarantee a discount.",
+      "Where no code is listed, the \"Visit Official Site\" link takes you to the provider's own website to see its current rates and any deals. It does not guarantee a discount.",
       "Purchases, payment, product use, support and refunds are handled directly by the provider you choose, under its own terms. Soccer IQ does not process payments or supply the products you buy.",
     ],
   },

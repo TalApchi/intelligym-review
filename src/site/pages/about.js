@@ -11,7 +11,7 @@ export const description = "Soccer IQ is a soccer game-intelligence website: fiv
 
 export function view() {
   // General, provider-neutral coupon wording: shown while any provider offer (a confirmed code or
-  // a "Check offers" link) is live, in both builds, and always in the review build.
+  // a CHECK FOR DEALS ticket) is live, in both builds, and always in the review build.
   const coupons = REVIEW || OFFERS.some(offerIsLive);
   // Empty while the contact form is off (SITE.contact): no section, heading or placeholder.
   const form = contactForm(SITE.contact, ABOUT.contact);

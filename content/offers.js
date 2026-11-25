@@ -4,24 +4,27 @@
 // wording while any entry is live. Templates never hold offer details, so a provider's real code
 // and terms can be added here later without touching any page code.
 //
-// Two kinds:
-//   "coupon"  a confirmed code. Drawn as the yellow ticket: headline, the code (selectable),
-//             a Copy code button and a link to the provider's destination.
-//   "link"    no code yet: a "Check offers" link to the provider's official homepage. It is a link
-//             to the provider's site, not a promise of a discount, and the page says nothing more.
+// Two kinds, both drawn as the same yellow ticket (notched edges, dashed stub):
+//   "coupon"  a confirmed code: headline, the code (selectable), a Copy code button and a link to
+//             the provider's destination.
+//   "deal"    no code: headline "CHECK FOR DEALS", the line "Code: None required (Standard rates
+//             apply)" and ONE link, "Visit Official Site ↗", to the provider's official homepage.
+//             No code, percentage or Copy code button. (Omri, 2026-11-25; replaces the teal
+//             "Check offers" buttons of 2026-11-24.)
 //
 // Fields:
 //   id            unique, never reused
 //   provider      the tool's `id` in tools.js
-//   kind          "coupon" | "link"
+//   kind          "coupon" | "deal"
 //   status        "confirmed"  details supplied and approved by the site owner (Omri) -> shown in
 //                              the review AND public builds
-//                 "link-only"  no code; the "Check offers" link is shown in both builds
+//                 "link-only"  no code; the "deal" ticket is shown in both builds
 //                 "pending"    not shown anywhere (no disabled buttons, no "pending" wording)
 //   url           where the button goes: the provider's own page. Never invent a URL that claims
 //                 to apply a code automatically.
-//   label         the link's text ("Use at IntelliGym", "Check offers")
-//   headline      coupon only: the ticket's headline, e.g. "20% OFF IntelliGym"
+//   label         the link's text ("Use at IntelliGym", "Visit Official Site"; the ↗ is added by the page)
+//   headline      the ticket's headline, e.g. "20% OFF IntelliGym", "CHECK FOR DEALS"
+//   codeLine      deal only: the line under the headline, exactly as approved
 //   code, discount  coupon only: exactly as supplied by the provider/owner
 //   terms         coupon only, optional: { expires, plans, region, stacking, exclusive } shown under
 //                 the ticket ONLY when filled in with confirmed wording. Leave empty rather than guess.
@@ -32,6 +35,16 @@
 //
 // Never enter a code, discount, expiry, eligible plan, region, stacking rule or "exclusive" claim
 // that the provider or the site owner has not confirmed.
+
+// Omri's exact wording for providers without a code (2026-11-25).
+const DEAL = {
+  kind: "deal",
+  status: "link-only",
+  headline: "CHECK FOR DEALS",
+  codeLine: "Code: None required (Standard rates apply)",
+  label: "Visit Official Site",
+  visible: true,
+};
 
 export const OFFERS = [
   {
@@ -60,22 +73,24 @@ export const OFFERS = [
     visible: true,
   },
 
-  // "Check offers" links (Omri, 2026-11-24: he is arranging coupons with these companies; until
-  // a code is confirmed each button goes to the provider's official homepage, the same verified
-  // `website` as in tools.js; a test checks they match).
-  { id: "be-your-best-offers", provider: "be-your-best", kind: "link", status: "link-only", label: "Check offers", url: "https://beyourbest.com/", visible: true },
-  { id: "blazepod-offers", provider: "blazepod", kind: "link", status: "link-only", label: "Check offers", url: "https://www.blazepod.com/", visible: true },
-  { id: "neurotracker-offers", provider: "neurotracker", kind: "link", status: "link-only", label: "Check offers", url: "https://www.neurotrackerx.com/", visible: true },
-  { id: "playermaker-offers", provider: "playermaker", kind: "link", status: "link-only", label: "Check offers", url: "https://www.playermaker.com/", visible: true },
-  { id: "rezzil-offers", provider: "rezzil", kind: "link", status: "link-only", label: "Check offers", url: "https://rezzil.com/", visible: true },
+  // Deal tickets for the other providers (Omri, 2026-11-24 / 2026-11-25: he is arranging coupons
+  // with these companies; until a code is confirmed each ticket links to the provider's official
+  // homepage, the same verified `website` as in tools.js; a test checks they match). The wording
+  // is shared by all five (DEAL below); to give one provider a real code, change its entry to
+  // kind "coupon" as described in docs/content-editing.md.
+  { id: "be-your-best-offers", provider: "be-your-best", ...DEAL, url: "https://beyourbest.com/" },
+  { id: "blazepod-offers", provider: "blazepod", ...DEAL, url: "https://www.blazepod.com/" },
+  { id: "neurotracker-offers", provider: "neurotracker", ...DEAL, url: "https://www.neurotrackerx.com/" },
+  { id: "playermaker-offers", provider: "playermaker", ...DEAL, url: "https://www.playermaker.com/" },
+  { id: "rezzil-offers", provider: "rezzil", ...DEAL, url: "https://rezzil.com/" },
 ];
 
 // Live = shown in both builds. A coupon needs its code, discount and destination and must be
-// confirmed; a link needs its destination. Anything else is not shown at all.
+// confirmed; a deal ticket needs its destination. Anything else is not shown at all.
 export function offerIsLive(o) {
   if (!o || o.visible === false || !o.url) return false;
   if (o.kind === "coupon") return o.status === "confirmed" && Boolean(o.code && o.discount && o.headline);
-  if (o.kind === "link") return o.status === "link-only" || o.status === "confirmed";
+  if (o.kind === "deal") return o.status === "link-only" || o.status === "confirmed";
   return false;
 }
 

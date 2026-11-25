@@ -1,6 +1,6 @@
 // Training tools page: one profile per provider (same structure for all), then the comparison
 // table (#compare). Both use ORDER.tools in content/tools.js (IntelliGym first). A provider's
-// coupon or "Check offers" link comes from offers.js.
+// yellow offer ticket (coupon or "CHECK FOR DEALS") comes from offers.js.
 
 import { TOOLS, COMPARE, COMPARE_ROWS, TOOLS_REVIEW_NOTES, toolsFor } from "../../../content/tools.js";
 import { liveOffersFor } from "../../../content/offers.js";
@@ -12,9 +12,9 @@ export const description = "A side-by-side comparison of soccer game-intelligenc
 
 const PROFILE_FACTS = ["format", "soccer", "hardware", "pricing"];
 
-// A provider's offer (content/offers.js, drawn by ../offer.js): the yellow coupon ticket for a
-// confirmed code, or a "Check offers" link to the provider's homepage. Only live offers are drawn,
-// in the review and public builds alike.
+// A provider's offer (content/offers.js, drawn by ../offer.js): the yellow ticket, either the
+// coupon for a confirmed code or the "CHECK FOR DEALS" ticket linking to the provider's official
+// site. Only live offers are drawn, in the review and public builds alike.
 const offersFor = (t) => liveOffersFor(t.id);
 const shortName = (t) => t.sortName || t.name;
 
@@ -56,9 +56,7 @@ function profile(t) {
     const row = COMPARE_ROWS.find((r) => r.key === k);
     return `<div><dt>${esc(row.label)}</dt><dd>${cellText(t.compare[k])}</dd></div>`;
   }).join("");
-  const offers = offersFor(t);
-  const coupons = offers.filter((o) => o.kind === "coupon").map((o) => offerView(o, shortName(t))).join("");
-  const links = offers.filter((o) => o.kind === "link").map((o) => offerView(o, shortName(t))).join("");
+  const offers = offersFor(t).map((o) => offerView(o, shortName(t))).join("");
   return `
     <article class="tool" id="${t.id}" aria-labelledby="${t.id}-name">
       <header class="tool__head">
@@ -70,8 +68,8 @@ function profile(t) {
       <dl class="facts">${facts}</dl>
       ${readingTheGame(t)}
       <p class="tool__more"><a href="#compare">Sessions, evidence, trial and refund terms in the comparison</a></p>
-      ${coupons}
-      <div class="cta-row">${links}${t.links.map((l) => ext(l.url, l.label, "btn btn--ghost btn--sm")).join("")}</div>
+      ${offers}
+      <div class="cta-row">${t.links.map((l) => ext(l.url, l.label, "btn btn--ghost btn--sm")).join("")}</div>
       ${termsToConfirm(t)}
       ${reviewNote(t.reviewNote)}
     </article>`;
